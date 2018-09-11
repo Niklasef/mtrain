@@ -6,21 +6,25 @@ using System.Linq;
 
 namespace MyFirstUnitTests
 {
-    public class MessageQueTests{
-        private class FakeSubscriber : ISubscriber{
+    public class MessageQueTests
+    {
+        private class FakeSubscriber : ISubscriber
+        {
             public IList<Message> Messages;
-            public void Process(Message message){
+            public void Process(Message message)
+            {
                 Messages.Add(message);
             }
         }
 
-        [Fact]        
-        public void Subscribing_OneMessageAdded_MessageProcessed(){
+        [Fact]
+        public void Subscribing_OneMessageAdded_MessageProcessed()
+        {
             var subscriber = new FakeSubscriber();
             subscriber.Messages = new List<Message>();
             var que = new MessageQue();
             var m = new Message();
-            
+
             que.Subscribe(subscriber);
             que.Add(m);
             Thread.Sleep(200);
@@ -29,12 +33,13 @@ namespace MyFirstUnitTests
             Assert.Single(subscriber.Messages);
         }
 
-        [Fact]        
-        public void Subscribing_TwoMessageAdded_MessageProcessed(){
+        [Fact]
+        public void Subscribing_TwoMessageAdded_MessageProcessed()
+        {
             var subscriber = new FakeSubscriber();
             subscriber.Messages = new List<Message>();
             var que = new MessageQue();
-            
+
             que.Subscribe(subscriber);
             que.Add(new Message());
             que.Add(new Message());
@@ -45,13 +50,14 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
-        public void Subscribing_TwoMessagesTwoSubscribers_MessageProcessed(){
+        public void Subscribing_TwoMessagesTwoSubscribers_MessageProcessed()
+        {
             var subscriberOne = new FakeSubscriber();
             var subscriberTwo = new FakeSubscriber();
             subscriberOne.Messages = new List<Message>();
             subscriberTwo.Messages = new List<Message>();
             var que = new MessageQue();
-        
+
             que.Subscribe(subscriberOne);
             que.Subscribe(subscriberTwo);
             que.Add(new Message());
@@ -60,7 +66,7 @@ namespace MyFirstUnitTests
             que.Dispose();
 
             Assert.Equal(2, subscriberOne.Messages.Count());
-            Assert.Equal(2, subscriberTwo.Messages.Count());            
+            Assert.Equal(2, subscriberTwo.Messages.Count());
         }
 
     }

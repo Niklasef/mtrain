@@ -11,7 +11,8 @@ namespace MyFirstUnitTests
     public class DominoTests
     {
         [Fact]
-        public void Flipping_SumRemainsSame(){
+        public void Flipping_SumRemainsSame()
+        {
             var tile = new DominoTile(1, 10);
             var tileTwo = new DominoTile(1, 10);
             tileTwo.Flip();

@@ -2,15 +2,18 @@ using System;
 
 namespace Domain
 {
-    public class DominoTile{
-        public ushort FirstValue{get;private set;}
-        public ushort SecondValue{get;private set;}
+    public class DominoTile
+    {
+        public ushort FirstValue { get; private set; }
+        public ushort SecondValue { get; private set; }
         public DominoTile(ushort firstValue, ushort secondValue)
         {
-            if(firstValue > 12){
+            if (firstValue > 12)
+            {
                 throw new ArgumentException($"Value must be 0-12, was '{firstValue}'", nameof(firstValue));
             }
-            if(secondValue > 12){
+            if (secondValue > 12)
+            {
                 throw new ArgumentException($"Value must be 0-12, was '{secondValue}'", nameof(secondValue));
             }
             FirstValue = firstValue;
@@ -24,12 +27,13 @@ namespace Domain
             {
                 return false;
             }
-            if(domineTile.FirstValue == FirstValue && domineTile.SecondValue == SecondValue){
+            if (domineTile.FirstValue == FirstValue && domineTile.SecondValue == SecondValue)
+            {
                 return true;
             }
             return domineTile.FirstValue == SecondValue && domineTile.SecondValue == FirstValue;
         }
-        
+
         public override int GetHashCode()
         {
             unchecked
@@ -42,7 +46,8 @@ namespace Domain
             }
         }
 
-        public override string ToString(){
+        public override string ToString()
+        {
             return $"[{FirstValue}|{SecondValue}]";
         }
 

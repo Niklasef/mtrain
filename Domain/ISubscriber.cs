@@ -1,6 +1,7 @@
 namespace Domain
 {
-    public interface ISubscriber {
+    public interface ISubscriber
+    {
         void Process(Message message);
     }
 }

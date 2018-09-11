@@ -27,13 +27,14 @@ namespace Domain
             Random randomizer = new Random();
             var randomizedTiles = new DominoTile[tiles.Count()];
             tiles.CopyTo(randomizedTiles);
-            var n = randomizedTiles.Count(); 
-            while (n > 1) {  
-                n--;  
-                var k = randomizer.Next(n + 1);  
+            var n = randomizedTiles.Count();
+            while (n > 1)
+            {
+                n--;
+                var k = randomizer.Next(n + 1);
                 var value = randomizedTiles[k];
-                randomizedTiles[k] = randomizedTiles[n];  
-                randomizedTiles[n] = value;  
+                randomizedTiles[k] = randomizedTiles[n];
+                randomizedTiles[n] = value;
             }
             return new OrderedHashSet<DominoTile>(randomizedTiles);
         }

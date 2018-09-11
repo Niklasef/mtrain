@@ -3,16 +3,18 @@ using System.Collections.Generic;
 
 namespace Domain
 {
-    public class Player{
+    public class Player
+    {
 
         public Player()
         {
             dominoTiles = new OrderedHashSet<DominoTile>();
         }
 
-        public Guid Id{get;}
+        public Guid Id { get; }
         protected internal readonly ICollection<DominoTile> dominoTiles;
-        internal void AddTile(DominoTile tile){
+        internal void AddTile(DominoTile tile)
+        {
             dominoTiles.Add(tile);
         }
         internal void RemoveTile(DominoTile tile)

@@ -33,7 +33,7 @@ namespace Domain
                 return items;
             }
         }
-}
+    }
 
     /// <summary>
     /// Purpose: Hash table implementation
@@ -101,10 +101,10 @@ namespace Domain
         internal static ConditionalWeakTable<object, SerializationInfo> SerializationInfoTable => LazyInitializer.EnsureInitialized(ref s_serializationInfoTable);
 
         internal static object GetEqualityComparerForSerialization(object comparer) => comparer;
-}
+    }
 
 
-   /// <summary>
+    /// <summary>
     /// Represents an ordered set of values.
     /// </summary> 
     /// <remarks>
