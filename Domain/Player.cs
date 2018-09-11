@@ -16,5 +16,10 @@ namespace Domain
             dominoTiles.Add(tile);
         }
         internal void RemoveTile(Guid tileId){}
+
+        public override string ToString()
+        {
+            return string.Join(",", dominoTiles);
+        }
     }
 }

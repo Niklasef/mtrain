@@ -43,7 +43,7 @@ namespace Domain
         }
 
         public override string ToString(){
-            return $"First value: {FirstValue}, Second value: {SecondValue}";
+            return $"[{FirstValue}|{SecondValue}]";
         }
 
         internal void Flip()

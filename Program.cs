@@ -1,5 +1,7 @@
 ﻿using System;
 using Xunit;
+using Domain;
+using System.Linq;
 
 namespace Test
 {
@@ -8,10 +10,13 @@ namespace Test
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            var game = new Game(new[] { new Player() });
+            Console.WriteLine(game.Players.First().ToString());
         }
     }
 
-    public class Class1{
+    public class Class1
+    {
         [Fact]
         public void PassingTest()
         {
