@@ -2,6 +2,7 @@ using Xunit;
 using Domain;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace MyFirstUnitTests
 {
