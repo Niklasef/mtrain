@@ -6,33 +6,6 @@ using System.Threading;
 namespace Domain
 {
 
-    public interface ISubscriber {
-        void Process(Message message);
-    }
-
-    public class Message{
-        public Message(){
-            SyncEvent = new ManualResetEvent(false);
-            Id = Guid.NewGuid();
-        }
-        public object Result { get; set; }
-        public ManualResetEvent SyncEvent { get; }
-        public Guid Id{get;}
-
-        public override bool Equals(object obj){
-            if (obj == null || GetType() != obj.GetType()){
-                return false;
-            }
-            
-            return Id.Equals(((Message)obj).Id);
-        }
-        
-
-        public override int GetHashCode(){
-            return Id.GetHashCode();
-        }
-    }
-
     public class Game
     {
         public Game(IEnumerable<Player> players)
