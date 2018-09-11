@@ -15,7 +15,10 @@ namespace Domain
         internal void AddTile(DominoTile tile){
             dominoTiles.Add(tile);
         }
-        internal void RemoveTile(Guid tileId){}
+        internal void RemoveTile(DominoTile tile)
+        {
+            dominoTiles.Remove(tile);
+        }
 
         public override string ToString()
         {
