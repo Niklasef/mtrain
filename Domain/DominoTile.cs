@@ -1,11 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain
 {
     public class DominoTile
     {
+        internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
+        internal DominoTile LinkedTile { get; private set; }
+
         public DominoTile(ushort firstValue, ushort secondValue)
         {
             if (firstValue > 12)
@@ -18,6 +23,7 @@ namespace Domain
             }
             FirstValue = firstValue;
             SecondValue = secondValue;
+            State = new UnlinkedState();
         }
 
         public override bool Equals(object obj)
@@ -39,7 +45,6 @@ namespace Domain
             unchecked
             {
                 int hash = 17;
-                // Suitable nullity checks etc, of course :)
                 hash = hash * 23 + FirstValue.GetHashCode();
                 hash = hash * 23 + SecondValue.GetHashCode();
                 return hash;
@@ -51,11 +56,42 @@ namespace Domain
             return $"[{FirstValue}|{SecondValue}]";
         }
 
-        internal void Flip()
+        public void Flip()
         {
             var tempValue = FirstValue;
             FirstValue = SecondValue;
             SecondValue = tempValue;
+        }
+
+        internal IEnumerable<ushort> GetValues()
+        {
+            return new[] { FirstValue, SecondValue };
+        }
+
+        internal IEnumerable<ushort> GetUnlinkedValue()
+        {
+            return State.GetUnlinkedValue(this);
+        }
+
+        internal void Link(DominoTile linkedTile)
+        {
+            if (linkedTile == null)
+            {
+                throw new ArgumentNullException(nameof(linkedTile));
+            }
+            if (linkedTile.State.GetType() != typeof(LinkedState))
+            {
+                throw new ApplicationException("Can only link to an already linked tile");
+            }
+            var isMatch = GetUnlinkedValue()
+                .Any(x => linkedTile
+                    .GetUnlinkedValue()
+                    .Any(y => x == y));
+            if (!isMatch)
+            {
+                throw new ApplicationException($"Illegal move, no matching values. Can't link: '{this}' with '{linkedTile}'");
+            }
+            LinkedTile = linkedTile;
         }
     }
 }
