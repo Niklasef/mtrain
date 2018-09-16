@@ -6,25 +6,33 @@ namespace Domain
     public class Player
     {
 
-        public Player()
+        public Player(DominoTile engineTile)
         {
-            dominoTiles = new OrderedHashSet<DominoTile>();
+            if (engineTile == null)
+            {
+                throw new ArgumentNullException(nameof(engineTile));
+            }
+
+            DominoTiles = new OrderedHashSet<DominoTile>();
+            Train = new PlayerTrain(engineTile);
         }
 
         public Guid Id { get; }
-        protected internal readonly ICollection<DominoTile> dominoTiles;
+        public ICollection<DominoTile> DominoTiles { get; }
+        public PlayerTrain Train { get; }
+
         internal void AddTile(DominoTile tile)
         {
-            dominoTiles.Add(tile);
+            DominoTiles.Add(tile);
         }
         internal void RemoveTile(DominoTile tile)
         {
-            dominoTiles.Remove(tile);
+            DominoTiles.Remove(tile);
         }
 
         public override string ToString()
         {
-            return string.Join(",", dominoTiles);
+            return string.Join(",", DominoTiles);
         }
     }
 }

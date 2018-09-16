@@ -9,7 +9,7 @@ namespace Domain
         internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
-        internal DominoTile LinkedTile { get; private set; }
+        internal DominoTile LinkedTile { get; set; }
 
         public DominoTile(ushort firstValue, ushort secondValue)
         {
@@ -73,25 +73,9 @@ namespace Domain
             return State.GetUnlinkedValue(this);
         }
 
-        internal void Link(DominoTile linkedTile)
+        internal virtual void Link(DominoTile linkedTile)
         {
-            if (linkedTile == null)
-            {
-                throw new ArgumentNullException(nameof(linkedTile));
-            }
-            if (linkedTile.State.GetType() != typeof(LinkedState))
-            {
-                throw new ApplicationException("Can only link to an already linked tile");
-            }
-            var isMatch = GetUnlinkedValue()
-                .Any(x => linkedTile
-                    .GetUnlinkedValue()
-                    .Any(y => x == y));
-            if (!isMatch)
-            {
-                throw new ApplicationException($"Illegal move, no matching values. Can't link: '{this}' with '{linkedTile}'");
-            }
-            LinkedTile = linkedTile;
+            State.Link(this, linkedTile);
         }
     }
 }

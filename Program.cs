@@ -9,29 +9,35 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            var game = new Game(new[] { new Player() });
-            Console.WriteLine(game.Players.First().ToString());
-        }
-    }
+            //Create game
+            Game.Create(1);
+            Console.WriteLine(Game.Players.First().ToString());
 
-    public class Class1
-    {
-        [Fact]
-        public void PassingTest()
-        {
-            Assert.Equal(4, Add(2, 2));
-        }
+            //Pick a matching tile and place on players train
+            var matchingTile = Game.Players.First().DominoTiles.First(t => t.GetValues().Any(x => x == 12));
+            Game.Players.First().Train.AddTile(matchingTile);
+            Game.Players.First().RemoveTile(matchingTile);
+            Console.WriteLine(Game.Players.First().ToString());
+            Console.WriteLine(Game.Players.First().Train.ToString());
 
-        [Fact]
-        public void FailingTest()
-        {
-            Assert.Equal(5, Add(2, 2));
-        }
-
-        int Add(int x, int y)
-        {
-            return x + y;
+            //Pick another matching tile and place on players train
+            matchingTile = Game
+                .Players
+                .First()
+                .DominoTiles
+                .First(t => t
+                    .GetValues()
+                    .Any(x => Game
+                        .Players
+                        .First()
+                        .Train
+                        .head
+                        .GetUnlinkedValue()
+                        .Any(y => y == x)));
+            Game.Players.First().Train.AddTile(matchingTile);
+            Game.Players.First().RemoveTile(matchingTile);
+            Console.WriteLine(Game.Players.First().ToString());
+            Console.WriteLine(Game.Players.First().Train.ToString());
         }
     }
 }

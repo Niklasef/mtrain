@@ -4,7 +4,7 @@ namespace Domain
 {
     public interface ITrain
     {
-        IEnumerable<DominoTile> DominoTiles { get; }
         void AddTile(DominoTile tile);
+        IEnumerable<DominoTile> GetTiles();
     }
 }
