@@ -26,6 +26,11 @@ namespace Domain
             State = new UnlinkedState();
         }
 
+        internal bool Matches(DominoTile tile)
+        {
+            return GetUnlinkedValues().Any(x => tile.GetUnlinkedValues().Any(y => x == y));
+        }
+
         public override bool Equals(object obj)
         {
             var domineTile = obj as DominoTile;
@@ -68,7 +73,7 @@ namespace Domain
             return new[] { FirstValue, SecondValue };
         }
 
-        internal IEnumerable<ushort> GetUnlinkedValue()
+        internal IEnumerable<ushort> GetUnlinkedValues()
         {
             return State.GetUnlinkedValue(this);
         }

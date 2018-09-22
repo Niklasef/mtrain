@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace MyFirstUnitTests
 {
+
     public class PlayerTrainTests
     {
         [Fact]

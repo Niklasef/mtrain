@@ -30,8 +30,8 @@ namespace MyFirstUnitTests
 
             Assert.Equal(engine, tile.LinkedTile);
             Assert.Equal(typeof(LinkedState), tile.State.GetType());
-            Assert.Equal(1, tile.GetUnlinkedValue().Count());
-            Assert.Equal(11, tile.GetUnlinkedValue().First());
+            Assert.Equal(1, tile.GetUnlinkedValues().Count());
+            Assert.Equal(11, tile.GetUnlinkedValues().First());
         }
 
         [Fact]
@@ -48,8 +48,8 @@ namespace MyFirstUnitTests
             Assert.Equal(tileOne.LinkedTile, engine);
             Assert.Equal(tileTwo.LinkedTile, tileOne);
             Assert.Equal(typeof(LinkedState), tileTwo.State.GetType());
-            Assert.Equal(1, tileTwo.GetUnlinkedValue().Count());
-            Assert.Equal(10, tileTwo.GetUnlinkedValue().First());
+            Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
+            Assert.Equal(10, tileTwo.GetUnlinkedValues().First());
         }
     }
 }
