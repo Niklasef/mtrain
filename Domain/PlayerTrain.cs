@@ -7,7 +7,8 @@ namespace Domain
     public class PlayerTrain : ITrain
     {
         public Guid Id { get; }
-        internal protected DominoTile head;
+        private DominoTile head;
+        private IPlayerTrainState state;
 
         public PlayerTrain(DominoTile engineTile)
         {
@@ -17,12 +18,22 @@ namespace Domain
             }
             Id = Guid.NewGuid();
             head = engineTile ?? throw new ArgumentNullException(nameof(engineTile));
+            state = new ClosedPlayerTrainState();
         }
+
+        internal void Open()
+        {
+            state = new OpenPlayerTrainState();
+        } 
+
+        internal void Close()
+        {
+            state = new ClosedPlayerTrainState();
+        } 
 
         public void AddTile(DominoTile tile)
         {
-            tile.Link(head);
-            head = tile;
+            state.AddTile(tile, this);
         }
 
         public override string ToString()
@@ -35,7 +46,8 @@ namespace Domain
                         t.Flip();
                     }
                     return t;
-                })
+                }
+                )
                 .Reverse());
         }
 
@@ -52,6 +64,28 @@ namespace Domain
                 return list;
             }
             return GetTiles(list, tile.LinkedTile);
+        }
+
+        private class OpenPlayerTrainState : IPlayerTrainState
+        {
+            public void AddTile(DominoTile tile, PlayerTrain playerTrain)
+            {
+                tile.Link(playerTrain.head);
+                playerTrain.head = tile;
+            }
+        }
+
+        private class ClosedPlayerTrainState : IPlayerTrainState
+        {
+            public void AddTile(DominoTile tile, PlayerTrain playerTrain)
+            {
+                throw new ApplicationException("Can't add tile to a closed player train.");
+            }
+        }
+
+        private interface IPlayerTrainState
+        {
+            void AddTile(DominoTile tile, PlayerTrain playerTrain);
         }
     }
 }

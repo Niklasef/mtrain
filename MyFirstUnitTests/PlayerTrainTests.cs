@@ -16,15 +16,16 @@ namespace MyFirstUnitTests
             var tileTwo = new DominoTile(11, 10);
             var tileThree = new DominoTile(10, 9);
 
+            sut.Open();
             sut.AddTile(tileOne);
             sut.AddTile(tileTwo);
             sut.AddTile(tileThree);
 
-            Assert.Equal(tileThree, sut.head);
-            Assert.Equal(tileTwo, sut.head.LinkedTile);
-            Assert.Equal(tileOne, sut.head.LinkedTile.LinkedTile);
-            Assert.Equal(engine, sut.head.LinkedTile.LinkedTile.LinkedTile);
-            Assert.Equal(null, sut.head.LinkedTile.LinkedTile.LinkedTile.LinkedTile);
+            Assert.Equal(tileThree, sut.GetTiles().First());
+            Assert.Equal(tileTwo, sut.GetTiles().First().LinkedTile);
+            Assert.Equal(tileOne, sut.GetTiles().First().LinkedTile.LinkedTile);
+            Assert.Equal(engine, sut.GetTiles().First().LinkedTile.LinkedTile.LinkedTile);
+            Assert.Equal(null, sut.GetTiles().First().LinkedTile.LinkedTile.LinkedTile.LinkedTile);
         }
 
         [Fact]
@@ -35,6 +36,7 @@ namespace MyFirstUnitTests
             var sut = new PlayerTrain(engine);
             var tileOne = new DominoTile(12, 11);
             var tileTwo = new DominoTile(11, 10);
+            sut.Open();
             sut.AddTile(tileOne);
             sut.AddTile(tileTwo);
 
