@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Domain
 {
-    public static class Game
+    public static class MexicanTrainGame
     {
         public static void Create(ushort playerCount)
         {

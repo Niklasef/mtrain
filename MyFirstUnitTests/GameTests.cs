@@ -9,8 +9,8 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()
         {
-            Game.Create(2);
-            var boneyard = Game.Boneyard;
+            MexicanTrainGame.Create(2);
+            var boneyard = MexicanTrainGame.Boneyard;
             Assert.Equal(
                 70,
                 boneyard.Count());
@@ -19,13 +19,13 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_10TilesEach()
         {
-            Game.Create(2);
+            MexicanTrainGame.Create(2);
             Assert.Equal(
                 10,
-                Game.Players.First().DominoTiles.Count());
+                MexicanTrainGame.Players.First().DominoTiles.Count());
             Assert.Equal(
                 10,
-                Game.Players.Last().DominoTiles.Count());
+                MexicanTrainGame.Players.Last().DominoTiles.Count());
         }
     }
 }

@@ -10,34 +10,35 @@ namespace Test
         static void Main(string[] args)
         {
             //Create game
-            Game.Create(1);
-            Console.WriteLine(Game.Players.First().ToString());
+            MexicanTrainGame.Create(1);
+            Console.WriteLine(MexicanTrainGame.Players.First().ToString());
 
             //Pick a matching tile and place on players train
-            var matchingTile = Game.Players.First().DominoTiles.First(t => t.GetValues().Any(x => x == 12));
-            Game.Players.First().Train.AddTile(matchingTile);
-            Game.Players.First().RemoveTile(matchingTile);
-            Console.WriteLine(Game.Players.First().ToString());
-            Console.WriteLine(Game.Players.First().Train.ToString());
+            var matchingTile = MexicanTrainGame.Players.First().DominoTiles.First(t => t.GetValues().Any(x => x == 12));
+            MexicanTrainGame.Players.First().Train.AddTile(matchingTile);
+            MexicanTrainGame.Players.First().RemoveTile(matchingTile);
+            Console.WriteLine(MexicanTrainGame.Players.First().ToString());
+            Console.WriteLine(MexicanTrainGame.Players.First().Train.ToString());
 
             //Pick another matching tile and place on players train
-            matchingTile = Game
+            matchingTile = MexicanTrainGame
                 .Players
                 .First()
                 .DominoTiles
                 .First(t => t
                     .GetValues()
-                    .Any(x => Game
+                    .Any(x => MexicanTrainGame
                         .Players
                         .First()
                         .Train
-                        .head
-                        .GetUnlinkedValue()
+                        .GetTiles()
+                        .First()
+                        .GetUnlinkedValues()
                         .Any(y => y == x)));
-            Game.Players.First().Train.AddTile(matchingTile);
-            Game.Players.First().RemoveTile(matchingTile);
-            Console.WriteLine(Game.Players.First().ToString());
-            Console.WriteLine(Game.Players.First().Train.ToString());
+            MexicanTrainGame.Players.First().Train.AddTile(matchingTile);
+            MexicanTrainGame.Players.First().RemoveTile(matchingTile);
+            Console.WriteLine(MexicanTrainGame.Players.First().ToString());
+            Console.WriteLine(MexicanTrainGame.Players.First().Train.ToString());
         }
     }
 }
