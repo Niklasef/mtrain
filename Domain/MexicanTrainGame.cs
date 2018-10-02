@@ -7,7 +7,7 @@ namespace Domain
 {
     public static class MexicanTrainGame
     {
-        public static void Create(ushort playerCount)
+        public static void Create(HashSet<string> playerNames)
         {
             MexicanTrain = null;
             var tiles = new ShuffledTileSetFactory().Create();
@@ -17,22 +17,19 @@ namespace Domain
             Engine = doubleTile;
             Engine.State = new EngineState();
             var players = new List<Player>();
-            for (var i = 0; i < playerCount; i++)
+            foreach (var playerName in playerNames)
             {
-                players.Add(new Player(Engine));
+                var playerTiles = tiles
+                    .Take(10)
+                    .ToArray();
+                players.Add(new Player(Engine, playerName, new HashSet<DominoTile>(playerTiles)));
+                foreach(var tile in playerTiles)
+                {
+                    tiles.Remove(tile);
+                }
             }
 
             Players = players;
-
-            foreach (var player in Players)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    var tile = tiles.First();
-                    tiles.Remove(tile);
-                    player.AddTile(tile);
-                }
-            }
             Boneyard = tiles;
         }
         public static IEnumerable<Player> Players { get; private set; }
