@@ -10,12 +10,12 @@ namespace Domain
         private DominoTile head;
         private DominoTile tail;
 
-        public MexicanTrain()
+        internal MexicanTrain()
         {
             Id = Guid.NewGuid();
         }
 
-        public void AddTile(DominoTile tile)
+        public void AddTile(DominoTile tile, Guid playerId)
         {
             if (head == null && tail == null)
             {
@@ -82,6 +82,11 @@ namespace Domain
                 .Reverse()
                 .Skip(1)
                 .First();
+        }
+
+        public bool IsMatchingTile(DominoTile tile, Guid playerId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

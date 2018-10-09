@@ -1,6 +1,7 @@
 using Xunit;
 using Domain;
 using System.Linq;
+using System;
 
 namespace MyFirstUnitTests
 {
@@ -12,15 +13,16 @@ namespace MyFirstUnitTests
         {
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();
-            var sut = new PlayerTrain(engine);
+            var playerId = Guid.NewGuid();
+            var sut = new PlayerTrain(engine, playerId);
             var tileOne = new DominoTile(12, 11);
             var tileTwo = new DominoTile(11, 10);
             var tileThree = new DominoTile(10, 9);
 
             sut.Open();
-            sut.AddTile(tileOne);
-            sut.AddTile(tileTwo);
-            sut.AddTile(tileThree);
+            sut.AddTile(tileOne, playerId);
+            sut.AddTile(tileTwo, playerId);
+            sut.AddTile(tileThree, playerId);
 
             Assert.Equal(tileThree, sut.GetTiles().First());
             Assert.Equal(tileTwo, sut.GetTiles().First().LinkedTile);
@@ -34,12 +36,13 @@ namespace MyFirstUnitTests
         {
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();
-            var sut = new PlayerTrain(engine);
+            var playerId = Guid.NewGuid();
+            var sut = new PlayerTrain(engine, playerId);
             var tileOne = new DominoTile(12, 11);
             var tileTwo = new DominoTile(11, 10);
             sut.Open();
-            sut.AddTile(tileOne);
-            sut.AddTile(tileTwo);
+            sut.AddTile(tileOne, playerId);
+            sut.AddTile(tileTwo, playerId);
 
             var result = sut.GetTiles();
 

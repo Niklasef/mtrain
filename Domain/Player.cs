@@ -6,27 +6,36 @@ namespace Domain
     public class Player
     {
         private PlayerState state = new WaitingForTurnState();
+        private readonly Guid gameId;
+        public Guid Id { get; private set; }
 
         internal HashSet<DominoTile> Hand { get; private set; }
 
-        public Player(DominoTile engineTile, string name, HashSet<DominoTile> hand)
+        internal Player(Guid gameId, string name, HashSet<DominoTile> hand)
         {
-            if (engineTile == null)
-            {
-                throw new ArgumentNullException(nameof(engineTile));
-            }
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Must be a real name of a player.", nameof(name));
             }
-
+            Id = Guid.NewGuid();
             this.Hand = hand ?? throw new ArgumentNullException(nameof(hand));
-            Train = new PlayerTrain(engineTile);
+            this.gameId = gameId;
             Name = name;
         }
 
         public string Name { get; }
-        public PlayerTrain Train { get; }
+        private PlayerTrain train;
+        public PlayerTrain Train
+        {
+            get
+            {
+                if (train == null)
+                {
+                    train = new PlayerTrain(Games.Get(gameId).Engine, Id);
+                }
+                return train;
+            }
+        }
 
         public override string ToString()
         {

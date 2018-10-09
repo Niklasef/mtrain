@@ -7,10 +7,11 @@ namespace Domain
     public class PlayerTrain : ITrain
     {
         public Guid Id { get; }
+        private Guid ownerId;
         private DominoTile head;
-        private IPlayerTrainState state;
+        private PlayerTrainStateBase state;
 
-        public PlayerTrain(DominoTile engineTile)
+        public PlayerTrain(DominoTile engineTile, Guid ownerId)
         {
             if (engineTile.State.GetType() != typeof(EngineState))
             {
@@ -18,22 +19,23 @@ namespace Domain
             }
             Id = Guid.NewGuid();
             head = engineTile ?? throw new ArgumentNullException(nameof(engineTile));
+            this.ownerId = ownerId;
             state = new ClosedPlayerTrainState();
         }
 
         internal void Open()
         {
             state = new OpenPlayerTrainState();
-        } 
+        }
 
         internal void Close()
         {
             state = new ClosedPlayerTrainState();
-        } 
+        }
 
-        public void AddTile(DominoTile tile)
+        public void AddTile(DominoTile tile, Guid playerId)
         {
-            state.AddTile(tile, this);
+            state.AddTile(tile, this, playerId);
         }
 
         public override string ToString()
@@ -66,26 +68,35 @@ namespace Domain
             return GetTiles(list, tile.LinkedTile);
         }
 
-        private class OpenPlayerTrainState : IPlayerTrainState
+        public bool IsMatchingTile(DominoTile tile, Guid playerId)
         {
-            public void AddTile(DominoTile tile, PlayerTrain playerTrain)
-            {
-                tile.Link(playerTrain.head);
-                playerTrain.head = tile;
-            }
+            throw new NotImplementedException();
         }
 
-        private class ClosedPlayerTrainState : IPlayerTrainState
+        private class OpenPlayerTrainState : PlayerTrainStateBase
         {
-            public void AddTile(DominoTile tile, PlayerTrain playerTrain)
+        }
+
+        private class ClosedPlayerTrainState : PlayerTrainStateBase
+        {
+            public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
             {
+                if (playerTrain.ownerId == playerId)
+                {
+                    base.AddTile(tile, playerTrain, playerId);
+                    return;
+                }
                 throw new ApplicationException("Can't add tile to a closed player train.");
             }
         }
 
-        private interface IPlayerTrainState
+        private abstract class PlayerTrainStateBase
         {
-            void AddTile(DominoTile tile, PlayerTrain playerTrain);
+            public virtual void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            {
+                tile.Link(playerTrain.head);
+                playerTrain.head = tile;
+            }
         }
     }
 }

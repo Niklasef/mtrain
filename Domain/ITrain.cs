@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 
 namespace Domain
 {
     public interface ITrain
     {
-        void AddTile(DominoTile tile);
-        IEnumerable<DominoTile> GetTiles();
+        Guid Id { get; }
+        void AddTile(DominoTile tile, Guid playerId);
+        bool IsMatchingTile(DominoTile tile, Guid playerId);
     }
 }

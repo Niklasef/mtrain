@@ -11,7 +11,6 @@ namespace Test
         {
             //Create game
             MexicanTrainGame.Create(new[] { "1", "2" }.ToHashSet());
-            Console.WriteLine(MexicanTrainGame.Players.First().ToString());
         }
     }
 }
