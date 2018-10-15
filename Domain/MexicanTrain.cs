@@ -20,35 +20,38 @@ namespace Domain
             if (head == null && tail == null)
             {
                 head = tail = tile;
+                System.Console.WriteLine($"start. head: {head}, tail: {tail}");
                 return;
             }
             if (head.MatchesUnlinkedValue(tile))
             {
                 tile.Link(head);
                 head = tile;
+                System.Console.WriteLine($"head. head: {head}, tail: {tail}");
                 return;
             }
             if (tail.MatchesUnlinkedValue(tile))
             {
                 tail.Link(tile);
                 tail = tile;
+                System.Console.WriteLine($"tail. head: {head}, tail: {tail}");
                 return;
             }
         }
 
         public IEnumerable<DominoTile> GetTiles()
         {
-            return GetTiles(new List<DominoTile>(), head);
+            return GetTiles(head, new List<DominoTile>());
         }
 
-        private IEnumerable<DominoTile> GetTiles(List<DominoTile> list, DominoTile tile)
+        private IEnumerable<DominoTile> GetTiles(DominoTile tile, List<DominoTile> tiles)
         {
-            list.Add(tile);
-            if (tile == tail)
+            tiles.Add(tile);
+            if(tile != tail)
             {
-                return list;
+                return GetTiles(tile.LinkedTiles.First(t => !tiles.Contains(t)), tiles);
             }
-            return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
+            return tiles;
         }
 
         public override string ToString()
