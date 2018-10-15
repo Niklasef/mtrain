@@ -31,10 +31,16 @@ namespace Domain
         {
             var firstFreeIndex = LinkedTiles
                 .Select((t, i) => new { Tile = t, Index = i })
-                .First(t => t.Tile == null)
-                .Index;
+                .FirstOrDefault(t => t.Tile == null)
+                ?.Index ?? 0;
                 //Todo: check if tile already exists...
+                //Move impl to link state so engine can have more than two links
             LinkedTiles[firstFreeIndex] = linkedTile;
+        }
+
+        internal bool IsLinked(DominoTile tile)
+        {
+            return LinkedTiles.Contains(tile);
         }
 
         internal bool MatchesUnlinkedValue(DominoTile tile)
@@ -89,9 +95,9 @@ namespace Domain
             return State.GetUnlinkedValue(this);
         }
 
-        internal virtual void Link(DominoTile linkedTile)
+        internal virtual void Link(DominoTile tile)
         {
-            State.Link(this, linkedTile);
+            State.Link(this, tile);
         }
     }
 }

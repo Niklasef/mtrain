@@ -45,8 +45,8 @@ namespace MyFirstUnitTests
             tileOne.Link(engine);
             tileTwo.Link(tileOne);
 
-            Assert.Equal(tileOne.LinkedTiles[0], engine);
-            Assert.Equal(tileTwo.LinkedTiles[0], tileOne);
+            Assert.True(tileOne.IsLinked(engine));
+            Assert.True(tileTwo.IsLinked(tileOne));
             Assert.Equal(typeof(FullyLinkedState), tileOne.State.GetType());
             Assert.Equal(typeof(HalfLinkedState), tileTwo.State.GetType());
             Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
@@ -58,7 +58,7 @@ namespace MyFirstUnitTests
         {
             var tileOne = new DominoTile(1, 2);
             var tileTwo = new DominoTile(2, 3);
-            var tileThree = new DominoTile(2, 4);
+            var tileThree = new DominoTile(1, 4);
 
             tileOne.Link(tileTwo);
             tileOne.Link(tileThree);

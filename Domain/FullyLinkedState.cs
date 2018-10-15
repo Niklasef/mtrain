@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Domain
 {
-
     internal class FullyLinkedState : ITileState
     {
         public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)

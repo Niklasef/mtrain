@@ -10,9 +10,6 @@ namespace Domain
             return new[] { tile.FirstValue };
         }
 
-        public void Link(DominoTile linkedTile, DominoTile unlinkedTile)
-        {
-            throw new ApplicationException($"Can't link the Engine tile");
-        }
+        public void Link(DominoTile linkedTile, DominoTile unlinkedTile) { }
     }
 }

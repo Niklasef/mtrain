@@ -4,14 +4,21 @@ using System.Linq;
 
 namespace Domain
 {
-    internal class UnlinkedState : ITileState
+    internal class HalfLinkedState : ITileState
     {
-
         public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
         {
-            return tile.GetValues();
+            return new[] {
+                tile
+                .GetValues()
+                .First(x => !tile
+                    .LinkedTiles
+                    .First(t => t != null)
+                    .GetValues()
+                    .Any(y => x == y))};
         }
 
+//TODO almost same impl as unlinked... refactor
         public void Link(DominoTile tile, DominoTile otherTile)
         {
             if (tile == null)
@@ -30,7 +37,7 @@ namespace Domain
             if(!otherTile.IsLinked(tile)){
                 otherTile.Link(tile);
             }
-            tile.State = new HalfLinkedState();
+            tile.State = new FullyLinkedState();
         }
     }
 }
