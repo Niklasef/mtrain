@@ -57,7 +57,7 @@ namespace Domain
             Games.Add(game.Id, game);
             return game;
         }
-
+//TODO, pass id to dominotile instead... so not multiple instances of the same tile "floats around" in system
         internal bool IsLegalMove(Guid playerId, DominoTile tile, Guid trainId)
         {
             return GetTrain(trainId)

@@ -43,7 +43,7 @@ namespace Domain
             return string.Join(", ", GetTiles()
                 .Select(t =>
                 {
-                    if (t.State.GetType() != typeof(EngineState) && t.FirstValue != t.LinkedTile.SecondValue)
+                    if (t.State.GetType() != typeof(EngineState) && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
                     {
                         t.Flip();
                     }
@@ -65,7 +65,7 @@ namespace Domain
             {
                 return list;
             }
-            return GetTiles(list, tile.LinkedTile);
+            return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
         }
 
         public bool IsMatchingTile(DominoTile tile, Guid playerId)

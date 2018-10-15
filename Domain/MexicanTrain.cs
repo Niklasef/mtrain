@@ -22,13 +22,13 @@ namespace Domain
                 head = tail = tile;
                 return;
             }
-            if (head.Matches(tile))
+            if (head.MatchesUnlinkedValue(tile))
             {
                 tile.Link(head);
                 head = tile;
                 return;
             }
-            if (tail.Matches(tile))
+            if (tail.MatchesUnlinkedValue(tile))
             {
                 tail.Link(tile);
                 tail = tile;
@@ -48,7 +48,7 @@ namespace Domain
             {
                 return list;
             }
-            return GetTiles(list, tile.LinkedTile);
+            return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
         }
 
         public override string ToString()
@@ -57,7 +57,7 @@ namespace Domain
                 GetTiles()
                 .Select(t =>
                 {
-                    if (t != tail && t.FirstValue != t.LinkedTile.SecondValue)
+                    if (t != tail && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
                     {
                         t.Flip();
                     }

@@ -9,7 +9,7 @@ namespace Domain
         internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
-        internal DominoTile LinkedTile { get; set; }
+        internal DominoTile[] LinkedTiles { get; set; }
 
         public DominoTile(ushort firstValue, ushort secondValue)
         {
@@ -23,10 +23,21 @@ namespace Domain
             }
             FirstValue = firstValue;
             SecondValue = secondValue;
+            LinkedTiles = new DominoTile[2];
             State = new UnlinkedState();
         }
 
-        internal bool Matches(DominoTile tile)
+        internal void AddLinkedTile(DominoTile linkedTile)
+        {
+            var firstFreeIndex = LinkedTiles
+                .Select((t, i) => new { Tile = t, Index = i })
+                .First(t => t.Tile == null)
+                .Index;
+                //Todo: check if tile already exists...
+            LinkedTiles[firstFreeIndex] = linkedTile;
+        }
+
+        internal bool MatchesUnlinkedValue(DominoTile tile)
         {
             return GetUnlinkedValues().Any(x => tile.GetUnlinkedValues().Any(y => x == y));
         }

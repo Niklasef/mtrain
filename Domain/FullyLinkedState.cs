@@ -4,12 +4,18 @@ using System.Linq;
 
 namespace Domain
 {
-    internal class UnlinkedState : ITileState
+    internal class HalfLinkedState : ITileState
     {
-
         public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
         {
-            return tile.GetValues();
+            return new[] {
+                tile
+                .GetValues()
+                .First(x => !tile
+                    .LinkedTiles
+                    .First(t => t != null)
+                    .GetValues()
+                    .Any(y => x == y))};
         }
 
         public void Link(DominoTile tile, DominoTile otherTile)
@@ -29,7 +35,20 @@ namespace Domain
             }
             tile.AddLinkedTile(otherTile);
             otherTile.AddLinkedTile(tile);
-            tile.State = new HalfLinkedState();
+            tile.State = new FullyLinkedState();
+        }
+    }
+
+    internal class FullyLinkedState : ITileState
+    {
+        public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
+        {
+            return Enumerable.Empty<ushort>();
+        }
+
+        public void Link(DominoTile linkedTile, DominoTile unlinkedTile)
+        {
+            throw new ApplicationException($"Can't link tile to fully linked tile");
         }
     }
 }

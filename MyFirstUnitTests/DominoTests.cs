@@ -28,8 +28,8 @@ namespace MyFirstUnitTests
 
             tile.Link(engine);
 
-            Assert.Equal(engine, tile.LinkedTile);
-            Assert.Equal(typeof(LinkedState), tile.State.GetType());
+            Assert.Equal(engine, tile.LinkedTiles[0]);
+            Assert.Equal(typeof(HalfLinkedState), tile.State.GetType());
             Assert.Equal(1, tile.GetUnlinkedValues().Count());
             Assert.Equal(11, tile.GetUnlinkedValues().First());
         }
@@ -45,11 +45,25 @@ namespace MyFirstUnitTests
             tileOne.Link(engine);
             tileTwo.Link(tileOne);
 
-            Assert.Equal(tileOne.LinkedTile, engine);
-            Assert.Equal(tileTwo.LinkedTile, tileOne);
-            Assert.Equal(typeof(LinkedState), tileTwo.State.GetType());
+            Assert.Equal(tileOne.LinkedTiles[0], engine);
+            Assert.Equal(tileTwo.LinkedTiles[0], tileOne);
+            Assert.Equal(typeof(FullyLinkedState), tileOne.State.GetType());
+            Assert.Equal(typeof(HalfLinkedState), tileTwo.State.GetType());
             Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
             Assert.Equal(10, tileTwo.GetUnlinkedValues().First());
+        }
+
+        [Fact]
+        public void Link_TilesOnEachSide_NoUnlinkedValues()
+        {
+            var tileOne = new DominoTile(1, 2);
+            var tileTwo = new DominoTile(2, 3);
+            var tileThree = new DominoTile(2, 4);
+
+            tileOne.Link(tileTwo);
+            tileOne.Link(tileThree);
+
+            Assert.Equal(0, tileOne.GetUnlinkedValues().Count());
         }
     }
 }
