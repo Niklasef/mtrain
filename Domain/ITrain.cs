@@ -7,5 +7,6 @@ namespace Domain
     {
         Guid Id { get; }
         void AddTile(DominoTile tile, Guid playerId);
+        IEnumerable<DominoTile> GetTiles();
     }
 }

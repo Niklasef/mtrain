@@ -25,8 +25,8 @@ namespace Domain
         }
 
         public string Name { get; }
-        private PlayerTrain train;
-        public PlayerTrain Train
+        private ITrain train;
+        public ITrain Train
         {
             get
             {

@@ -31,6 +31,29 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
+        public void MakeMove_PlayerWithTurnPutsTileOnMexicanTrain_MexicanTrainHasNewTile()
+        {
+            var gameId = Guid.NewGuid();
+            var mexicanTrain = new MexicanTrain();
+            var playedTile = new DominoTile(11, 12);
+            var player = new Player(gameId, "test", (new[] { playedTile }).ToHashSet());
+            player.GiveTurn();
+            var engine = new DominoTile(12, 12);
+            engine.State = new EngineState();
+            var sut = new MexicanTrainGame(
+                gameId,
+                new[] { player },
+                mexicanTrain,
+                engine,
+                Enumerable.Empty<DominoTile>().ToList());
+            Games.Add(sut.Id, sut);
+
+            sut.MakeMove(player.Id, playedTile.Id, mexicanTrain.Id);
+
+            Assert.Equal(playedTile, sut.MexicanTrain.GetTiles().First());
+        }
+
+        [Fact]
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()
         {
             var sut = MexicanTrainGame.Create(new[] { "1", "2" }.ToHashSet());
