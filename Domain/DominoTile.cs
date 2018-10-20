@@ -9,6 +9,7 @@ namespace Domain
         internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
+        public long Id => FirstValue.GetHashCode() + SecondValue.GetHashCode();
         internal DominoTile[] LinkedTiles { get; set; }
 
         public DominoTile(ushort firstValue, ushort secondValue)

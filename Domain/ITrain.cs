@@ -7,6 +7,5 @@ namespace Domain
     {
         Guid Id { get; }
         void AddTile(DominoTile tile, Guid playerId);
-        bool IsMatchingTile(DominoTile tile, Guid playerId);
     }
 }

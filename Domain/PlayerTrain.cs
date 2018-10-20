@@ -68,14 +68,7 @@ namespace Domain
             return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
         }
 
-        public bool IsMatchingTile(DominoTile tile, Guid playerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        private class OpenPlayerTrainState : PlayerTrainStateBase
-        {
-        }
+        private class OpenPlayerTrainState : PlayerTrainStateBase { }
 
         private class ClosedPlayerTrainState : PlayerTrainStateBase
         {

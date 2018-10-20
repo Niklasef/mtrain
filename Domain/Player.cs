@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain
 {
@@ -50,13 +51,9 @@ namespace Domain
         {
             state.GiveTurn(this);
         }
-        internal void MakeMove(DominoTile tile, Guid trainId)
+        internal void MakeMove(long tileId, ITrain train)
         {
-            throw new ApplicationException($"Is in illigal state: {GetType().Name}");
-        }
-        internal virtual bool CanDoMove()
-        {
-            throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            state.MakeMove(this, tileId, train);
         }
 
         private class WaitingForTurnState : PlayerState
@@ -66,25 +63,16 @@ namespace Domain
             {
                 player.state = new HasTurnState();
             }
-            internal override bool CanDoMove() => false;
         }
 
         private class HasTurnState : PlayerState
         {
             internal override bool HasTurn() => true;
             internal override void GiveTurn(Player player) { }
-            internal override void MakeMove(Player player, DominoTile tile, Guid trainId)
+            internal override void MakeMove(Player player, long tileId, ITrain train)
             {
-                if (!player.CanDoMove())
-                {
-                    throw new ApplicationException($"Player '{player.Name}' can´t do a legal move.");
-                }
-                throw new NotImplementedException();
+                train.AddTile(player.Hand.First(t => t.Id == tileId), player.Id);
                 player.state = new WaitingForTurnState();
-            }
-            internal override bool CanDoMove()
-            {
-                throw new NotImplementedException();
             }
         }
 
@@ -98,11 +86,7 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void MakeMove(Player player, DominoTile tile, Guid trainId)
-            {
-                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
-            }
-            internal virtual bool CanDoMove()
+            internal virtual void MakeMove(Player player, long tileId, ITrain train)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }

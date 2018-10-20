@@ -12,6 +12,10 @@ namespace Domain
 
         public static MexicanTrainGame Get(Guid key)
         {
+            if(!innerList.ContainsKey(key))
+            {
+                throw new ApplicationException($"Game with id {key} not added.");
+            }
             return innerList[key];
         }
 
@@ -28,6 +32,26 @@ namespace Domain
 
     public class MexicanTrainGame
     {
+        public Guid Id { get; private set; }
+        public IEnumerable<Player> Players { get; private set; }
+        public ITrain MexicanTrain { get; private set; }
+        public DominoTile Engine { get; private set; }
+        internal ICollection<DominoTile> Boneyard { get; private set; }
+
+        protected internal MexicanTrainGame(
+            Guid id,
+            IEnumerable<Player> players,
+            ITrain mexicanTrain,
+            DominoTile engine,
+            ICollection<DominoTile> boneyard)
+        {
+            Id = id;
+            Players = players ?? throw new ArgumentNullException(nameof(players));
+            MexicanTrain = mexicanTrain ?? throw new ArgumentNullException(nameof(mexicanTrain));
+            Engine = engine ?? throw new ArgumentNullException(nameof(engine));
+            Boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
+        }
+
         public static MexicanTrainGame Create(HashSet<string> playerNames)
         {
             var gameId = Guid.NewGuid();
@@ -47,6 +71,7 @@ namespace Domain
                     tiles.Remove(tile);
                 }
             }
+            players.First().GiveTurn();
 
             var game = new MexicanTrainGame(
                 gameId,
@@ -57,14 +82,16 @@ namespace Domain
             Games.Add(game.Id, game);
             return game;
         }
-//TODO, pass id to dominotile instead... so not multiple instances of the same tile "floats around" in system
-        internal bool IsLegalMove(Guid playerId, DominoTile tile, Guid trainId)
+
+        internal void MakeMove(Guid playerId, long tileId, Guid trainId)
         {
-            return GetTrain(trainId)
-                .IsMatchingTile(tile, playerId);
+            var train = GetTrain(trainId);
+            Players
+                .First(p => p.Id == playerId)
+                .MakeMove(tileId, train);
         }
 
-        private ITrain GetTrain(Guid trainId)
+        internal ITrain GetTrain(Guid trainId)
         {
             return MexicanTrain.Id == trainId
                 ? MexicanTrain
@@ -73,24 +100,5 @@ namespace Domain
                     .Train;
         }
 
-        protected internal MexicanTrainGame(
-            Guid id,
-            IEnumerable<Player> players,
-            ITrain mexicanTrain,
-            DominoTile engine,
-            ICollection<DominoTile> boneyard)
-        {
-            Id = id;
-            Players = players ?? throw new ArgumentNullException(nameof(players));
-            MexicanTrain = mexicanTrain ?? throw new ArgumentNullException(nameof(mexicanTrain));
-            Engine = engine ?? throw new ArgumentNullException(nameof(engine));
-            Boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
-        }
-
-        public Guid Id { get; private set; }
-        public IEnumerable<Player> Players { get; private set; }
-        public ITrain MexicanTrain { get; private set; }
-        public DominoTile Engine { get; private set; }
-        internal ICollection<DominoTile> Boneyard { get; private set; }
     }
 }

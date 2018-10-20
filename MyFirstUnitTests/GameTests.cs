@@ -7,25 +7,28 @@ namespace MyFirstUnitTests
 {
     public class GameTests
     {
-        // [Fact]
-        // public void IsLegalMove_NoMatchingTileOnMexicanTrain_False()
-        // {
-        //     var gameId = Guid.NewGuid();
-        //     var mexicanTrain = new MexicanTrain();
-        //     var player = new Player(gameId, "test", (new[] { new DominoTile(11, 11) }).ToHashSet());
-        //     mexicanTrain.AddTile(new DominoTile(10, 10), player.Id);
-        //     var sut = new MexicanTrainGame(
-        //         Guid.NewGuid(),
-        //         new[] { player },
-        //         mexicanTrain,
-        //         new DominoTile(12, 12),
-        //         Enumerable.Empty<DominoTile>().ToList());
+        [Fact]
+        public void MakeMove_WithTileMatchingPlayersTrain_PlayersTrainHasNewTile()
+        {
+            var gameId = Guid.NewGuid();
+            var mexicanTrain = new MexicanTrain();
+            var playedTile = new DominoTile(11, 12);
+            var player = new Player(gameId, "test", (new[] { playedTile }).ToHashSet());
+            player.GiveTurn();
+            var engine = new DominoTile(12, 12);
+            engine.State = new EngineState();
+            var sut = new MexicanTrainGame(
+                gameId,
+                new[] { player },
+                mexicanTrain,
+                engine,
+                Enumerable.Empty<DominoTile>().ToList());
+            Games.Add(sut.Id, sut);
 
-        //     var result = sut.IsLegalMove(sut.Players.First().Id, new DominoTile(11, 11), sut.MexicanTrain.Id);
+            sut.MakeMove(player.Id, playedTile.Id, player.Train.Id);
 
-        //     Assert.Equal(false, false);
-        //     Games.Remove(sut.Id);
-        // }
+            Assert.Equal(playedTile, sut.Players.First().Train.GetTiles().First());
+        }
 
         [Fact]
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()

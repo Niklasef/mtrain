@@ -86,10 +86,5 @@ namespace Domain
                 .Skip(1)
                 .First();
         }
-
-        public bool IsMatchingTile(DominoTile tile, Guid playerId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

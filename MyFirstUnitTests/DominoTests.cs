@@ -10,13 +10,23 @@ namespace MyFirstUnitTests
     public class DominoTests
     {
         [Fact]
-        public void Flipping_SumRemainsSame()
+        public void Flipping_IsSameTile()
         {
             var tile = new DominoTile(1, 10);
             var tileTwo = new DominoTile(1, 10);
             tileTwo.Flip();
 
             Assert.Equal(tile, tileTwo);
+        }
+
+        [Fact]
+        public void Flipping_IdRemainsSame()
+        {
+            var tile = new DominoTile(1, 10);
+            var tileTwo = new DominoTile(1, 10);
+            tileTwo.Flip();
+
+            Assert.Equal(tile.Id, tileTwo.Id);
         }
 
         [Fact]
