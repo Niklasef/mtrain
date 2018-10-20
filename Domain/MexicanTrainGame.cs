@@ -89,6 +89,16 @@ namespace Domain
             Boneyard.Remove(tile);
             GetPlayer(playerId)
                 .PassMove(tile);
+            PassTurn(playerId);
+        }
+
+        private void PassTurn(Guid playerId)
+        {
+            Players
+                .SkipWhile(p => p.Id != playerId)
+                .Skip(1)
+                .First()
+                .GiveTurn();
         }
 
         private Player GetPlayer(Guid playerId)

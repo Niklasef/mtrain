@@ -54,7 +54,7 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
-        public void PassMove_WithTwoPlayers_PlayerIsGivenNewTileAndTrainIsOpen()
+        public void PassMove_WithTwoPlayers_PlayerIsGivenNewTileAndTrainIsOpenAndTurnIsPassed()
         {
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
@@ -66,7 +66,7 @@ namespace MyFirstUnitTests
             engine.State = new EngineState();
             var sut = new MexicanTrainGame(
                 gameId,
-                new[] { firstPlayer },
+                new[] { firstPlayer, secondPlayer },
                 mexicanTrain,
                 engine,
                 new[] { new DominoTile(5, 6) }.ToList());
@@ -76,6 +76,8 @@ namespace MyFirstUnitTests
 
             Assert.Equal(2, firstPlayer.Hand.Count);
             Assert.Equal(typeof(PlayerTrain.OpenPlayerTrainState), ((PlayerTrain)firstPlayer.Train).state.GetType());
+            Assert.Equal(typeof(Player.WaitingForTurnState), firstPlayer.GetStateType());
+            Assert.Equal(typeof(Player.HasTurnState), secondPlayer.GetStateType());
         }
 
         [Fact]

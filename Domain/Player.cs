@@ -7,6 +7,10 @@ namespace Domain
     public class Player
     {
         private PlayerState state = new WaitingForTurnState();
+        internal Type GetStateType()
+        {
+            return state.GetType();
+        }
         private readonly Guid gameId;
         public Guid Id { get; private set; }
 
@@ -65,7 +69,7 @@ namespace Domain
             state.PassMove(this, tile);
         }
 
-        private class WaitingForTurnState : PlayerState
+        protected internal class WaitingForTurnState : PlayerState
         {
             internal override bool HasTurn() => false;
             internal override void GiveTurn(Player player)
@@ -74,7 +78,7 @@ namespace Domain
             }
         }
 
-        private class HasTurnState : PlayerState
+        protected internal class HasTurnState : PlayerState
         {
             internal override bool HasTurn() => true;
             internal override void GiveTurn(Player player) { }
@@ -91,7 +95,7 @@ namespace Domain
             }
         }
 
-        private abstract class PlayerState
+        protected internal abstract class PlayerState
         {
             internal virtual bool HasTurn()
             {
