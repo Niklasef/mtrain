@@ -10,7 +10,7 @@ namespace Domain
         private readonly Guid gameId;
         public Guid Id { get; private set; }
 
-        internal HashSet<DominoTile> Hand { get; private set; }
+        protected internal HashSet<DominoTile> Hand { get; private set; }
 
         internal Player(Guid gameId, string name, HashSet<DominoTile> hand)
         {
@@ -25,17 +25,22 @@ namespace Domain
         }
 
         public string Name { get; }
-        private ITrain train;
+        private PlayerTrain train;
         public ITrain Train
         {
             get
             {
-                if (train == null)
-                {
-                    train = new PlayerTrain(Games.Get(gameId).Engine, Id);
-                }
-                return train;
+                return InnerGetTrain();
             }
+        }
+
+        private PlayerTrain InnerGetTrain()
+        {
+            if (train == null)
+            {
+                train = new PlayerTrain(Games.Get(gameId).Engine, Id);
+            }
+            return train;
         }
 
         public override string ToString()
@@ -54,6 +59,10 @@ namespace Domain
         internal void MakeMove(long tileId, ITrain train)
         {
             state.MakeMove(this, tileId, train);
+        }
+        internal void PassMove(DominoTile tile)
+        {
+            state.PassMove(this, tile);
         }
 
         private class WaitingForTurnState : PlayerState
@@ -74,6 +83,12 @@ namespace Domain
                 train.AddTile(player.Hand.First(t => t.Id == tileId), player.Id);
                 player.state = new WaitingForTurnState();
             }
+            internal override void PassMove(Player player, DominoTile tile)
+            {
+                player.Hand.Add(tile);
+                player.InnerGetTrain().Open();
+                player.state = new WaitingForTurnState();
+            }
         }
 
         private abstract class PlayerState
@@ -90,6 +105,11 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
+            internal virtual void PassMove(Player player, DominoTile tile)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
         }
+
     }
 }

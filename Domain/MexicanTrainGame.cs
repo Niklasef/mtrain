@@ -83,11 +83,24 @@ namespace Domain
             return game;
         }
 
+        internal void PassMove(Guid playerId)
+        {
+            var tile = Boneyard.First();
+            Boneyard.Remove(tile);
+            GetPlayer(playerId)
+                .PassMove(tile);
+        }
+
+        private Player GetPlayer(Guid playerId)
+        {
+            return Players
+                .First(p => p.Id == playerId);
+        }
+
         internal void MakeMove(Guid playerId, long tileId, Guid trainId)
         {
             var train = GetTrain(trainId);
-            Players
-                .First(p => p.Id == playerId)
+            GetPlayer(playerId)
                 .MakeMove(tileId, train);
         }
 

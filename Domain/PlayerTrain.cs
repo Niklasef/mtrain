@@ -9,7 +9,7 @@ namespace Domain
         public Guid Id { get; }
         private Guid ownerId;
         private DominoTile head;
-        private PlayerTrainStateBase state;
+        protected internal PlayerTrainStateBase state;
 
         public PlayerTrain(DominoTile engineTile, Guid ownerId)
         {
@@ -68,9 +68,9 @@ namespace Domain
             return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
         }
 
-        private class OpenPlayerTrainState : PlayerTrainStateBase { }
+        protected internal class OpenPlayerTrainState : PlayerTrainStateBase { }
 
-        private class ClosedPlayerTrainState : PlayerTrainStateBase
+        protected internal class ClosedPlayerTrainState : PlayerTrainStateBase
         {
             public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
             {
@@ -83,7 +83,7 @@ namespace Domain
             }
         }
 
-        private abstract class PlayerTrainStateBase
+        protected internal abstract class PlayerTrainStateBase
         {
             public virtual void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
             {
