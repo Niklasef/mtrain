@@ -12,7 +12,7 @@ namespace Domain
 
         public static MexicanTrainGame Get(Guid key)
         {
-            if(!innerList.ContainsKey(key))
+            if (!innerList.ContainsKey(key))
             {
                 throw new ApplicationException($"Game with id {key} not added.");
             }
@@ -92,13 +92,13 @@ namespace Domain
             PassTurn(playerId);
         }
 
-        private void PassTurn(Guid playerId)
+        private void PassTurn(Guid currentPlayerId)
         {
-            Players
-                .SkipWhile(p => p.Id != playerId)
+            var nextPlayer = Players
+                .SkipWhile(p => p.Id != currentPlayerId)
                 .Skip(1)
-                .First()
-                .GiveTurn();
+                .FirstOrDefault() ?? Players.First();
+            nextPlayer.GiveTurn();
         }
 
         private Player GetPlayer(Guid playerId)
@@ -112,6 +112,7 @@ namespace Domain
             var train = GetTrain(trainId);
             GetPlayer(playerId)
                 .MakeMove(tileId, train);
+            PassTurn(playerId);
         }
 
         private ITrain GetTrain(Guid trainId)
