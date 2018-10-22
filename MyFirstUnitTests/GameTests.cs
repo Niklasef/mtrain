@@ -20,7 +20,6 @@ namespace MyFirstUnitTests
             Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
         }
 
-
         [Fact]
         public void MakeMove_PlayerWithTurnPutsTileOnMexicanTrain_MexicanTrainHasNewTile()
         {
@@ -30,6 +29,36 @@ namespace MyFirstUnitTests
             sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.MexicanTrain.Id);
 
             Assert.Equal(playedTile, sut.MexicanTrain.GetTiles().First());
+        }
+
+        [Fact]
+        public void MakeMove_PlayerWithTurnPutsTileOnClosedPlayerTrain_Exception()
+        {
+            var playedTile = new DominoTile(11, 12);
+            var sut = CreateGame(playedTile);
+
+            Action makeMove = () => sut.MakeMove(
+                sut.Players.First().Id,
+                playedTile.Id,
+                sut.Players.Skip(1).First().Train.Id);
+
+            Assert.ThrowsAny<Exception>(makeMove);
+        }
+
+        [Fact]
+        public void PassAndMove_PlayerWithTurnPutsTileOnOtherPlayersOpenTrain_TileIsMoved()
+        {
+            var playedTile = new DominoTile(11, 12);
+            var sut = CreateGame(playedTile);
+
+            sut.PassMove(sut.Players.First().Id);
+            sut.PassMove(sut.Players.Skip(1).First().Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                playedTile.Id,
+                sut.Players.Skip(1).First().Train.Id);
+
+            Assert.Equal(playedTile, sut.Players.Skip(1).First().Train.GetTiles().First());
         }
 
         [Fact]
