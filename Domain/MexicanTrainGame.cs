@@ -114,7 +114,7 @@ namespace Domain
                 .MakeMove(tileId, train);
         }
 
-        internal ITrain GetTrain(Guid trainId)
+        private ITrain GetTrain(Guid trainId)
         {
             return MexicanTrain.Id == trainId
                 ? MexicanTrain

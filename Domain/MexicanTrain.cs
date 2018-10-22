@@ -20,21 +20,18 @@ namespace Domain
             if (head == null && tail == null)
             {
                 head = tail = tile;
-                System.Console.WriteLine($"start. head: {head}, tail: {tail}");
                 return;
             }
             if (head.MatchesUnlinkedValue(tile))
             {
                 tile.Link(head);
                 head = tile;
-                System.Console.WriteLine($"head. head: {head}, tail: {tail}");
                 return;
             }
             if (tail.MatchesUnlinkedValue(tile))
             {
                 tail.Link(tile);
                 tail = tile;
-                System.Console.WriteLine($"tail. head: {head}, tail: {tail}");
                 return;
             }
         }

@@ -10,57 +10,20 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_WithTileMatchingPlayersTrain_PlayersTrainHasNewTile()
         {
-            var gameId = Guid.NewGuid();
-            var mexicanTrain = new MexicanTrain();
             var playedTile = new DominoTile(11, 12);
-            var player = new Player(gameId, "test", (new[] { playedTile }).ToHashSet());
-            player.GiveTurn();
-            var engine = new DominoTile(12, 12);
-            engine.State = new EngineState();
-            var sut = new MexicanTrainGame(
-                gameId,
-                new[] { player },
-                mexicanTrain,
-                engine,
-                Enumerable.Empty<DominoTile>().ToList());
-            Games.Add(sut.Id, sut);
+            var sut = CreateGame(playedTile);
 
-            sut.MakeMove(player.Id, playedTile.Id, player.Train.Id);
+            sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.Players.First().Train.Id);
 
             Assert.Equal(playedTile, sut.Players.First().Train.GetTiles().First());
         }
 
-        [Fact]
-        public void MakeMove_PlayerWithTurnPutsTileOnMexicanTrain_MexicanTrainHasNewTile()
+        private static MexicanTrainGame CreateGame(DominoTile playedTile)
         {
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
-            var playedTile = new DominoTile(11, 12);
-            var player = new Player(gameId, "test", (new[] { playedTile }).ToHashSet());
-            player.GiveTurn();
-            var engine = new DominoTile(12, 12);
-            engine.State = new EngineState();
-            var sut = new MexicanTrainGame(
-                gameId,
-                new[] { player },
-                mexicanTrain,
-                engine,
-                Enumerable.Empty<DominoTile>().ToList());
-            Games.Add(sut.Id, sut);
-
-            sut.MakeMove(player.Id, playedTile.Id, mexicanTrain.Id);
-
-            Assert.Equal(playedTile, sut.MexicanTrain.GetTiles().First());
-        }
-
-        [Fact]
-        public void PassMove_WithTwoPlayers_PlayerIsGivenNewTileAndTrainIsOpenAndTurnIsPassed()
-        {
-            var gameId = Guid.NewGuid();
-            var mexicanTrain = new MexicanTrain();
-            var playedTile = new DominoTile(11, 12);
             var firstPlayer = new Player(gameId, "playerOne", (new[] { playedTile }).ToHashSet());
-            var secondPlayer = new Player(gameId, "playerTwo", (new[] { playedTile }).ToHashSet());
+            var secondPlayer = new Player(gameId, "playerTwo", (new[] { new DominoTile(5, 7) }).ToHashSet());
             firstPlayer.GiveTurn();
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();
@@ -69,15 +32,34 @@ namespace MyFirstUnitTests
                 new[] { firstPlayer, secondPlayer },
                 mexicanTrain,
                 engine,
-                new[] { new DominoTile(5, 6) }.ToList());
+                new[] { new DominoTile(9, 8) }.ToList());
             Games.Add(sut.Id, sut);
+            return sut;
+        }
 
-            sut.PassMove(firstPlayer.Id);
+        [Fact]
+        public void MakeMove_PlayerWithTurnPutsTileOnMexicanTrain_MexicanTrainHasNewTile()
+        {
+            var playedTile = new DominoTile(11, 12);
+            var sut = CreateGame(playedTile);
 
-            Assert.Equal(2, firstPlayer.Hand.Count);
-            Assert.Equal(typeof(PlayerTrain.OpenPlayerTrainState), ((PlayerTrain)firstPlayer.Train).state.GetType());
-            Assert.Equal(typeof(Player.WaitingForTurnState), firstPlayer.GetStateType());
-            Assert.Equal(typeof(Player.HasTurnState), secondPlayer.GetStateType());
+            sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.MexicanTrain.Id);
+
+            Assert.Equal(playedTile, sut.MexicanTrain.GetTiles().First());
+        }
+
+        [Fact]
+        public void PassMove_WithTwoPlayers_PlayerIsGivenNewTileAndTrainIsOpenAndTurnIsPassed()
+        {
+            var playedTile = new DominoTile(11, 12);
+            var sut = CreateGame(playedTile);
+
+            sut.PassMove(sut.Players.First().Id);
+
+            Assert.Equal(2, sut.Players.First().Hand.Count);
+            Assert.Equal(typeof(PlayerTrain.OpenPlayerTrainState), ((PlayerTrain)sut.Players.First().Train).state.GetType());
+            Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
+            Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
         }
 
         [Fact]
