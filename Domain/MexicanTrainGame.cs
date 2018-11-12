@@ -37,6 +37,7 @@ namespace Domain
         public ITrain MexicanTrain { get; private set; }
         public DominoTile Engine { get; private set; }
         internal ICollection<DominoTile> Boneyard { get; private set; }
+        private GameState state = new NoDoublesGameState();
 
         protected internal MexicanTrainGame(
             Guid id,
@@ -83,46 +84,105 @@ namespace Domain
             return game;
         }
 
-        internal void PassMove(Guid playerId)
-        {
-            var tile = Boneyard.First();
-            Boneyard.Remove(tile);
-            GetPlayer(playerId)
-                .PassMove(tile);
-            PassTurn(playerId);
-        }
-
-        private void PassTurn(Guid currentPlayerId)
-        {
-            var nextPlayer = Players
-                .SkipWhile(p => p.Id != currentPlayerId)
-                .Skip(1)
-                .FirstOrDefault() ?? Players.First();
-            nextPlayer.GiveTurn();
-        }
-
-        private Player GetPlayer(Guid playerId)
-        {
-            return Players
-                .First(p => p.Id == playerId);
-        }
-
         internal void MakeMove(Guid playerId, long tileId, Guid trainId)
         {
-            var train = GetTrain(trainId);
-            GetPlayer(playerId)
-                .MakeMove(tileId, train);
-            PassTurn(playerId);
+            state.MakeMove(this, playerId, tileId, trainId);
         }
 
-        private ITrain GetTrain(Guid trainId)
+        internal void PassMove(Guid playerId)
         {
-            return MexicanTrain.Id == trainId
-                ? MexicanTrain
-                : Players
-                    .First(p => p.Train.Id == trainId)
-                    .Train;
+            state.PassMove(this, playerId);
         }
 
+        private abstract class GameState
+        {
+            internal abstract void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId);
+            internal abstract void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId);
+
+            protected void PassTurn(MexicanTrainGame game, Guid currentPlayerId)
+            {
+                var nextPlayer = game
+                    .Players
+                    .SkipWhile(p => p.Id != currentPlayerId)
+                    .Skip(1)
+                    .FirstOrDefault() ?? game.Players.First();
+                game
+                    .Players
+                    .First(p => p.Id == currentPlayerId)
+                    .EndTurn();
+                nextPlayer
+                    .GiveTurn();
+            }
+
+            protected Player GetPlayer(MexicanTrainGame game, Guid playerId)
+            {
+                return game.Players
+                    .First(p => p.Id == playerId);
+            }
+
+            protected ITrain GetTrain(MexicanTrainGame game, Guid trainId)
+            {
+                return game.MexicanTrain.Id == trainId
+                    ? game.MexicanTrain
+                    : game
+                        .Players
+                        .First(p => p.Train.Id == trainId)
+                        .Train;
+            }
+        }
+
+        private class OpenDoubleGameState : GameState
+        {
+            internal override void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId)
+            {
+                throw new NotImplementedException();
+            }
+
+            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            {
+                throw new NotImplementedException();
+            }
+        }
+        private class NoDoublesGameState : GameState
+        {
+            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            {
+                var train = GetTrain(game, trainId);
+                GetPlayer(game, playerId)
+                    .MakeMove(tileId, train);
+                if (GetPlayedTile(game, tileId).IsDouble())
+                {
+                    game.state = new OpenDoubleGameState();
+                    return;
+                }
+                PassTurn(game, playerId);
+            }
+
+            private DominoTile GetPlayedTile(MexicanTrainGame game, long tileId)
+            {
+                return game
+                    .Players
+                    .SelectMany(p => p
+                        .Train
+                        .GetTiles())
+                    .Union(game
+                        .MexicanTrain
+                        .GetTiles())
+                    .First(t => t.Id == tileId);
+            }
+
+            override internal void PassMove(MexicanTrainGame game, Guid playerId)
+            {
+                var tile = game
+                    .Boneyard
+                    .First();
+                game.Boneyard
+                    .Remove(tile);
+                GetPlayer(game, playerId)
+                    .PassMove(tile);
+                PassTurn(game, playerId);
+            }
+        }
     }
+
 }

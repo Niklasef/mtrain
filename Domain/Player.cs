@@ -60,6 +60,10 @@ namespace Domain
         {
             state.GiveTurn(this);
         }
+        internal void EndTurn()
+        {
+            state.EndTurn(this);
+        }
         internal void MakeMove(long tileId, ITrain train)
         {
             state.MakeMove(this, tileId, train);
@@ -72,26 +76,23 @@ namespace Domain
         protected internal class WaitingForTurnState : PlayerState
         {
             internal override bool HasTurn() => false;
-            internal override void GiveTurn(Player player)
-            {
+            internal override void GiveTurn(Player player) =>
                 player.state = new HasTurnState();
-            }
+            internal override void EndTurn(Player player) { }
         }
 
         protected internal class HasTurnState : PlayerState
         {
             internal override bool HasTurn() => true;
-            internal override void GiveTurn(Player player) { }
-            internal override void MakeMove(Player player, long tileId, ITrain train)
-            {
-                train.AddTile(player.Hand.First(t => t.Id == tileId), player.Id);
+            internal override void EndTurn(Player player) =>
                 player.state = new WaitingForTurnState();
-            }
+            internal override void GiveTurn(Player player) { }
+            internal override void MakeMove(Player player, long tileId, ITrain train) =>
+                train.AddTile(player.Hand.First(t => t.Id == tileId), player.Id);
             internal override void PassMove(Player player, DominoTile tile)
             {
                 player.Hand.Add(tile);
                 player.InnerGetTrain().Open();
-                player.state = new WaitingForTurnState();
             }
         }
 
@@ -102,6 +103,10 @@ namespace Domain
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
             internal virtual void GiveTurn(Player player)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
+            internal virtual void EndTurn(Player player)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }

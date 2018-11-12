@@ -21,6 +21,21 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
+        public void MakeMove_WithDoubleOnMexTrain_TurnIsNotPassed()
+        {
+            var playedTile = new DominoTile(11, 11);
+            var sut = CreateGame(playedTile);
+
+            sut.MakeMove(
+                sut.Players.First().Id, 
+                playedTile.Id, 
+                sut.MexicanTrain.Id);
+
+            Assert.Equal(typeof(Player.HasTurnState), sut.Players.First().GetStateType());
+            Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.Skip(1).First().GetStateType());
+        }
+
+        [Fact]
         public void MakeMove_PlayerWithTurnPutsTileOnMexicanTrain_MexicanTrainHasNewTile()
         {
             var playedTile = new DominoTile(11, 12);

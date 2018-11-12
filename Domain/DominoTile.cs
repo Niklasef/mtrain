@@ -100,5 +100,10 @@ namespace Domain
         {
             State.Link(this, tile);
         }
+
+        internal bool IsDouble()
+        {
+            return FirstValue == SecondValue;
+        }
     }
 }

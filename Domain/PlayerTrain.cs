@@ -28,11 +28,6 @@ namespace Domain
             state = new OpenPlayerTrainState();
         }
 
-        internal void Close()
-        {
-            state = new ClosedPlayerTrainState();
-        }
-
         public void AddTile(DominoTile tile, Guid playerId)
         {
             state.AddTile(tile, this, playerId);
@@ -77,6 +72,10 @@ namespace Domain
                 if (playerTrain.ownerId == playerId)
                 {
                     base.AddTile(tile, playerTrain, playerId);
+                    if(tile.IsDouble())
+                    {
+                        playerTrain.state = new OpenPlayerTrainState();
+                    }
                     return;
                 }
                 throw new ApplicationException("Can't add tile to a closed player train.");

@@ -1,0 +1,3 @@
+- winner game state
+- playing doubles
+- cmd play mode
