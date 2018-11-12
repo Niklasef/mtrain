@@ -2,6 +2,7 @@ using Xunit;
 using Domain;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace MyFirstUnitTests
 {
@@ -47,6 +48,25 @@ namespace MyFirstUnitTests
 
             Assert.Equal(typeof(Player.HasTurnState), sut.Players.First().GetStateType());
             Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.Skip(1).First().GetStateType());
+        }
+
+        [Fact]
+        public void MakeMove_WithDoubleOnMexTrainAndSecondFreeMoveIsMade_TurnIsPassed()
+        {
+            var playedTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
+            var sut = CreateGame(playedTiles, new[] { new DominoTile(2, 1) });
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                playedTiles.First().Id,
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                playedTiles.Last().Id,
+                sut.Players.First().Train.Id);
+
+            Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
+            Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
         }
 
         [Fact]
@@ -142,10 +162,14 @@ namespace MyFirstUnitTests
         }
         private static MexicanTrainGame CreateGame(DominoTile firstPlayedTile, DominoTile secondPlayedTile)
         {
+            return CreateGame(new[] { firstPlayedTile }, new[] { secondPlayedTile });
+        }
+        private static MexicanTrainGame CreateGame(IEnumerable<DominoTile> firstPlayedTiles, IEnumerable<DominoTile> secondPlayedTiles)
+        {
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
-            var firstPlayer = new Player(gameId, "playerOne", (new[] { firstPlayedTile }).ToHashSet());
-            var secondPlayer = new Player(gameId, "playerTwo", (new[] { secondPlayedTile }).ToHashSet());
+            var firstPlayer = new Player(gameId, "playerOne", firstPlayedTiles.ToHashSet());
+            var secondPlayer = new Player(gameId, "playerTwo", secondPlayedTiles.ToHashSet());
             firstPlayer.GiveTurn();
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();

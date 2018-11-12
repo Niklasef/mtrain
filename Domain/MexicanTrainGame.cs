@@ -129,36 +129,8 @@ namespace Domain
                         .First(p => p.Train.Id == trainId)
                         .Train;
             }
-        }
 
-        private class OpenDoubleGameState : GameState
-        {
-            internal override void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId)
-            {
-                throw new NotImplementedException();
-            }
-
-            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
-            {
-                throw new NotImplementedException();
-            }
-        }
-        private class NoDoublesGameState : GameState
-        {
-            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
-            {
-                var train = GetTrain(game, trainId);
-                GetPlayer(game, playerId)
-                    .MakeMove(tileId, train);
-                if (GetPlayedTile(game, tileId).IsDouble())
-                {
-                    game.state = new OpenDoubleGameState();
-                    return;
-                }
-                PassTurn(game, playerId);
-            }
-
-            private DominoTile GetPlayedTile(MexicanTrainGame game, long tileId)
+            protected DominoTile GetPlayedTile(MexicanTrainGame game, long tileId)
             {
                 return game
                     .Players
@@ -169,6 +141,62 @@ namespace Domain
                         .MexicanTrain
                         .GetTiles())
                     .First(t => t.Id == tileId);
+            }
+        }
+
+        private class OpenDoubleGameState : GameState
+        {
+            private readonly List<Tuple<Guid, Guid>> openTrains;
+
+            public OpenDoubleGameState(Tuple<Guid, Guid> trainAndPlayerId)
+            {
+                openTrains = new[] { trainAndPlayerId }.ToList();
+            }
+
+            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            {
+                if (openTrains.First().Item2 != playerId && openTrains.First().Item1 != trainId)
+                {
+                    throw new ApplicationException("Illegal move, must play on first open double.");
+                }
+                var train = GetTrain(game, trainId);
+                GetPlayer(game, playerId)
+                    .MakeMove(tileId, train);
+                var playedTile = GetPlayedTile(game, tileId);
+                if (playedTile.IsDouble())
+                {
+                    openTrains.Add(new Tuple<Guid, Guid>(trainId, playerId));
+                }
+                else
+                {
+                    openTrains.RemoveAt(0);
+                }
+                if(!openTrains.Any())
+                {
+                    game.state = new NoDoublesGameState();
+                }
+                PassTurn(game, playerId);
+            }
+
+            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class NoDoublesGameState : GameState
+        {
+            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            {
+                var train = GetTrain(game, trainId);
+                GetPlayer(game, playerId)
+                    .MakeMove(tileId, train);
+                if (GetPlayedTile(game, tileId).IsDouble())
+                {
+                    game.state = new OpenDoubleGameState(new Tuple<Guid, Guid>(trainId, playerId));
+                    return;
+                }
+                PassTurn(game, playerId);
             }
 
             override internal void PassMove(MexicanTrainGame game, Guid playerId)
