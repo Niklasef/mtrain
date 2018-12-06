@@ -17,6 +17,11 @@ namespace Domain
 
         public void AddTile(DominoTile tile, Guid playerId)
         {
+            ForceAddTile(tile);
+        }
+
+        public void ForceAddTile(DominoTile tile)
+        {
             if (head == null && tail == null)
             {
                 head = tail = tile;

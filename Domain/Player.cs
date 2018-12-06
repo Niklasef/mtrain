@@ -118,10 +118,8 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void ForceMove(Player player, DominoTile tile, ITrain train)
-            {
-                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
-            }
+            internal void ForceMove(Player player, DominoTile tile, ITrain train) =>
+                train.ForceAddTile(tile);
             internal virtual void PassMove(Player player, DominoTile tile)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");

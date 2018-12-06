@@ -35,6 +35,11 @@ namespace Domain
             state.AddTile(tile, this, playerId);
         }
 
+        public void ForceAddTile(DominoTile tile)
+        {
+            state.ForceAddTile(tile, this);
+        }
+
         public override string ToString()
         {
             return string.Join(", ", GetTiles()
@@ -93,6 +98,12 @@ namespace Domain
         protected internal abstract class PlayerTrainStateBase
         {
             public virtual void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            {
+                tile.Link(playerTrain.head);
+                playerTrain.head = tile;
+            }
+
+            internal void ForceAddTile(DominoTile tile, PlayerTrain playerTrain)
             {
                 tile.Link(playerTrain.head);
                 playerTrain.head = tile;
