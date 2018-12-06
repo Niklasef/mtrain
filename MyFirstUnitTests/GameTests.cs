@@ -14,7 +14,7 @@ namespace MyFirstUnitTests
             var playedTile = new DominoTile(11, 12);
             var sut = CreateGame(playedTile);
 
-            sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.Players.First().Train.Id);
+            sut.MakeMove(sut.Players.First().Id, playedTile, sut.Players.First().Train.Id);
 
             Assert.Equal(playedTile, sut.Players.First().Train.GetTiles().First());
             Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
@@ -28,8 +28,8 @@ namespace MyFirstUnitTests
             var secondPlayedTile = new DominoTile(10, 12);
             var sut = CreateGame(firstPlayedTile, secondPlayedTile);
 
-            sut.MakeMove(sut.Players.First().Id, firstPlayedTile.Id, sut.Players.First().Train.Id);
-            sut.MakeMove(sut.Players.Last().Id, secondPlayedTile.Id, sut.Players.Last().Train.Id);
+            sut.MakeMove(sut.Players.First().Id, firstPlayedTile, sut.Players.First().Train.Id);
+            sut.MakeMove(sut.Players.Last().Id, secondPlayedTile, sut.Players.Last().Train.Id);
 
             Assert.Equal(typeof(Player.HasTurnState), sut.Players.First().GetStateType());
             Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.Last().GetStateType());
@@ -43,7 +43,7 @@ namespace MyFirstUnitTests
 
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTile.Id,
+                playedTile,
                 sut.MexicanTrain.Id);
 
             Assert.Equal(typeof(Player.HasTurnState), sut.Players.First().GetStateType());
@@ -58,12 +58,31 @@ namespace MyFirstUnitTests
 
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTiles.First().Id,
+                playedTiles.First(),
                 sut.MexicanTrain.Id);
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTiles.Last().Id,
+                playedTiles.Last(),
                 sut.Players.First().Train.Id);
+
+            Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
+            Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
+        }
+
+        [Fact]
+        public void MakeMove_WithDoubleAndSecondOnOtherPlayersTrain_TurnIsPassed()
+        {
+            var playedTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
+            var sut = CreateGame(playedTiles, new[] { new DominoTile(2, 1) });
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                playedTiles.First(),
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                playedTiles.Last(),
+                sut.Players.Last().Train.Id);
 
             Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
             Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
@@ -75,7 +94,7 @@ namespace MyFirstUnitTests
             var playedTile = new DominoTile(11, 12);
             var sut = CreateGame(playedTile);
 
-            sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.MexicanTrain.Id);
+            sut.MakeMove(sut.Players.First().Id, playedTile, sut.MexicanTrain.Id);
 
             Assert.Equal(playedTile, sut.MexicanTrain.GetTiles().First());
         }
@@ -88,7 +107,7 @@ namespace MyFirstUnitTests
 
             Action makeMove = () => sut.MakeMove(
                 sut.Players.First().Id,
-                playedTile.Id,
+                playedTile,
                 sut.Players.Skip(1).First().Train.Id);
 
             Assert.ThrowsAny<Exception>(makeMove);
@@ -104,7 +123,7 @@ namespace MyFirstUnitTests
             sut.PassMove(sut.Players.Skip(1).First().Id);
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTile.Id,
+                playedTile,
                 sut.Players.Skip(1).First().Train.Id);
 
             Assert.Equal(playedTile, sut.Players.Skip(1).First().Train.GetTiles().First());

@@ -7,12 +7,14 @@ namespace Domain
     public class PlayerTrain : ITrain
     {
         public Guid Id { get; }
-        private Guid ownerId;
+        private readonly Guid ownerId;
+        private readonly Guid gameId;
         private DominoTile head;
         protected internal PlayerTrainStateBase state;
 
-        public PlayerTrain(DominoTile engineTile, Guid ownerId)
+        public PlayerTrain(Guid gameId, Guid ownerId)
         {
+            var engineTile = Games.Get(gameId).Engine;
             if (engineTile.State.GetType() != typeof(EngineState))
             {
                 throw new ArgumentException($"A player train has to start with the Engine tile. Given tile had state: '{engineTile.State}'", nameof(engineTile));
@@ -20,7 +22,7 @@ namespace Domain
             Id = Guid.NewGuid();
             head = engineTile ?? throw new ArgumentNullException(nameof(engineTile));
             this.ownerId = ownerId;
-            state = new ClosedPlayerTrainState();
+            state = new ClosedPlayerTrainState(gameId);
         }
 
         internal void Open()
@@ -67,18 +69,24 @@ namespace Domain
 
         protected internal class ClosedPlayerTrainState : PlayerTrainStateBase
         {
+            private readonly Guid gameId;
+
+            public ClosedPlayerTrainState(Guid gameId)
+            {
+                this.gameId = gameId;
+            }
+
             public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
             {
-                if (playerTrain.ownerId == playerId)
+                if (playerId != playerTrain.ownerId)
                 {
-                    base.AddTile(tile, playerTrain, playerId);
-                    if(tile.IsDouble())
-                    {
-                        playerTrain.state = new OpenPlayerTrainState();
-                    }
-                    return;
+                    throw new ApplicationException("Can't add tile to a closed player train.");
                 }
-                throw new ApplicationException("Can't add tile to a closed player train.");
+                base.AddTile(tile, playerTrain, playerId);
+                if (tile.IsDouble())
+                {
+                    playerTrain.state = new OpenPlayerTrainState();
+                }
             }
         }
 

@@ -84,9 +84,9 @@ namespace Domain
             return game;
         }
 
-        internal void MakeMove(Guid playerId, long tileId, Guid trainId)
+        internal void MakeMove(Guid playerId, DominoTile tile, Guid trainId)
         {
-            state.MakeMove(this, playerId, tileId, trainId);
+            state.MakeMove(this, playerId, tile, trainId);
         }
 
         internal void PassMove(Guid playerId)
@@ -96,7 +96,7 @@ namespace Domain
 
         private abstract class GameState
         {
-            internal abstract void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId);
+            internal abstract void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, DominoTile tile, Guid trainId);
             internal abstract void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId);
 
             protected void PassTurn(MexicanTrainGame game, Guid currentPlayerId)
@@ -106,8 +106,7 @@ namespace Domain
                     .SkipWhile(p => p.Id != currentPlayerId)
                     .Skip(1)
                     .FirstOrDefault() ?? game.Players.First();
-                game
-                    .Players
+                game.Players
                     .First(p => p.Id == currentPlayerId)
                     .EndTurn();
                 nextPlayer
@@ -144,16 +143,52 @@ namespace Domain
             }
         }
 
-        private class OpenDoubleGameState : GameState
+        private class OpeningDoubleGameState : GameState
         {
             private readonly List<Tuple<Guid, Guid>> openTrains;
 
-            public OpenDoubleGameState(Tuple<Guid, Guid> trainAndPlayerId)
+            public OpeningDoubleGameState(Tuple<Guid, Guid> trainAndPlayerId)
             {
                 openTrains = new[] { trainAndPlayerId }.ToList();
             }
 
-            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            internal override void MakeMove(
+                MexicanTrainGame game, 
+                Guid playerId, 
+                DominoTile tile, 
+                Guid trainId)
+            {
+                var train = GetTrain(game, trainId);
+                GetPlayer(game, playerId)
+                    .ForceMove(tile, train);//TODO: Possible to move this to shared security assembly?
+                if (tile.IsDouble())
+                {
+                    openTrains.Add(new Tuple<Guid, Guid>(trainId, playerId));
+                    return;
+                }
+                game.state = openTrains.Any()
+                    ? game.state = new OpenedDoubleGameState(openTrains)
+                    : new NoDoublesGameState();
+
+                PassTurn(game, playerId);
+            }
+
+            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class OpenedDoubleGameState : GameState
+        {
+            private readonly List<Tuple<Guid, Guid>> openTrains;
+
+            public OpenedDoubleGameState(List<Tuple<Guid, Guid>> openTrains)
+            {
+                this.openTrains = openTrains;
+            }
+
+            internal override void MakeMove(MexicanTrainGame game, Guid playerId, DominoTile tile, Guid trainId)
             {
                 if (openTrains.First().Item2 != playerId && openTrains.First().Item1 != trainId)
                 {
@@ -161,9 +196,8 @@ namespace Domain
                 }
                 var train = GetTrain(game, trainId);
                 GetPlayer(game, playerId)
-                    .MakeMove(tileId, train);
-                var playedTile = GetPlayedTile(game, tileId);
-                if (playedTile.IsDouble())
+                    .MakeMove(tile, train);
+                if (tile.IsDouble())
                 {
                     openTrains.Add(new Tuple<Guid, Guid>(trainId, playerId));
                 }
@@ -186,14 +220,14 @@ namespace Domain
 
         private class NoDoublesGameState : GameState
         {
-            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            internal override void MakeMove(MexicanTrainGame game, Guid playerId, DominoTile tile, Guid trainId)
             {
                 var train = GetTrain(game, trainId);
                 GetPlayer(game, playerId)
-                    .MakeMove(tileId, train);
-                if (GetPlayedTile(game, tileId).IsDouble())
+                    .MakeMove(tile, train);
+                if (tile.IsDouble())
                 {
-                    game.state = new OpenDoubleGameState(new Tuple<Guid, Guid>(trainId, playerId));
+                    game.state = new OpeningDoubleGameState(new Tuple<Guid, Guid>(trainId, playerId));
                     return;
                 }
                 PassTurn(game, playerId);

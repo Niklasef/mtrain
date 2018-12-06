@@ -13,8 +13,16 @@ namespace MyFirstUnitTests
         {
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();
+            var game = new MexicanTrainGame(
+                Guid.NewGuid(), 
+                Enumerable.Empty<Player>(),
+                new MexicanTrain(),
+                engine,
+                Enumerable.Empty<DominoTile>().ToArray());
+            Games.Add(game.Id, game);
+
             var playerId = Guid.NewGuid();
-            var sut = new PlayerTrain(engine, playerId);
+            var sut = new PlayerTrain(game.Id, playerId);
             var tileOne = new DominoTile(12, 11);
             var tileTwo = new DominoTile(11, 10);
             var tileThree = new DominoTile(10, 9);
@@ -36,8 +44,16 @@ namespace MyFirstUnitTests
         {
             var engine = new DominoTile(12, 12);
             engine.State = new EngineState();
+            var game = new MexicanTrainGame(
+                Guid.NewGuid(), 
+                Enumerable.Empty<Player>(),
+                new MexicanTrain(),
+                engine,
+                Enumerable.Empty<DominoTile>().ToArray());
+            Games.Add(game.Id, game);
+
             var playerId = Guid.NewGuid();
-            var sut = new PlayerTrain(engine, playerId);
+            var sut = new PlayerTrain(game.Id, playerId);
             var tileOne = new DominoTile(12, 11);
             var tileTwo = new DominoTile(11, 10);
             sut.Open();

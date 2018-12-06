@@ -42,7 +42,7 @@ namespace Domain
         {
             if (train == null)
             {
-                train = new PlayerTrain(Games.Get(gameId).Engine, Id);
+                train = new PlayerTrain(gameId, Id);
             }
             return train;
         }
@@ -64,9 +64,13 @@ namespace Domain
         {
             state.EndTurn(this);
         }
-        internal void MakeMove(long tileId, ITrain train)
+        internal void MakeMove(DominoTile tile, ITrain train)
         {
-            state.MakeMove(this, tileId, train);
+            state.MakeMove(this, tile, train);
+        }
+        internal void ForceMove(DominoTile tile, ITrain train)
+        {
+            state.ForceMove(this, tile, train);
         }
         internal void PassMove(DominoTile tile)
         {
@@ -87,8 +91,8 @@ namespace Domain
             internal override void EndTurn(Player player) =>
                 player.state = new WaitingForTurnState();
             internal override void GiveTurn(Player player) { }
-            internal override void MakeMove(Player player, long tileId, ITrain train) =>
-                train.AddTile(player.Hand.First(t => t.Id == tileId), player.Id);
+            internal override void MakeMove(Player player, DominoTile tile, ITrain train) =>
+                train.AddTile(tile, player.Id);
             internal override void PassMove(Player player, DominoTile tile)
             {
                 player.Hand.Add(tile);
@@ -110,7 +114,11 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void MakeMove(Player player, long tileId, ITrain train)
+            internal virtual void MakeMove(Player player, DominoTile tile, ITrain train)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
+            internal virtual void ForceMove(Player player, DominoTile tile, ITrain train)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
