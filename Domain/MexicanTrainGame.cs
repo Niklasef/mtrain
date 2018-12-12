@@ -38,6 +38,10 @@ namespace Domain
         public DominoTile Engine { get; private set; }
         internal ICollection<DominoTile> Boneyard { get; private set; }
         private GameState state = new NoDoublesGameState();
+        public Type GetStateType()
+        {
+            return state.GetType();
+        }
 
         protected internal MexicanTrainGame(
             Guid id,

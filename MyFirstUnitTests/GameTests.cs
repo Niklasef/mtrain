@@ -70,22 +70,49 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
-        public void MakeMove_WithDoubleAndSecondOnOtherPlayersTrain_TurnIsPassed()
+        public void MakeMove_DoublePlayedAndOherPlayerDoesntPlayOnDouble_IllegalTurn()
         {
-            var playedTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
-            var sut = CreateGame(playedTiles, new[] { new DominoTile(2, 1) });
+            var firstPlayerTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
+            var secondPlayerTiles = new[] { new DominoTile(11, 10), new DominoTile(12, 10) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTiles.First().Id,
+                firstPlayerTiles.First().Id,
                 sut.MexicanTrain.Id);
             sut.MakeMove(
                 sut.Players.First().Id,
-                playedTiles.Last().Id,
+                firstPlayerTiles.Last().Id,
+                sut.Players.Last().Train.Id);
+            Action illegalPlay = () => sut.MakeMove(
+                sut.Players.Last().Id,
+                secondPlayerTiles.Last().Id,
                 sut.Players.Last().Train.Id);
 
-            Assert.Equal(typeof(Player.WaitingForTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(Player.HasTurnState), sut.Players.Skip(1).First().GetStateType());
+            Assert.ThrowsAny<ApplicationException>(illegalPlay);
+        }
+
+        [Fact]
+        public void MakeMove_DoublePlayedAndOherPlayerPlayOnDouble_GameStateIsNoDoubles()
+        {
+            var firstPlayerTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
+            var secondPlayerTiles = new[] { new DominoTile(11, 10), new DominoTile(12, 10) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.First().Id,
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Last().Id,
+                sut.Players.Last().Train.Id);
+            sut.MakeMove(
+                sut.Players.Last().Id,
+                secondPlayerTiles.Last().Id,
+                sut.MexicanTrain.Id);
+
+            Assert.Equal("OpenedDoubleGameState", sut.GetStateType().Name);
         }
 
         [Fact]
