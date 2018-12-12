@@ -64,13 +64,13 @@ namespace Domain
         {
             state.EndTurn(this);
         }
-        internal void MakeMove(DominoTile tile, ITrain train)
+        internal void MakeMove(long tileId, ITrain train)
         {
-            state.MakeMove(this, tile, train);
+            state.MakeMove(this, tileId, train);
         }
-        internal void ForceMove(DominoTile tile, ITrain train)
+        internal void ForceMove(long tileId, ITrain train)
         {
-            state.ForceMove(this, tile, train);
+            state.ForceMove(this, tileId, train);
         }
         internal void PassMove(DominoTile tile)
         {
@@ -91,8 +91,30 @@ namespace Domain
             internal override void EndTurn(Player player) =>
                 player.state = new WaitingForTurnState();
             internal override void GiveTurn(Player player) { }
-            internal override void MakeMove(Player player, DominoTile tile, ITrain train) =>
-                train.AddTile(tile, player.Id);
+            internal override void MakeMove(Player player, long tileId, ITrain train)
+            {
+                var tile = player
+                    .Hand
+                    .First(t => t.Id == tileId);
+
+                train.AddTile(
+                    tile,
+                    player.Id);
+                player
+                    .Hand
+                    .Remove(tile);
+            }
+            internal override void ForceMove(Player player, long tileId, ITrain train)
+            {
+                var tile = player
+                    .Hand
+                    .First(t => t.Id == tileId);
+
+                train.ForceAddTile(tile);
+                player
+                    .Hand
+                    .Remove(tile);
+            }
             internal override void PassMove(Player player, DominoTile tile)
             {
                 player.Hand.Add(tile);
@@ -114,12 +136,14 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void MakeMove(Player player, DominoTile tile, ITrain train)
+            internal virtual void MakeMove(Player player, long tileId, ITrain train)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal void ForceMove(Player player, DominoTile tile, ITrain train) =>
-                train.ForceAddTile(tile);
+            internal virtual void ForceMove(Player player, long tileId, ITrain train)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
             internal virtual void PassMove(Player player, DominoTile tile)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
