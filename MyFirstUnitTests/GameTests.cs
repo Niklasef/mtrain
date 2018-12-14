@@ -109,10 +109,10 @@ namespace MyFirstUnitTests
                 sut.Players.Last().Train.Id);
             sut.MakeMove(
                 sut.Players.Last().Id,
-                secondPlayerTiles.Last().Id,
+                secondPlayerTiles.First().Id,
                 sut.MexicanTrain.Id);
 
-            Assert.Equal("OpenedDoubleGameState", sut.GetStateType().Name);
+            Assert.Equal("NoDoublesGameState", sut.GetStateType().Name);
         }
 
         [Fact]

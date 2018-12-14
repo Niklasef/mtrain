@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Domain
 {
@@ -49,7 +50,16 @@ namespace Domain
 
         public override string ToString()
         {
-            return string.Join(",", Hand);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Player: {Name}");
+            stringBuilder.AppendLine($"State: {GetStateType().Name}");
+            stringBuilder.AppendLine($"Hand:");
+            stringBuilder.AppendLine(
+                string.Join(",", Hand));
+            stringBuilder.AppendLine($"Train:");
+            stringBuilder.AppendLine(
+                string.Join(",", Train));
+            return stringBuilder.ToString();
         }
 
         public bool HasTurn()
@@ -100,9 +110,9 @@ namespace Domain
                 train.AddTile(
                     tile,
                     player.Id);
-                player
-                    .Hand
-                    .Remove(tile);
+                player.Hand = 
+                    new HashSet<DominoTile>(
+                        player.Hand.Where(t => t.Id != tile.Id));
             }
             internal override void ForceMove(Player player, long tileId, ITrain train)
             {
@@ -111,9 +121,9 @@ namespace Domain
                     .First(t => t.Id == tileId);
 
                 train.ForceAddTile(tile);
-                player
-                    .Hand
-                    .Remove(tile);
+                player.Hand = 
+                    new HashSet<DominoTile>(
+                        player.Hand.Where(t => t.Id != tile.Id));
             }
             internal override void PassMove(Player player, DominoTile tile)
             {

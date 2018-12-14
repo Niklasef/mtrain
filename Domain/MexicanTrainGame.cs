@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace Domain
@@ -98,6 +99,23 @@ namespace Domain
             state.PassMove(this, playerId);
         }
 
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+
+            Players
+                .ToList()
+                .ForEach(p =>
+                    stringBuilder.AppendLine(p.ToString()));
+
+            stringBuilder.AppendLine("Mexican Train:");
+            stringBuilder.AppendLine(
+                MexicanTrain.ToString()
+            );
+
+            return stringBuilder.ToString();
+        }
+
         private abstract class GameState
         {
             internal abstract void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId);
@@ -157,8 +175,8 @@ namespace Domain
             }
 
             internal override void MakeMove(
-                MexicanTrainGame game, 
-                Guid playerId, 
+                MexicanTrainGame game,
+                Guid playerId,
                 long tileId,
                 Guid trainId)
             {
@@ -209,7 +227,7 @@ namespace Domain
                 {
                     openTrains.RemoveAt(0);
                 }
-                if(!openTrains.Any())
+                if (!openTrains.Any())
                 {
                     game.state = new NoDoublesGameState();
                 }
@@ -250,5 +268,4 @@ namespace Domain
             }
         }
     }
-
 }

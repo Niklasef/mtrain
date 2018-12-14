@@ -27,29 +27,60 @@ namespace Domain
                 head = tail = tile;
                 return;
             }
+            if (head == tail && tile.GetUnlinkedValues().Any(x => x == head.FirstValue))
+            {
+                if (tile.SecondValue != head.FirstValue && tile.SecondValue != head.SecondValue)
+                {
+                    tile.Flip();
+                }
+                tile.Link(head);
+                tail = tile;
+                return;
+            }
+            if (head == tail && tile.GetUnlinkedValues().Any(x => x == head.SecondValue))
+            {
+                if (tile.FirstValue != head.FirstValue && tile.FirstValue != head.SecondValue)
+                {
+                    tile.Flip();
+                }
+                tile.Link(head);
+                head = tile;
+                return;
+            }
             if (head.MatchesUnlinkedValue(tile))
             {
+                if (tile.FirstValue != head.FirstValue && tile.FirstValue != head.SecondValue)
+                {
+                    tile.Flip();
+                }
                 tile.Link(head);
                 head = tile;
                 return;
             }
             if (tail.MatchesUnlinkedValue(tile))
             {
+                if(tile.SecondValue != tail.FirstValue && tile.SecondValue != tail.SecondValue)
+                {
+                    tile.Flip();
+                }
                 tail.Link(tile);
                 tail = tile;
                 return;
             }
+            throw new ApplicationException($"Illegal move. Head nor tail matches '{tile}'");
         }
 
         public IEnumerable<DominoTile> GetTiles()
         {
-            return GetTiles(head, new List<DominoTile>());
+            return head != null
+                ? GetTiles(head, new List<DominoTile>())
+                : Enumerable.Empty<DominoTile>();
         }
 
         private IEnumerable<DominoTile> GetTiles(DominoTile tile, List<DominoTile> tiles)
         {
             tiles.Add(tile);
-            if(tile != tail)
+            if (tile != tail)
             {
                 return GetTiles(tile.LinkedTiles.First(t => !tiles.Contains(t)), tiles);
             }
@@ -58,35 +89,7 @@ namespace Domain
 
         public override string ToString()
         {
-            return string.Join(", ",
-                GetTiles()
-                .Select(t =>
-                {
-                    if (t != tail && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
-                    {
-                        t.Flip();
-                    }
-                    return t;
-                })
-                .ToArray()
-                .Select(t =>
-                {
-                    if (t == tail && t.SecondValue != GetPenultimate().FirstValue)
-                    {
-                        t.Flip();
-                    }
-                    return t;
-                })
-                .Reverse());
-        }
-
-        private DominoTile GetPenultimate()
-        {
-            return GetTiles()
-                .ToArray()
-                .Reverse()
-                .Skip(1)
-                .First();
+            return string.Join(", ", GetTiles().Reverse());
         }
     }
 }

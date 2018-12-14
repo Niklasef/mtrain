@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Domain
 {
@@ -42,17 +43,20 @@ namespace Domain
 
         public override string ToString()
         {
-            return string.Join(", ", GetTiles()
-                .Select(t =>
-                {
-                    if (t.State.GetType() != typeof(EngineState) && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Train state: {state.GetType().Name}");
+            stringBuilder.AppendLine(
+                string.Join(", ", GetTiles()
+                    .Select(t =>
                     {
-                        t.Flip();
-                    }
-                    return t;
-                }
-                )
-                .Reverse());
+                        if (t.State.GetType() != typeof(EngineState) && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
+                        {
+                            t.Flip();
+                        }
+                        return t;
+                    })
+                    .Reverse()));
+            return stringBuilder.ToString();
         }
 
         public IEnumerable<DominoTile> GetTiles()

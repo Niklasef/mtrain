@@ -75,5 +75,16 @@ namespace MyFirstUnitTests
 
             Assert.Equal(0, tileOne.GetUnlinkedValues().Count());
         }
+
+        [Fact]
+        public void Link_WhenHalfLinkedToUnorderedTile_NoException()
+        {
+            var tileOne = new DominoTile(7, 7);
+            var tileTwo = new DominoTile(7, 2);
+            var tileThree = new DominoTile(12, 2);
+
+            tileOne.Link(tileTwo);
+            tileTwo.Link(tileThree);
+        }
     }
 }

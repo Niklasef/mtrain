@@ -9,7 +9,7 @@ namespace Domain
         internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
-        public long Id => FirstValue.GetHashCode() + SecondValue.GetHashCode();
+        public long Id => GetHashCode();
         internal DominoTile[] LinkedTiles { get; set; }
 
         public DominoTile(ushort firstValue, ushort secondValue)
@@ -34,8 +34,8 @@ namespace Domain
                 .Select((t, i) => new { Tile = t, Index = i })
                 .FirstOrDefault(t => t.Tile == null)
                 ?.Index ?? 0;
-                //Todo: check if tile already exists...
-                //Move impl to link state so engine can have more than two links
+            //Todo: check if tile already exists...
+            //Move impl to link state so engine can have more than two links
             LinkedTiles[firstFreeIndex] = linkedTile;
         }
 
@@ -67,9 +67,11 @@ namespace Domain
         {
             unchecked
             {
+                var largestValue = Math.Max(FirstValue, SecondValue);
+                var smallestValue = Math.Min(FirstValue, SecondValue);
                 int hash = 17;
-                hash = hash * 23 + FirstValue.GetHashCode();
-                hash = hash * 23 + SecondValue.GetHashCode();
+                hash = hash * 23 + largestValue.GetHashCode();
+                hash = hash * 23 + smallestValue.GetHashCode();
                 return hash;
             }
         }
