@@ -91,5 +91,10 @@ namespace Domain
         {
             return string.Join(", ", GetTiles().Reverse());
         }
+
+        public Type GetStateType()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

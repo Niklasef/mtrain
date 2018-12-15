@@ -23,7 +23,7 @@ namespace Domain
             Id = Guid.NewGuid();
             head = engineTile ?? throw new ArgumentNullException(nameof(engineTile));
             this.ownerId = ownerId;
-            state = new ClosedPlayerTrainState(gameId);
+            state = new ClosedPlayerTrainState();
         }
 
         internal void Open()
@@ -74,17 +74,25 @@ namespace Domain
             return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
         }
 
-        protected internal class OpenPlayerTrainState : PlayerTrainStateBase { }
+        public Type GetStateType()
+        {
+            return state.GetType();
+        }
+
+        protected internal class OpenPlayerTrainState : PlayerTrainStateBase
+        {
+            public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            {
+                base.AddTile(tile, playerTrain, playerId);
+                if (playerId == playerTrain.ownerId)
+                {
+                    playerTrain.state = new ClosedPlayerTrainState();;
+                }
+            }
+        }
 
         protected internal class ClosedPlayerTrainState : PlayerTrainStateBase
         {
-            private readonly Guid gameId;
-
-            public ClosedPlayerTrainState(Guid gameId)
-            {
-                this.gameId = gameId;
-            }
-
             public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
             {
                 if (playerId != playerTrain.ownerId)

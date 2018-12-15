@@ -9,5 +9,6 @@ namespace Domain
         void AddTile(DominoTile tile, Guid playerId);
         IEnumerable<DominoTile> GetTiles();
         void ForceAddTile(DominoTile tile);
+        Type GetStateType();
     }
 }

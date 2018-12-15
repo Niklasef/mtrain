@@ -92,7 +92,7 @@ namespace MyFirstUnitTests
             Assert.ThrowsAny<ApplicationException>(illegalPlay);
         }
 
-                [Fact]
+        [Fact]
         public void MakeMove_DoublePlayedAndThenPass_OtherPlayersTurn()
         {
             var firstPlayerTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
@@ -130,6 +130,31 @@ namespace MyFirstUnitTests
                 sut.MexicanTrain.Id);
 
             Assert.Equal("NoDoublesGameState", sut.GetStateType().Name);
+        }
+
+        [Fact]
+        public void MakeMove_OpenAndClosePlayersTrains_PlayersTrainIsClosed()
+        {
+            var firstPlayerTiles = new[] { new DominoTile(12, 11), new DominoTile(11, 10) };
+            var secondPlayerTiles = new[] { new DominoTile(12, 10) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.First().Id,
+                sut.Players.First().Train.Id);
+            sut.PassMove (
+                sut.Players.Last().Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Last().Id,
+                sut.Players.First().Train.Id);
+            sut.MakeMove(
+                sut.Players.Last().Id,
+                secondPlayerTiles.First().Id,
+                sut.Players.Last().Train.Id);
+
+            Assert.Equal("ClosedPlayerTrainState", sut.Players.Last().Train.GetStateType().Name);
         }
 
         [Fact]

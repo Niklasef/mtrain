@@ -48,11 +48,19 @@ namespace Test
                         .First()
                         .Train
                         .Id;
-                game.MakeMove(
-                    playerWithTurn.Id,
-                    tileId,
-                    trainId
-                );
+                try
+                {
+                    game.MakeMove(
+                        playerWithTurn.Id,
+                        tileId,
+                        trainId
+                    );
+                }
+                catch (ApplicationException exception)
+                {
+                    Console.WriteLine($"Illegal move: '{exception.Message}'. Press any key to continue.");
+                    Console.ReadKey();
+                }
             }
         }
     }
