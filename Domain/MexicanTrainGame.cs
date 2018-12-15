@@ -195,9 +195,16 @@ namespace Domain
                 PassTurn(game, playerId);
             }
 
-            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            internal override void PassMove(MexicanTrainGame game, Guid playerId)
             {
-                throw new NotImplementedException();
+                var tile = game
+                    .Boneyard
+                    .First();
+                game.Boneyard
+                    .Remove(tile);
+                GetPlayer(game, playerId)
+                    .PassMove(tile);
+                PassTurn(game, playerId);
             }
         }
 
@@ -234,9 +241,16 @@ namespace Domain
                 PassTurn(game, playerId);
             }
 
-            internal override void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            internal override void PassMove(MexicanTrainGame game, Guid playerId)
             {
-                throw new NotImplementedException();
+                var tile = game
+                    .Boneyard
+                    .First();
+                game.Boneyard
+                    .Remove(tile);
+                GetPlayer(game, playerId)
+                    .PassMove(tile);
+                PassTurn(game, playerId);
             }
         }
 

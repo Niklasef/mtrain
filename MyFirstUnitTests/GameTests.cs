@@ -92,6 +92,23 @@ namespace MyFirstUnitTests
             Assert.ThrowsAny<ApplicationException>(illegalPlay);
         }
 
+                [Fact]
+        public void MakeMove_DoublePlayedAndThenPass_OtherPlayersTurn()
+        {
+            var firstPlayerTiles = new[] { new DominoTile(11, 11), new DominoTile(12, 11) };
+            var secondPlayerTiles = new[] { new DominoTile(11, 10), new DominoTile(12, 10) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.First().Id,
+                sut.MexicanTrain.Id);
+            sut.PassMove(
+                sut.Players.First().Id);
+
+            Assert.Equal("HasTurnState", sut.Players.Last().GetStateType().Name);
+        }
+
         [Fact]
         public void MakeMove_DoublePlayedAndOherPlayerPlayOnDouble_GameStateIsNoDoubles()
         {
