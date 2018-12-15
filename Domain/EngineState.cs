@@ -5,7 +5,7 @@ namespace Domain
 {
     internal class EngineState : ITileState
     {
-        public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile)
         {
             return new[] { tile.FirstValue };
         }

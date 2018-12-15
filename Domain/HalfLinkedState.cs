@@ -6,19 +6,19 @@ namespace Domain
 {
     internal class HalfLinkedState : ITileState
     {
-        public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
-        {
-            return new[] {
-                tile
-                .GetValues()
-                .First(x => !tile
-                    .LinkedTiles
-                    .First(t => t != null)
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile) =>
+            tile.IsDouble()
+                ? new[] { tile.FirstValue }
+                : new[] {
+                    tile
                     .GetValues()
-                    .Any(y => x == y))};
-        }
+                    .First(x => !tile
+                        .LinkedTiles
+                        .First(t => t != null)
+                        .GetValues()
+                        .Any(y => x == y))};
 
-//TODO almost same impl as unlinked... refactor
+        //TODO almost same impl as unlinked... refactor
         public void Link(DominoTile tile, DominoTile otherTile)
         {
             if (tile == null)
@@ -34,7 +34,8 @@ namespace Domain
                 throw new ApplicationException($"Illegal move, no matching unlinked values. Can't link: tile: '{tile}' with tile: '{otherTile}'");
             }
             tile.AddLinkedTile(otherTile);
-            if(!otherTile.IsLinked(tile)){
+            if (!otherTile.IsLinked(tile))
+            {
                 otherTile.Link(tile);
             }
             tile.State = new FullyLinkedState();

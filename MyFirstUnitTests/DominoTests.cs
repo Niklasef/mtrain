@@ -86,5 +86,16 @@ namespace MyFirstUnitTests
             tileOne.Link(tileTwo);
             tileTwo.Link(tileThree);
         }
+
+        [Fact]
+        public void Link_DoubleWithTileOnEachSide_CorrectSequence()
+        {
+            var tile1 = new DominoTile(11, 0);
+            var tile2 = new DominoTile(0, 0);
+            var tile3 = new DominoTile(0, 4);
+
+            tile1.Link(tile2);
+            tile2.Link(tile3);
+        }
     }
 }

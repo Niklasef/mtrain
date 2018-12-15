@@ -95,7 +95,7 @@ namespace Domain
 
         internal IEnumerable<ushort> GetUnlinkedValues()
         {
-            return State.GetUnlinkedValue(this);
+            return State.GetUnlinkedValues(this);
         }
 
         internal virtual void Link(DominoTile tile)

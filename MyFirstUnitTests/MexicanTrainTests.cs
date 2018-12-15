@@ -68,6 +68,19 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
+        public void AddTile_OpeningAndClosingDouble_CorrectTilesOnTrain()
+        {
+            var sut = new MexicanTrain();
+            var tile1 = new DominoTile(11, 0);
+            var tile2 = new DominoTile(0, 0);
+            var tile3 = new DominoTile(0, 4);
+
+            sut.AddTile(tile1, Guid.NewGuid());
+            sut.AddTile(tile2, Guid.NewGuid());
+            sut.AddTile(tile3, Guid.NewGuid());
+        }
+
+        [Fact]
         public void ToString_MatchesOnRightButUnaligned_AlignedAsMatchingTiles()
         {
             var sut = new MexicanTrain();

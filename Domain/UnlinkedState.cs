@@ -7,7 +7,7 @@ namespace Domain
     internal class UnlinkedState : ITileState
     {
 
-        public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile)
         {
             return tile.GetValues();
         }

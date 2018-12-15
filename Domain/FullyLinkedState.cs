@@ -6,7 +6,7 @@ namespace Domain
 {
     internal class FullyLinkedState : ITileState
     {
-        public IEnumerable<ushort> GetUnlinkedValue(DominoTile tile)
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile)
         {
             return Enumerable.Empty<ushort>();
         }
