@@ -17,10 +17,17 @@ namespace Test
             {
                 Console.Clear();
                 Console.WriteLine(game.ToString());
-                input = Console.ReadLine();
+
                 var playerWithTurn = game
                     .Players
                     .First(p => p.GetStateType().Name.Equals("HasTurnState"));
+
+                if (!TryReadLine(out input, out var tileIndex, out var trainIndex))
+                {
+                    Console.WriteLine($"Couldn't interpret input: '{input}'. Press any key to continue.");
+                    Console.ReadKey();
+                    continue;
+                }
                 if (input?.Equals("p", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
                     game.PassMove(playerWithTurn.Id);
@@ -30,9 +37,18 @@ namespace Test
                 {
                     return;
                 }
-                var inputParts = input.Split(" ");
-                var tileIndex = int.Parse(inputParts[0].Trim()) - 1;
-                var trainIndex = int.Parse(inputParts[1].Trim()) - 1;
+                if (tileIndex >= playerWithTurn.Hand.Count() || tileIndex < 0)
+                {
+                    Console.WriteLine($"Player doesn't contain tile with index: '{tileIndex}'. Press any key to continue.");
+                    Console.ReadKey();
+                    continue;
+                }
+                if (trainIndex > game.Players.Count() || trainIndex < 0)
+                {
+                    Console.WriteLine($"Game doesn't contain train with index: '{tileIndex}'. Press any key to continue.");
+                    Console.ReadKey();
+                    continue;
+                }
                 var tileId = playerWithTurn
                     .Hand
                     .Skip(tileIndex)
@@ -62,6 +78,45 @@ namespace Test
                     Console.ReadKey();
                 }
             }
+        }
+
+        private static bool TryReadLine(out string input, out int tileIndex, out int trainIndex)
+        {
+            input = Console.ReadLine();
+            if (input?.Equals("p", StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                tileIndex = -1;
+                trainIndex = -1;
+                return true;
+            }
+            if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                tileIndex = -1;
+                trainIndex = -1;
+                return true;
+            }
+            if (string.IsNullOrEmpty(input) || input.Split(" ").Count() != 2)
+            {
+                tileIndex = -1;
+                trainIndex = -1;
+                return false;
+            }
+            var inputParts = input.Split(" ");
+            if (!int.TryParse(inputParts[0].Trim(), out tileIndex))
+            {
+                tileIndex = -1;
+                trainIndex = -1;
+                return false;
+            }
+            tileIndex--;
+            if (!int.TryParse(inputParts[1].Trim(), out trainIndex))
+            {
+                tileIndex = -1;
+                trainIndex = -1;
+                return false;
+            }
+            trainIndex--;
+            return true;
         }
     }
 }

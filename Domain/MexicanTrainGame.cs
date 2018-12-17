@@ -102,6 +102,7 @@ namespace Domain
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Game State: {state}");
 
             Players
                 .ToList()
@@ -118,8 +119,14 @@ namespace Domain
 
         private abstract class GameState
         {
-            internal abstract void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId);
-            internal abstract void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId);
+            internal virtual void MakeMove(MexicanTrainGame mexicanTrainGame, Guid playerId, long tileId, Guid trainId)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
+            internal virtual void PassMove(MexicanTrainGame mexicanTrainGame, Guid playerId)
+            {
+                throw new ApplicationException($"Is in illigal state: {GetType().Name}");
+            }
 
             protected void PassTurn(MexicanTrainGame game, Guid currentPlayerId)
             {
@@ -165,6 +172,22 @@ namespace Domain
             }
         }
 
+        private class WonGameState : GameState
+        {
+            private readonly Guid gameId;
+
+            public Guid WinnerId { get; }
+            public WonGameState(Guid gameId, Guid winnerId)
+            {
+                this.gameId = gameId;
+                WinnerId = winnerId;
+            }
+
+            public override string ToString()
+            {
+                return $"Winner is: '{base.GetPlayer(Games.Get(gameId), WinnerId)}'";
+            }
+        }
         private class OpeningDoubleGameState : GameState
         {
             private readonly List<Tuple<Guid, Guid>> openTrains;
@@ -265,6 +288,10 @@ namespace Domain
                 {
                     game.state = new OpeningDoubleGameState(new Tuple<Guid, Guid>(trainId, playerId));
                     return;
+                }
+                if(GetPlayer(game, playerId).Hand.Count == 0)
+                {
+                    game.state = new WonGameState(game.Id, playerId);
                 }
                 PassTurn(game, playerId);
             }
