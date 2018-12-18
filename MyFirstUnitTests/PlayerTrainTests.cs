@@ -1,5 +1,9 @@
 using Xunit;
 using Domain;
+using Domain.DominoTile;
+using Domain.Player;
+using Domain.Game;
+using Domain.Train;
 using System.Linq;
 using System;
 
@@ -11,21 +15,21 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_ThreeTiles_FourTilesIncludingEngineExists()
         {
-            var engine = new DominoTile(12, 12);
+            var engine = new DominoTileEntity(12, 12);
             engine.State = new EngineState();
             var game = new MexicanTrainGame(
                 Guid.NewGuid(), 
-                Enumerable.Empty<Player>(),
+                Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engine,
-                Enumerable.Empty<DominoTile>().ToArray());
+                Enumerable.Empty<DominoTileEntity>().ToArray());
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();
             var sut = new PlayerTrain(game.Id, playerId);
-            var tileOne = new DominoTile(12, 11);
-            var tileTwo = new DominoTile(11, 10);
-            var tileThree = new DominoTile(10, 9);
+            var tileOne = new DominoTileEntity(12, 11);
+            var tileTwo = new DominoTileEntity(11, 10);
+            var tileThree = new DominoTileEntity(10, 9);
 
             sut.Open();
             sut.AddTile(tileOne, playerId);
@@ -42,20 +46,20 @@ namespace MyFirstUnitTests
         [Fact]
         public void GetTiles_ThreeTilesInTrain_CorrectTilesReceived()
         {
-            var engine = new DominoTile(12, 12);
+            var engine = new DominoTileEntity(12, 12);
             engine.State = new EngineState();
             var game = new MexicanTrainGame(
                 Guid.NewGuid(), 
-                Enumerable.Empty<Player>(),
+                Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engine,
-                Enumerable.Empty<DominoTile>().ToArray());
+                Enumerable.Empty<DominoTileEntity>().ToArray());
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();
             var sut = new PlayerTrain(game.Id, playerId);
-            var tileOne = new DominoTile(12, 11);
-            var tileTwo = new DominoTile(11, 10);
+            var tileOne = new DominoTileEntity(12, 11);
+            var tileTwo = new DominoTileEntity(11, 10);
             sut.Open();
             sut.AddTile(tileOne, playerId);
             sut.AddTile(tileTwo, playerId);

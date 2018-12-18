@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Domain.DominoTile;
+using Domain.Train;
+using Domain.Player;
 
-namespace Domain
+namespace Domain.Game
 {
     public static class Games
     {
@@ -34,10 +37,10 @@ namespace Domain
     public class MexicanTrainGame
     {
         public Guid Id { get; private set; }
-        public IEnumerable<Player> Players { get; private set; }
+        public IEnumerable<PlayerEntity> Players { get; private set; }
         public ITrain MexicanTrain { get; private set; }
-        public DominoTile Engine { get; private set; }
-        internal ICollection<DominoTile> Boneyard { get; private set; }
+        public DominoTileEntity Engine { get; private set; }
+        internal ICollection<DominoTileEntity> Boneyard { get; private set; }
         private GameState state = new NoDoublesGameState();
         public Type GetStateType()
         {
@@ -46,10 +49,10 @@ namespace Domain
 
         protected internal MexicanTrainGame(
             Guid id,
-            IEnumerable<Player> players,
+            IEnumerable<PlayerEntity> players,
             ITrain mexicanTrain,
-            DominoTile engine,
-            ICollection<DominoTile> boneyard)
+            DominoTileEntity engine,
+            ICollection<DominoTileEntity> boneyard)
         {
             Id = id;
             Players = players ?? throw new ArgumentNullException(nameof(players));
@@ -65,13 +68,13 @@ namespace Domain
             var engineTile = tiles.First(tile => tile.FirstValue == 12 && tile.SecondValue == 12);
             tiles.Remove(engineTile);
             engineTile.State = new EngineState();
-            var players = new List<Player>();
+            var players = new List<PlayerEntity>();
             foreach (var playerName in playerNames)
             {
                 var playerTiles = tiles
                     .Take(10)
                     .ToArray();
-                players.Add(new Player(gameId, playerName, new HashSet<DominoTile>(playerTiles)));
+                players.Add(new PlayerEntity(gameId, playerName, new HashSet<DominoTileEntity>(playerTiles)));
                 foreach (var tile in playerTiles)
                 {
                     tiles.Remove(tile);
@@ -142,7 +145,7 @@ namespace Domain
                     .GiveTurn();
             }
 
-            protected Player GetPlayer(MexicanTrainGame game, Guid playerId)
+            protected PlayerEntity GetPlayer(MexicanTrainGame game, Guid playerId)
             {
                 return game.Players
                     .First(p => p.Id == playerId);
@@ -158,7 +161,7 @@ namespace Domain
                         .Train;
             }
 
-            protected DominoTile GetPlayedTile(MexicanTrainGame game, long tileId)
+            protected DominoTileEntity GetPlayedTile(MexicanTrainGame game, long tileId)
             {
                 return game
                     .Players

@@ -1,11 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Domain.DominoTile;
+using Domain.Train;
 
-namespace Domain
+namespace Domain.Player
 {
-    public class Player
+    public class PlayerEntity
     {
         private PlayerState state = new WaitingForTurnState();
         internal Type GetStateType()
@@ -15,9 +17,9 @@ namespace Domain
         private readonly Guid gameId;
         public Guid Id { get; private set; }
 
-        protected internal HashSet<DominoTile> Hand { get; private set; }
+        protected internal HashSet<DominoTileEntity> Hand { get; private set; }
 
-        internal Player(Guid gameId, string name, HashSet<DominoTile> hand)
+        internal PlayerEntity(Guid gameId, string name, HashSet<DominoTileEntity> hand)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -51,7 +53,7 @@ namespace Domain
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Player: {Name}");
+            stringBuilder.AppendLine($"PlayerEntity: {Name}");
             stringBuilder.AppendLine($"State: {GetStateType().Name}");
             stringBuilder.AppendLine($"Hand:");
             stringBuilder.AppendLine(
@@ -82,7 +84,7 @@ namespace Domain
         {
             state.ForceMove(this, tileId, train);
         }
-        internal void PassMove(DominoTile tile)
+        internal void PassMove(DominoTileEntity tile)
         {
             state.PassMove(this, tile);
         }
@@ -90,18 +92,18 @@ namespace Domain
         protected internal class WaitingForTurnState : PlayerState
         {
             internal override bool HasTurn() => false;
-            internal override void GiveTurn(Player player) =>
+            internal override void GiveTurn(PlayerEntity player) =>
                 player.state = new HasTurnState();
-            internal override void EndTurn(Player player) { }
+            internal override void EndTurn(PlayerEntity player) { }
         }
 
         protected internal class HasTurnState : PlayerState
         {
             internal override bool HasTurn() => true;
-            internal override void EndTurn(Player player) =>
+            internal override void EndTurn(PlayerEntity player) =>
                 player.state = new WaitingForTurnState();
-            internal override void GiveTurn(Player player) { }
-            internal override void MakeMove(Player player, long tileId, ITrain train)
+            internal override void GiveTurn(PlayerEntity player) { }
+            internal override void MakeMove(PlayerEntity player, long tileId, ITrain train)
             {
                 var tile = player
                     .Hand
@@ -111,10 +113,10 @@ namespace Domain
                     tile,
                     player.Id);
                 player.Hand = 
-                    new HashSet<DominoTile>(
+                    new HashSet<DominoTileEntity>(
                         player.Hand.Where(t => t.Id != tile.Id));
             }
-            internal override void ForceMove(Player player, long tileId, ITrain train)
+            internal override void ForceMove(PlayerEntity player, long tileId, ITrain train)
             {
                 var tile = player
                     .Hand
@@ -122,10 +124,10 @@ namespace Domain
 
                 train.ForceAddTile(tile);
                 player.Hand = 
-                    new HashSet<DominoTile>(
+                    new HashSet<DominoTileEntity>(
                         player.Hand.Where(t => t.Id != tile.Id));
             }
-            internal override void PassMove(Player player, DominoTile tile)
+            internal override void PassMove(PlayerEntity player, DominoTileEntity tile)
             {
                 player.Hand.Add(tile);
                 player.InnerGetTrain().Open();
@@ -138,23 +140,23 @@ namespace Domain
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void GiveTurn(Player player)
+            internal virtual void GiveTurn(PlayerEntity player)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void EndTurn(Player player)
+            internal virtual void EndTurn(PlayerEntity player)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void MakeMove(Player player, long tileId, ITrain train)
+            internal virtual void MakeMove(PlayerEntity player, long tileId, ITrain train)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void ForceMove(Player player, long tileId, ITrain train)
+            internal virtual void ForceMove(PlayerEntity player, long tileId, ITrain train)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }
-            internal virtual void PassMove(Player player, DominoTile tile)
+            internal virtual void PassMove(PlayerEntity player, DominoTileEntity tile)
             {
                 throw new ApplicationException($"Is in illigal state: {GetType().Name}");
             }

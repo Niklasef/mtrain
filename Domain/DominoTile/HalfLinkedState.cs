@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain
+namespace Domain.DominoTile
 {
     internal class HalfLinkedState : ITileState
     {
-        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile) =>
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTileEntity tile) =>
             tile.IsDouble()
                 ? new[] { tile.FirstValue }
                 : new[] {
@@ -19,7 +19,7 @@ namespace Domain
                         .Any(y => x == y))};
 
         //TODO almost same impl as unlinked... refactor
-        public void Link(DominoTile tile, DominoTile otherTile)
+        public void Link(DominoTileEntity tile, DominoTileEntity otherTile)
         {
             if (tile == null)
             {

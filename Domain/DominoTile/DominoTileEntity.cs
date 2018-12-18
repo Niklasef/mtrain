@@ -1,18 +1,18 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain
+namespace Domain.DominoTile
 {
-    public class DominoTile
+    public class DominoTileEntity
     {
         internal ITileState State { get; set; }
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
         public long Id => GetHashCode();
-        internal DominoTile[] LinkedTiles { get; set; }
+        internal DominoTileEntity[] LinkedTiles { get; set; }
 
-        public DominoTile(ushort firstValue, ushort secondValue)
+        public DominoTileEntity(ushort firstValue, ushort secondValue)
         {
             if (firstValue > 12)
             {
@@ -24,11 +24,11 @@ namespace Domain
             }
             FirstValue = firstValue;
             SecondValue = secondValue;
-            LinkedTiles = new DominoTile[2];
+            LinkedTiles = new DominoTileEntity[2];
             State = new UnlinkedState();
         }
 
-        internal void AddLinkedTile(DominoTile linkedTile)
+        internal void AddLinkedTile(DominoTileEntity linkedTile)
         {
             var firstFreeIndex = LinkedTiles
                 .Select((t, i) => new { Tile = t, Index = i })
@@ -39,19 +39,19 @@ namespace Domain
             LinkedTiles[firstFreeIndex] = linkedTile;
         }
 
-        internal bool IsLinked(DominoTile tile)
+        internal bool IsLinked(DominoTileEntity tile)
         {
             return LinkedTiles.Contains(tile);
         }
 
-        internal bool MatchesUnlinkedValue(DominoTile tile)
+        internal bool MatchesUnlinkedValue(DominoTileEntity tile)
         {
             return GetUnlinkedValues().Any(x => tile.GetUnlinkedValues().Any(y => x == y));
         }
 
         public override bool Equals(object obj)
         {
-            var domineTile = obj as DominoTile;
+            var domineTile = obj as DominoTileEntity;
             if (domineTile == null)
             {
                 return false;
@@ -98,7 +98,7 @@ namespace Domain
             return State.GetUnlinkedValues(this);
         }
 
-        internal virtual void Link(DominoTile tile)
+        internal virtual void Link(DominoTileEntity tile)
         {
             State.Link(this, tile);
         }

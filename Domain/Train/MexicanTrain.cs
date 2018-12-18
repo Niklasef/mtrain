@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.DominoTile;
 
-namespace Domain
+namespace Domain.Train
 {
     public class MexicanTrain : ITrain
     {
         public Guid Id { get; }
-        private DominoTile head;
-        private DominoTile tail;
+        private DominoTileEntity head;
+        private DominoTileEntity tail;
 
         internal MexicanTrain()
         {
             Id = Guid.NewGuid();
         }
 
-        public void AddTile(DominoTile tile, Guid playerId)
+        public void AddTile(DominoTileEntity tile, Guid playerId)
         {
             ForceAddTile(tile);
         }
 
-        public void ForceAddTile(DominoTile tile)
+        public void ForceAddTile(DominoTileEntity tile)
         {
             if (head == null && tail == null)
             {
@@ -70,14 +71,14 @@ namespace Domain
             throw new ApplicationException($"Illegal move. Head nor tail matches '{tile}'");
         }
 
-        public IEnumerable<DominoTile> GetTiles()
+        public IEnumerable<DominoTileEntity> GetTiles()
         {
             return head != null
-                ? GetTiles(head, new List<DominoTile>())
-                : Enumerable.Empty<DominoTile>();
+                ? GetTiles(head, new List<DominoTileEntity>())
+                : Enumerable.Empty<DominoTileEntity>();
         }
 
-        private IEnumerable<DominoTile> GetTiles(DominoTile tile, List<DominoTile> tiles)
+        private IEnumerable<DominoTileEntity> GetTiles(DominoTileEntity tile, List<DominoTileEntity> tiles)
         {
             tiles.Add(tile);
             if (tile != tail)

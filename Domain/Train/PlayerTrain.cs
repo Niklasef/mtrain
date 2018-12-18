@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Domain.DominoTile;
+using Domain.Game;
 
-namespace Domain
+namespace Domain.Train
 {
     public class PlayerTrain : ITrain
     {
         public Guid Id { get; }
         private readonly Guid ownerId;
         private readonly Guid gameId;
-        private DominoTile head;
+        private DominoTileEntity head;
         protected internal PlayerTrainStateBase state;
 
         public PlayerTrain(Guid gameId, Guid ownerId)
@@ -31,12 +33,12 @@ namespace Domain
             state = new OpenPlayerTrainState();
         }
 
-        public void AddTile(DominoTile tile, Guid playerId)
+        public void AddTile(DominoTileEntity tile, Guid playerId)
         {
             state.AddTile(tile, this, playerId);
         }
 
-        public void ForceAddTile(DominoTile tile)
+        public void ForceAddTile(DominoTileEntity tile)
         {
             state.ForceAddTile(tile, this);
         }
@@ -59,12 +61,12 @@ namespace Domain
             return stringBuilder.ToString();
         }
 
-        public IEnumerable<DominoTile> GetTiles()
+        public IEnumerable<DominoTileEntity> GetTiles()
         {
-            return GetTiles(new List<DominoTile>(), head);
+            return GetTiles(new List<DominoTileEntity>(), head);
         }
 
-        private IEnumerable<DominoTile> GetTiles(List<DominoTile> list, DominoTile tile)
+        private IEnumerable<DominoTileEntity> GetTiles(List<DominoTileEntity> list, DominoTileEntity tile)
         {
             list.Add(tile);
             if (tile.State.GetType() == typeof(EngineState))
@@ -81,7 +83,7 @@ namespace Domain
 
         protected internal class OpenPlayerTrainState : PlayerTrainStateBase
         {
-            public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            public override void AddTile(DominoTileEntity tile, PlayerTrain playerTrain, Guid playerId)
             {
                 base.AddTile(tile, playerTrain, playerId);
                 if (playerId == playerTrain.ownerId)
@@ -93,7 +95,7 @@ namespace Domain
 
         protected internal class ClosedPlayerTrainState : PlayerTrainStateBase
         {
-            public override void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            public override void AddTile(DominoTileEntity tile, PlayerTrain playerTrain, Guid playerId)
             {
                 if (playerId != playerTrain.ownerId)
                 {
@@ -109,13 +111,13 @@ namespace Domain
 
         protected internal abstract class PlayerTrainStateBase
         {
-            public virtual void AddTile(DominoTile tile, PlayerTrain playerTrain, Guid playerId)
+            public virtual void AddTile(DominoTileEntity tile, PlayerTrain playerTrain, Guid playerId)
             {
                 tile.Link(playerTrain.head);
                 playerTrain.head = tile;
             }
 
-            internal void ForceAddTile(DominoTile tile, PlayerTrain playerTrain)
+            internal void ForceAddTile(DominoTileEntity tile, PlayerTrain playerTrain)
             {
                 tile.Link(playerTrain.head);
                 playerTrain.head = tile;

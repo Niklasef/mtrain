@@ -1,6 +1,7 @@
 ﻿using System;
 using Xunit;
 using Domain;
+using Domain.DominoTile;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -12,8 +13,8 @@ namespace MyFirstUnitTests
         [Fact]
         public void Flipping_IsSameTile()
         {
-            var tile = new DominoTile(1, 10);
-            var tileTwo = new DominoTile(1, 10);
+            var tile = new DominoTileEntity(1, 10);
+            var tileTwo = new DominoTileEntity(1, 10);
             tileTwo.Flip();
 
             Assert.Equal(tile, tileTwo);
@@ -22,8 +23,8 @@ namespace MyFirstUnitTests
         [Fact]
         public void Flipping_IdRemainsSame()
         {
-            var tile = new DominoTile(1, 10);
-            var tileTwo = new DominoTile(1, 10);
+            var tile = new DominoTileEntity(1, 10);
+            var tileTwo = new DominoTileEntity(1, 10);
             tileTwo.Flip();
 
             Assert.Equal(tile.Id, tileTwo.Id);
@@ -32,9 +33,9 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_EngineWithMatching_CorrectLink()
         {
-            var engine = new DominoTile(12, 12);
+            var engine = new DominoTileEntity(12, 12);
             engine.State = new EngineState();
-            var tile = new DominoTile(12, 11);
+            var tile = new DominoTileEntity(12, 11);
 
             tile.Link(engine);
 
@@ -47,10 +48,10 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_TwoTiles_LinkedRefsAreCorrect()
         {
-            var engine = new DominoTile(12, 12);
+            var engine = new DominoTileEntity(12, 12);
             engine.State = new EngineState();
-            var tileOne = new DominoTile(12, 11);
-            var tileTwo = new DominoTile(11, 10);
+            var tileOne = new DominoTileEntity(12, 11);
+            var tileTwo = new DominoTileEntity(11, 10);
 
             tileOne.Link(engine);
             tileTwo.Link(tileOne);
@@ -66,9 +67,9 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_TilesOnEachSide_NoUnlinkedValues()
         {
-            var tileOne = new DominoTile(1, 2);
-            var tileTwo = new DominoTile(2, 3);
-            var tileThree = new DominoTile(1, 4);
+            var tileOne = new DominoTileEntity(1, 2);
+            var tileTwo = new DominoTileEntity(2, 3);
+            var tileThree = new DominoTileEntity(1, 4);
 
             tileOne.Link(tileTwo);
             tileOne.Link(tileThree);
@@ -79,9 +80,9 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_WhenHalfLinkedToUnorderedTile_NoException()
         {
-            var tileOne = new DominoTile(7, 7);
-            var tileTwo = new DominoTile(7, 2);
-            var tileThree = new DominoTile(12, 2);
+            var tileOne = new DominoTileEntity(7, 7);
+            var tileTwo = new DominoTileEntity(7, 2);
+            var tileThree = new DominoTileEntity(12, 2);
 
             tileOne.Link(tileTwo);
             tileTwo.Link(tileThree);
@@ -90,9 +91,9 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_DoubleWithTileOnEachSide_CorrectSequence()
         {
-            var tile1 = new DominoTile(11, 0);
-            var tile2 = new DominoTile(0, 0);
-            var tile3 = new DominoTile(0, 4);
+            var tile1 = new DominoTileEntity(11, 0);
+            var tile2 = new DominoTileEntity(0, 0);
+            var tile3 = new DominoTileEntity(0, 4);
 
             tile1.Link(tile2);
             tile2.Link(tile3);

@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Domain
+namespace Domain.DominoTile
 {
     internal class UnlinkedState : ITileState
     {
 
-        public IEnumerable<ushort> GetUnlinkedValues(DominoTile tile)
+        public IEnumerable<ushort> GetUnlinkedValues(DominoTileEntity tile)
         {
             return tile.GetValues();
         }
 
-        public void Link(DominoTile tile, DominoTile otherTile)
+        public void Link(DominoTileEntity tile, DominoTileEntity otherTile)
         {
             if (tile == null)
             {

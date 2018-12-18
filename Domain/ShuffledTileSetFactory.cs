@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Domain.DominoTile;
 
 namespace Domain
 {
@@ -11,21 +12,21 @@ namespace Domain
         {
         }
 
-        internal ICollection<DominoTile> Create()
+        internal ICollection<DominoTileEntity> Create()
         {
-            var tiles = new OrderedHashSet<DominoTile>();
+            var tiles = new OrderedHashSet<DominoTileEntity>();
             ushort secondValueStart = 0;
             for (ushort firstIndex = 0; firstIndex <= 12; firstIndex++)
             {
                 for (ushort secondIndex = secondValueStart; secondIndex <= 12; secondIndex++)
                 {
-                    tiles.Add(new DominoTile(firstIndex, secondIndex));
+                    tiles.Add(new DominoTileEntity(firstIndex, secondIndex));
                 }
                 secondValueStart++;
             }
 
             Random randomizer = new Random();
-            var randomizedTiles = new DominoTile[tiles.Count()];
+            var randomizedTiles = new DominoTileEntity[tiles.Count()];
             tiles.CopyTo(randomizedTiles);
             var n = randomizedTiles.Count();
             while (n > 1)
@@ -36,7 +37,7 @@ namespace Domain
                 randomizedTiles[k] = randomizedTiles[n];
                 randomizedTiles[n] = value;
             }
-            return new OrderedHashSet<DominoTile>(randomizedTiles);
+            return new OrderedHashSet<DominoTileEntity>(randomizedTiles);
         }
     }
 }
