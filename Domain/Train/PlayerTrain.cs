@@ -17,13 +17,9 @@ namespace Domain.Train
 
         public PlayerTrain(Guid gameId, Guid ownerId)
         {
-            var engineTile = Games.Get(gameId).Engine;
-            if (engineTile.State.GetType() != typeof(EngineState))
-            {
-                throw new ArgumentException($"A player train has to start with the Engine tile. Given tile had state: '{engineTile.State}'", nameof(engineTile));
-            }
+            this.gameId = gameId;
             Id = Guid.NewGuid();
-            head = engineTile ?? throw new ArgumentNullException(nameof(engineTile));
+            head = Games.Get(gameId).Engine;
             this.ownerId = ownerId;
             state = new ClosedPlayerTrainState();
         }
@@ -51,7 +47,7 @@ namespace Domain.Train
                 string.Join(", ", GetTiles()
                     .Select(t =>
                     {
-                        if (t.State.GetType() != typeof(EngineState) && t.FirstValue != t.LinkedTiles[0].SecondValue)//TODO: fix hardcoded choise
+                        if (t != Games.Get(gameId).Engine && t.FirstValue != t.GetLinkedTiles().First().SecondValue)//TODO: fix hardcoded choise
                         {
                             t.Flip();
                         }
@@ -69,11 +65,11 @@ namespace Domain.Train
         private IEnumerable<DominoTileEntity> GetTiles(List<DominoTileEntity> list, DominoTileEntity tile)
         {
             list.Add(tile);
-            if (tile.State.GetType() == typeof(EngineState))
+            if (tile == Games.Get(gameId).Engine)
             {
                 return list;
             }
-            return GetTiles(list, tile.LinkedTiles[0]);//TODO: fix hardcoded choise
+            return GetTiles(list, tile.GetLinkedTiles().First());//TODO: fix hardcoded choise
         }
 
         public Type GetStateType()

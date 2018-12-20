@@ -4,41 +4,32 @@ using System.Linq;
 
 namespace Domain.DominoTile
 {
-    internal class HalfLinkedState : ITileState
+    public partial class DominoTileEntity
     {
-        public IEnumerable<ushort> GetUnlinkedValues(DominoTileEntity tile) =>
-            tile.IsDouble()
-                ? new[] { tile.FirstValue }
-                : new[] {
-                    tile
-                    .GetValues()
-                    .First(x => !tile
-                        .LinkedTiles
-                        .First(t => t != null)
-                        .GetValues()
-                        .Any(y => x == y))};
-
-        //TODO almost same impl as unlinked... refactor
-        public void Link(DominoTileEntity tile, DominoTileEntity otherTile)
+        private class HalfLinkedState : TileStateBase
         {
-            if (tile == null)
+            //TODO almost same impl as unlinked... refactor
+            internal override void Link(DominoTileEntity tile, DominoTileEntity otherTile)
             {
-                throw new ArgumentNullException(nameof(tile));
+                if (tile == null)
+                {
+                    throw new ArgumentNullException(nameof(tile));
+                }
+                if (otherTile == null)
+                {
+                    throw new ArgumentNullException(nameof(otherTile));
+                }
+                if (!tile.IsMatch(otherTile))
+                {
+                    throw new ApplicationException($"Illegal move, no matching values. Can't link: tile: '{tile}' with tile: '{otherTile}'");
+                }
+                tile.linkedTiles.Add(otherTile);
+                tile.state = new FullyLinkedState();
+                if (!otherTile.IsLinked(tile))
+                {
+                    otherTile.Link(tile);
+                }
             }
-            if (otherTile == null)
-            {
-                throw new ArgumentNullException(nameof(otherTile));
-            }
-            if (!tile.MatchesUnlinkedValue(otherTile) || !otherTile.MatchesUnlinkedValue(tile))
-            {
-                throw new ApplicationException($"Illegal move, no matching unlinked values. Can't link: tile: '{tile}' with tile: '{otherTile}'");
-            }
-            tile.AddLinkedTile(otherTile);
-            if (!otherTile.IsLinked(tile))
-            {
-                otherTile.Link(tile);
-            }
-            tile.State = new FullyLinkedState();
         }
     }
 }

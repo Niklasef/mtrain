@@ -12,22 +12,22 @@ namespace MyFirstUnitTests
             Assert.Equal(
                 91,
                 new ShuffledTileSetFactory()
-                    .Create()
+                    .Create(12)
                     .Count());
         }
 
         [Fact]
         public void ShufleTiles_TilesAreShuffled()
         {
-            var tileStackOne = new ShuffledTileSetFactory().Create();
-            var tileStackTwo = new ShuffledTileSetFactory().Create();
+            var tileStackOne = new ShuffledTileSetFactory().Create(12);
+            var tileStackTwo = new ShuffledTileSetFactory().Create(12);
             Assert.False(Enumerable.SequenceEqual(tileStackOne, tileStackTwo));
         }
 
         [Fact]
         public void ShufleTiles_ContainsNoDuplicates()
         {
-            var tileStack = new ShuffledTileSetFactory().Create();
+            var tileStack = new ShuffledTileSetFactory().Create(12);
             var duplicates = tileStack.Where(x => tileStack.Count(y => x.Equals(y)) > 1);
             Assert.True(
                 duplicates.Count() == 0

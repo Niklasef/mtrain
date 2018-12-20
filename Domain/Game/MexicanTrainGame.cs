@@ -64,10 +64,9 @@ namespace Domain.Game
         public static MexicanTrainGame Create(HashSet<string> playerNames)
         {
             var gameId = Guid.NewGuid();
-            var tiles = new ShuffledTileSetFactory().Create();
+            var tiles = new ShuffledTileSetFactory().Create(12);
             var engineTile = tiles.First(tile => tile.FirstValue == 12 && tile.SecondValue == 12);
             tiles.Remove(engineTile);
-            engineTile.State = new EngineState();
             var players = new List<PlayerEntity>();
             foreach (var playerName in playerNames)
             {

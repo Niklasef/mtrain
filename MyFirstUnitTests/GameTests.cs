@@ -28,12 +28,12 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_WithLastPlayer_FirstPlayerIsGivenTurn()
         {
-            var firstPlayedTile = new DominoTileEntity(11, 12);
-            var secondPlayedTile = new DominoTileEntity(10, 12);
-            var sut = CreateGame(firstPlayedTile, secondPlayedTile);
+            var firstPlayedTiles = new[] { new DominoTileEntity(11, 12), new DominoTileEntity(1, 2) };
+            var secondPlayedTiles = new[] { new DominoTileEntity(10, 12), new DominoTileEntity(3, 2) };
+            var sut = CreateGame(firstPlayedTiles, secondPlayedTiles);
 
-            sut.MakeMove(sut.Players.First().Id, firstPlayedTile.Id, sut.Players.First().Train.Id);
-            sut.MakeMove(sut.Players.Last().Id, secondPlayedTile.Id, sut.Players.Last().Train.Id);
+            sut.MakeMove(sut.Players.First().Id, firstPlayedTiles.First().Id, sut.Players.First().Train.Id);
+            sut.MakeMove(sut.Players.Last().Id, secondPlayedTiles.First().Id, sut.Players.Last().Train.Id);
 
             Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.First().GetStateType());
             Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.Last().GetStateType());
@@ -139,19 +139,19 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_OpenAndClosePlayersTrains_PlayersTrainIsClosed()
         {
-            var firstPlayerTiles = new[] { new DominoTileEntity(12, 11), new DominoTileEntity(11, 10) };
-            var secondPlayerTiles = new[] { new DominoTileEntity(12, 10) };
+            var firstPlayerTiles = new[] { new DominoTileEntity(12, 11), new DominoTileEntity(11, 10), new DominoTileEntity(2, 1) };
+            var secondPlayerTiles = new[] { new DominoTileEntity(12, 10), new DominoTileEntity(2, 3) };
             var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
             sut.MakeMove(
                 sut.Players.First().Id,
                 firstPlayerTiles.First().Id,
                 sut.Players.First().Train.Id);
-            sut.PassMove (
+            sut.PassMove(
                 sut.Players.Last().Id);
             sut.MakeMove(
                 sut.Players.First().Id,
-                firstPlayerTiles.Last().Id,
+                firstPlayerTiles.Skip(1).First().Id,
                 sut.Players.First().Train.Id);
             sut.MakeMove(
                 sut.Players.Last().Id,
@@ -263,8 +263,7 @@ namespace MyFirstUnitTests
             var firstPlayer = new PlayerEntity(gameId, "playerOne", firstPlayedTiles.ToHashSet());
             var secondPlayer = new PlayerEntity(gameId, "playerTwo", secondPlayedTiles.ToHashSet());
             firstPlayer.GiveTurn();
-            var engine = new DominoTileEntity(12, 12);
-            engine.State = new EngineState();
+            var engine = new DominoTileEntity(12, 12, true);
             var sut = new MexicanTrainGame(
                 gameId,
                 new[] { firstPlayer, secondPlayer },

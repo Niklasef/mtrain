@@ -7,9 +7,9 @@ using Domain.DominoTile;
 using Domain.Train;
 using System.Linq;
 
-namespace Test
+namespace mtrain
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {

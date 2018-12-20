@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace Domain.DominoTile
 {
-    internal class EngineState : ITileState
+    public partial class DominoTileEntity
     {
-        public IEnumerable<ushort> GetUnlinkedValues(DominoTileEntity tile)
+        private class EngineState : TileStateBase
         {
-            return new[] { tile.FirstValue };
+            internal override void Link(DominoTileEntity linkedTile, DominoTileEntity unlinkedTile) { }
         }
-
-        public void Link(DominoTileEntity linkedTile, DominoTileEntity unlinkedTile) { }
     }
 }

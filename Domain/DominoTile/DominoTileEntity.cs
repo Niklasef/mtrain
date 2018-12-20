@@ -4,15 +4,16 @@ using System.Linq;
 
 namespace Domain.DominoTile
 {
-    public class DominoTileEntity
+    public partial class DominoTileEntity
     {
-        internal ITileState State { get; set; }
+        private TileStateBase state;
         public ushort FirstValue { get; private set; }
         public ushort SecondValue { get; private set; }
         public long Id => GetHashCode();
-        internal DominoTileEntity[] LinkedTiles { get; set; }
+        public IEnumerable<DominoTileEntity> GetLinkedTiles() => linkedTiles;
+        protected List<DominoTileEntity> linkedTiles = new List<DominoTileEntity>();
 
-        public DominoTileEntity(ushort firstValue, ushort secondValue)
+        public DominoTileEntity(ushort firstValue, ushort secondValue, bool isEngine = false)
         {
             if (firstValue > 12)
             {
@@ -24,29 +25,28 @@ namespace Domain.DominoTile
             }
             FirstValue = firstValue;
             SecondValue = secondValue;
-            LinkedTiles = new DominoTileEntity[2];
-            State = new UnlinkedState();
+            state = isEngine
+                ? (TileStateBase)new EngineState()
+                : (TileStateBase)new UnlinkedState();
         }
 
-        internal void AddLinkedTile(DominoTileEntity linkedTile)
+        internal Type GetStateType()
         {
-            var firstFreeIndex = LinkedTiles
-                .Select((t, i) => new { Tile = t, Index = i })
-                .FirstOrDefault(t => t.Tile == null)
-                ?.Index ?? 0;
-            //Todo: check if tile already exists...
-            //Move impl to link state so engine can have more than two links
-            LinkedTiles[firstFreeIndex] = linkedTile;
+            return state.GetType();
         }
 
         internal bool IsLinked(DominoTileEntity tile)
         {
-            return LinkedTiles.Contains(tile);
+            return linkedTiles.Contains(tile);
         }
 
         internal bool MatchesUnlinkedValue(DominoTileEntity tile)
         {
-            return GetUnlinkedValues().Any(x => tile.GetUnlinkedValues().Any(y => x == y));
+            return GetUnlinkedValues()
+                .Any(x =>
+                    tile
+                        .GetUnlinkedValues()
+                            .Any(y => x == y));
         }
 
         public override bool Equals(object obj)
@@ -95,13 +95,28 @@ namespace Domain.DominoTile
 
         internal IEnumerable<ushort> GetUnlinkedValues()
         {
-            return State.GetUnlinkedValues(this);
+            if (IsDouble() && linkedTiles.Count == 1)
+            {
+                return new[] { FirstValue };
+            }
+            return GetValues()
+                .Where(v =>
+                    linkedTiles
+                        .SelectMany(lt => lt.GetValues())
+                        .All(ltv => v != ltv));
         }
 
         internal virtual void Link(DominoTileEntity tile)
         {
-            State.Link(this, tile);
+            state.Link(this, tile);
         }
+
+        public bool IsMatch(DominoTileEntity otherTile) =>
+            GetValues()
+                .Any(v =>
+                    otherTile
+                        .GetValues()
+                        .Any(ov => v == ov));
 
         internal bool IsDouble()
         {

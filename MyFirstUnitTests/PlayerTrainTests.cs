@@ -15,8 +15,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_ThreeTiles_FourTilesIncludingEngineExists()
         {
-            var engine = new DominoTileEntity(12, 12);
-            engine.State = new EngineState();
+            var engine = new DominoTileEntity(12, 12, true);
             var game = new MexicanTrainGame(
                 Guid.NewGuid(), 
                 Enumerable.Empty<PlayerEntity>(),
@@ -46,8 +45,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void GetTiles_ThreeTilesInTrain_CorrectTilesReceived()
         {
-            var engine = new DominoTileEntity(12, 12);
-            engine.State = new EngineState();
+            var engine = new DominoTileEntity(12, 12, true);
             var game = new MexicanTrainGame(
                 Guid.NewGuid(), 
                 Enumerable.Empty<PlayerEntity>(),

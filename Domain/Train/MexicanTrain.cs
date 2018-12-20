@@ -83,7 +83,7 @@ namespace Domain.Train
             tiles.Add(tile);
             if (tile != tail)
             {
-                return GetTiles(tile.LinkedTiles.First(t => !tiles.Contains(t)), tiles);
+                return GetTiles(tile.GetLinkedTiles().First(t => !tiles.Contains(t)), tiles);
             }
             return tiles;
         }

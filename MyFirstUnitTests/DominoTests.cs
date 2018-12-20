@@ -11,6 +11,39 @@ namespace MyFirstUnitTests
     public class DominoTests
     {
         [Fact]
+        public void IsMatch_NoMatchingValue_False()
+        {
+            var tileOne = new DominoTileEntity(1, 10);
+            var tileTwo = new DominoTileEntity(2, 9);
+
+            var result = tileOne.IsMatch(tileTwo);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsMatch_FirstValueMatches_True()
+        {
+            var tileOne = new DominoTileEntity(1, 10);
+            var tileTwo = new DominoTileEntity(1, 9);
+
+            var result = tileOne.IsMatch(tileTwo);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsMatch_TwoValuesMatches_True()
+        {
+            var tileOne = new DominoTileEntity(1, 10);
+            var tileTwo = new DominoTileEntity(1, 1);
+
+            var result = tileOne.IsMatch(tileTwo);
+
+            Assert.True(result);
+        }
+
+        [Fact]
         public void Flipping_IsSameTile()
         {
             var tile = new DominoTileEntity(1, 10);
@@ -33,23 +66,50 @@ namespace MyFirstUnitTests
         [Fact]
         public void Link_EngineWithMatching_CorrectLink()
         {
-            var engine = new DominoTileEntity(12, 12);
-            engine.State = new EngineState();
+            var engine = new DominoTileEntity(12, 12, true);
             var tile = new DominoTileEntity(12, 11);
 
             tile.Link(engine);
 
-            Assert.Equal(engine, tile.LinkedTiles[0]);
-            Assert.Equal(typeof(HalfLinkedState), tile.State.GetType());
+            Assert.Equal(engine, tile.GetLinkedTiles().First());
+            Assert.Equal("HalfLinkedState", tile.GetStateType().Name);
             Assert.Equal(1, tile.GetUnlinkedValues().Count());
             Assert.Equal(11, tile.GetUnlinkedValues().First());
         }
 
         [Fact]
-        public void Link_TwoTiles_LinkedRefsAreCorrect()
+        public void Link_TwoMatching_CorrectLink()
         {
-            var engine = new DominoTileEntity(12, 12);
-            engine.State = new EngineState();
+            var tileOne = new DominoTileEntity(1, 2);
+            var tileTwo = new DominoTileEntity(2, 3);
+
+            tileTwo.Link(tileOne);
+
+            Assert.Equal(tileOne, tileTwo.GetLinkedTiles().First());
+            Assert.Equal("HalfLinkedState", tileTwo.GetStateType().Name);
+            Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
+            Assert.Equal(3, tileTwo.GetUnlinkedValues().First());
+
+            Assert.Equal(tileTwo, tileOne.GetLinkedTiles().First());
+            Assert.Equal("HalfLinkedState", tileOne.GetStateType().Name);
+            Assert.Equal(1, tileOne.GetUnlinkedValues().Count());
+            Assert.Equal(1, tileOne.GetUnlinkedValues().First());            
+        }
+
+        [Fact]
+        public void GetUnlinkedValues_InUnlinkedState_CorrectUnlinkedValue()
+        {
+            var tileOne = new DominoTileEntity(2, 1);
+
+            Assert.Equal(2, tileOne.GetUnlinkedValues().Count());
+            Assert.True(tileOne.GetUnlinkedValues().Any(v => v == 1));
+            Assert.True(tileOne.GetUnlinkedValues().Any(v => v == 2));
+        }
+
+        [Fact]
+        public void Link_ThreeTiles_LinkedRefsAreCorrect()
+        {
+            var engine = new DominoTileEntity(12, 12, true);
             var tileOne = new DominoTileEntity(12, 11);
             var tileTwo = new DominoTileEntity(11, 10);
 
@@ -58,8 +118,8 @@ namespace MyFirstUnitTests
 
             Assert.True(tileOne.IsLinked(engine));
             Assert.True(tileTwo.IsLinked(tileOne));
-            Assert.Equal(typeof(FullyLinkedState), tileOne.State.GetType());
-            Assert.Equal(typeof(HalfLinkedState), tileTwo.State.GetType());
+            Assert.Equal("FullyLinkedState", tileOne.GetStateType().Name);
+            Assert.Equal("HalfLinkedState", tileTwo.GetStateType().Name);
             Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
             Assert.Equal(10, tileTwo.GetUnlinkedValues().First());
         }

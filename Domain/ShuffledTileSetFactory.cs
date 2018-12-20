@@ -12,7 +12,7 @@ namespace Domain
         {
         }
 
-        internal ICollection<DominoTileEntity> Create()
+        internal ICollection<DominoTileEntity> Create(short engineValue)
         {
             var tiles = new OrderedHashSet<DominoTileEntity>();
             ushort secondValueStart = 0;
@@ -20,7 +20,7 @@ namespace Domain
             {
                 for (ushort secondIndex = secondValueStart; secondIndex <= 12; secondIndex++)
                 {
-                    tiles.Add(new DominoTileEntity(firstIndex, secondIndex));
+                    tiles.Add(new DominoTileEntity(firstIndex, secondIndex, firstIndex == secondIndex && firstIndex == engineValue));
                 }
                 secondValueStart++;
             }

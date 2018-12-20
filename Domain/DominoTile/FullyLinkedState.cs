@@ -4,16 +4,10 @@ using System.Linq;
 
 namespace Domain.DominoTile
 {
-    internal class FullyLinkedState : ITileState
+    public partial class DominoTileEntity
     {
-        public IEnumerable<ushort> GetUnlinkedValues(DominoTileEntity tile)
+        private class FullyLinkedState : TileStateBase
         {
-            return Enumerable.Empty<ushort>();
-        }
-
-        public void Link(DominoTileEntity linkedTile, DominoTileEntity unlinkedTile)
-        {
-            throw new ApplicationException($"Can't link tile to fully linked tile");
         }
     }
 }
