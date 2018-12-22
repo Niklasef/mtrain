@@ -30,38 +30,22 @@ namespace Domain.DominoTile
                 : (TileStateBase)new UnlinkedState();
         }
 
-        internal Type GetStateType()
-        {
-            return state.GetType();
-        }
+        internal Type GetStateType() =>
+            state.GetType();
 
-        internal bool IsLinked(DominoTileEntity tile)
-        {
-            return linkedTiles.Contains(tile);
-        }
+        internal bool IsLinked(DominoTileEntity tile) =>
+            linkedTiles.Contains(tile);
 
-        internal bool MatchesUnlinkedValue(DominoTileEntity tile)
-        {
-            return GetUnlinkedValues()
+        internal bool MatchesUnlinkedValue(DominoTileEntity tile) =>
+            GetUnlinkedValues()
                 .Any(x =>
-                    tile
-                        .GetUnlinkedValues()
-                            .Any(y => x == y));
-        }
+                    tile.GetUnlinkedValues()
+                        .Any(y => x == y));
 
-        public override bool Equals(object obj)
-        {
-            var domineTile = obj as DominoTileEntity;
-            if (domineTile == null)
-            {
-                return false;
-            }
-            if (domineTile.FirstValue == FirstValue && domineTile.SecondValue == SecondValue)
-            {
-                return true;
-            }
-            return domineTile.FirstValue == SecondValue && domineTile.SecondValue == FirstValue;
-        }
+        public override bool Equals(object other) =>
+            other as DominoTileEntity == null
+                ? false
+                : this.Id == ((DominoTileEntity)other).Id;
 
         public override int GetHashCode()
         {
@@ -76,10 +60,8 @@ namespace Domain.DominoTile
             }
         }
 
-        public override string ToString()
-        {
-            return $"[{FirstValue}|{SecondValue}]";
-        }
+        public override string ToString() =>
+            $"[{FirstValue}|{SecondValue}]";
 
         public void Flip()
         {
@@ -88,28 +70,20 @@ namespace Domain.DominoTile
             SecondValue = tempValue;
         }
 
-        internal IEnumerable<ushort> GetValues()
-        {
-            return new[] { FirstValue, SecondValue };
-        }
+        internal IEnumerable<ushort> GetValues() =>
+            new[] { FirstValue, SecondValue };
 
-        internal IEnumerable<ushort> GetUnlinkedValues()
-        {
-            if (IsDouble() && linkedTiles.Count == 1)
-            {
-                return new[] { FirstValue };
-            }
-            return GetValues()
+        internal IEnumerable<ushort> GetUnlinkedValues() =>
+            IsDouble() && linkedTiles.Count == 1
+                ? new[] { FirstValue }
+                : GetValues()
                 .Where(v =>
                     linkedTiles
                         .SelectMany(lt => lt.GetValues())
                         .All(ltv => v != ltv));
-        }
 
-        internal virtual void Link(DominoTileEntity tile)
-        {
+        internal virtual void Link(DominoTileEntity tile) =>
             state.Link(this, tile);
-        }
 
         public bool IsMatch(DominoTileEntity otherTile) =>
             GetValues()
@@ -118,9 +92,7 @@ namespace Domain.DominoTile
                         .GetValues()
                         .Any(ov => v == ov));
 
-        internal bool IsDouble()
-        {
-            return FirstValue == SecondValue;
-        }
+        internal bool IsDouble() =>
+            FirstValue == SecondValue;
     }
 }

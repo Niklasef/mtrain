@@ -21,8 +21,8 @@ namespace MyFirstUnitTests
             sut.MakeMove(sut.Players.First().Id, playedTile.Id, sut.Players.First().Train.Id);
 
             Assert.Equal(playedTile, sut.Players.First().Train.GetTiles().First());
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.Skip(1).First().GetStateType());
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.First().GetStateType().Name);
+            Assert.Equal("HasTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
         }
 
         [Fact]
@@ -35,8 +35,8 @@ namespace MyFirstUnitTests
             sut.MakeMove(sut.Players.First().Id, firstPlayedTiles.First().Id, sut.Players.First().Train.Id);
             sut.MakeMove(sut.Players.Last().Id, secondPlayedTiles.First().Id, sut.Players.Last().Train.Id);
 
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.Last().GetStateType());
+            Assert.Equal("HasTurnPlayerState", sut.Players.First().GetStateType().Name);
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.Last().GetStateType().Name);
         }
 
         [Fact]
@@ -50,8 +50,8 @@ namespace MyFirstUnitTests
                 playedTile.Id,
                 sut.MexicanTrain.Id);
 
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.Skip(1).First().GetStateType());
+            Assert.Equal("HasTurnPlayerState", sut.Players.First().GetStateType().Name);
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
         }
 
         [Fact]
@@ -69,8 +69,8 @@ namespace MyFirstUnitTests
                 playedTiles.Last().Id,
                 sut.Players.First().Train.Id);
 
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.Skip(1).First().GetStateType());
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.First().GetStateType().Name);
+            Assert.Equal("HasTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace MyFirstUnitTests
             sut.PassMove(
                 sut.Players.First().Id);
 
-            Assert.Equal("HasTurnState", sut.Players.Last().GetStateType().Name);
+            Assert.Equal("HasTurnPlayerState", sut.Players.Last().GetStateType().Name);
         }
 
         [Fact]
@@ -210,9 +210,9 @@ namespace MyFirstUnitTests
             sut.PassMove(sut.Players.First().Id);
 
             Assert.Equal(2, sut.Players.First().Hand.Count);
-            Assert.Equal(typeof(PlayerTrain.OpenPlayerTrainState), ((PlayerTrain)sut.Players.First().Train).state.GetType());
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.Skip(1).First().GetStateType());
+            Assert.Equal("OpenPlayerTrainState", ((PlayerTrain)sut.Players.First().Train).GetStateType().Name);
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.First().GetStateType().Name);
+            Assert.Equal("HasTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
         }
 
         [Fact]
@@ -223,8 +223,8 @@ namespace MyFirstUnitTests
             sut.PassMove(sut.Players.First().Id);
             sut.PassMove(sut.Players.Skip(1).First().Id);
 
-            Assert.Equal(typeof(PlayerEntity.WaitingForTurnState), sut.Players.Skip(1).First().GetStateType());
-            Assert.Equal(typeof(PlayerEntity.HasTurnState), sut.Players.First().GetStateType());
+            Assert.Equal("WaitingForTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
+            Assert.Equal("HasTurnPlayerState", sut.Players.First().GetStateType().Name);
         }
 
         [Fact]
@@ -260,10 +260,10 @@ namespace MyFirstUnitTests
         {
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
-            var firstPlayer = new PlayerEntity(gameId, "playerOne", firstPlayedTiles.ToHashSet());
-            var secondPlayer = new PlayerEntity(gameId, "playerTwo", secondPlayedTiles.ToHashSet());
-            firstPlayer.GiveTurn();
             var engine = new DominoTileEntity(12, 12, true);
+            var firstPlayer = new PlayerEntity(engine, "playerOne", firstPlayedTiles.ToHashSet());
+            var secondPlayer = new PlayerEntity(engine, "playerTwo", secondPlayedTiles.ToHashSet());
+            firstPlayer.GiveTurn();
             var sut = new MexicanTrainGame(
                 gameId,
                 new[] { firstPlayer, secondPlayer },

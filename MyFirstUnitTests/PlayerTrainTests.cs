@@ -25,7 +25,7 @@ namespace MyFirstUnitTests
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();
-            var sut = new PlayerTrain(game.Id, playerId);
+            var sut = new PlayerTrain(engine, playerId);
             var tileOne = new DominoTileEntity(12, 11);
             var tileTwo = new DominoTileEntity(11, 10);
             var tileThree = new DominoTileEntity(10, 9);
@@ -55,7 +55,7 @@ namespace MyFirstUnitTests
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();
-            var sut = new PlayerTrain(game.Id, playerId);
+            var sut = new PlayerTrain(engine, playerId);
             var tileOne = new DominoTileEntity(12, 11);
             var tileTwo = new DominoTileEntity(11, 10);
             sut.Open();
