@@ -24,7 +24,7 @@ namespace mtrain
 
                 var playerWithTurn = game
                     .Players
-                    .First(p => p.GetStateType().Name.Equals("HasTurnState"));
+                    .First(p => p.GetStateType().Name.Equals("HasTurnPlayerState"));
 
                 if (!TryReadLine(out input, out var tileIndex, out var trainIndex))
                 {

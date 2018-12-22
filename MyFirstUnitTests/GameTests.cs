@@ -114,6 +114,31 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
+        public void MakeMove_PlayerDoesntClose_Exception()
+        {
+            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(11, 1), new DominoTileEntity(2, 1) };
+            var secondPlayerTiles = new[] { new DominoTileEntity(11, 10), new DominoTileEntity(12, 10) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.First().Id,
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(1).First().Id,
+                sut.Players.First().Train.Id);
+            sut.PassMove(
+                sut.Players.Last().Id);
+            Action makeMove = () => sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(2).First().Id,
+                sut.Players.First().Train.Id);
+            Console.WriteLine(sut.GetStateType().Name);
+            Assert.ThrowsAny<Exception>(makeMove);
+        }
+
+        [Fact]
         public void MakeMove_DoublePlayedAndOherPlayerPlayOnDouble_GameStateIsNoDoubles()
         {
             var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11) };

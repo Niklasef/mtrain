@@ -17,7 +17,7 @@ namespace Domain.Game
 
             internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
             {
-                if (openTrains.First().Item2 != playerId && openTrains.First().Item1 != trainId)
+                if (openTrains.First().Item1 != trainId)
                 {
                     throw new ApplicationException("Illegal move, must play on first open double.");
                 }
