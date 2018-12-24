@@ -10,6 +10,7 @@ namespace Domain.Player
     public partial class PlayerEntity
     {
         private PlayerStateBase state = new WaitingForTurnPlayerState();
+
         internal Type GetStateType() =>
             state.GetType();
 
@@ -18,7 +19,8 @@ namespace Domain.Player
         protected internal HashSet<DominoTileEntity> Hand { get; private set; }
 
         internal PlayerEntity(
-            DominoTileEntity engineTile, 
+            DominoTileEntity engineTile,
+            Guid gameId,
             string name, 
             HashSet<DominoTileEntity> hand)
         {
@@ -29,11 +31,14 @@ namespace Domain.Player
             Id = Guid.NewGuid();
             this.Hand = hand ?? throw new ArgumentNullException(nameof(hand));
             train = new PlayerTrain(engineTile, Id);
+            this.gameId = gameId;
             Name = name;
         }
 
         public string Name { get; }
         private PlayerTrain train;
+        private readonly Guid gameId;
+
         public ITrain Train =>
             InnerGetTrain();
 

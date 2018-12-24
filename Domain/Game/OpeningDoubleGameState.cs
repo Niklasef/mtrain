@@ -6,29 +6,26 @@ namespace Domain.Game
 {
     public partial class MexicanTrainGame
     {
-        private class OpenedDoubleGameState : GameStateBase
+        private class OpeningDoubleGameState : GameStateBase
         {
-            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            internal override void MakeMove(
+                MexicanTrainGame game,
+                Guid playerId,
+                long tileId,
+                Guid trainId)
             {
-                if (game.openDoubles.First().Item1 != trainId)
-                {
-                    throw new ApplicationException("Illegal move, must play on first open double.");
-                }
                 var train = game.GetTrain(trainId);
                 game.GetPlayer(playerId)
-                    .MakeMove(tileId, train);
+                    .ForceMove(tileId, train);//TODO: Possible to move this to shared security assembly?
                 if (game.GetPlayedTile(tileId).IsDouble())
                 {
                     game.openDoubles.Add(new Tuple<Guid, Guid, long>(trainId, playerId, tileId));
+                    return;
                 }
-                else
-                {
-                    game.openDoubles.RemoveAt(0);
-                }
-                if (!game.openDoubles.Any())
-                {
-                    game.state = new NoDoublesGameState();
-                }
+                game.state = game.openDoubles.Any()
+                    ? game.state = new OpenedDoubleGameState()
+                    : new NoDoublesGameState();
+
                 PassTurn(game, playerId);
             }
 

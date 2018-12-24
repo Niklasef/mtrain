@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Domain.DominoTile;
+using Domain.Game;
 using Domain.Train;
 
 namespace Domain.Player
@@ -18,6 +20,16 @@ namespace Domain.Player
                 var tile = player
                     .Hand
                     .First(t => t.Id == tileId);
+
+                var openDoubleIds = Games
+                    .Get(player.gameId)
+                    .GetOpenDoubleTileIds()
+                    .ToArray();
+                if(openDoubleIds.Any() && 
+                    !Games.Get(player.gameId).GetPlayedTile(openDoubleIds.First()).IsMatch(tile))
+                {
+                    throw new ApplicationException($"Illegal move. Must play on first present open double which is '{Games.Get(player.gameId).GetPlayedTile(openDoubleIds.First())}'. The played tile '{tile}' is not a match.");
+                }
 
                 train.AddTile(
                     tile,

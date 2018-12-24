@@ -60,7 +60,7 @@ namespace Domain.Train
             }
             if (tail.MatchesUnlinkedValue(tile))
             {
-                if(tile.SecondValue != tail.FirstValue && tile.SecondValue != tail.SecondValue)
+                if (tile.SecondValue != tail.FirstValue && tile.SecondValue != tail.SecondValue)
                 {
                     tile.Flip();
                 }
@@ -71,27 +71,21 @@ namespace Domain.Train
             throw new ApplicationException($"Illegal move. Head nor tail matches '{tile}'");
         }
 
-        public IEnumerable<DominoTileEntity> GetTiles()
-        {
-            return head != null
+        public IEnumerable<DominoTileEntity> GetTiles() =>
+            head != null
                 ? GetTiles(head, new List<DominoTileEntity>())
                 : Enumerable.Empty<DominoTileEntity>();
-        }
 
         private IEnumerable<DominoTileEntity> GetTiles(DominoTileEntity tile, List<DominoTileEntity> tiles)
         {
             tiles.Add(tile);
-            if (tile != tail)
-            {
-                return GetTiles(tile.GetLinkedTiles().First(t => !tiles.Contains(t)), tiles);
-            }
-            return tiles;
+            return tile != tail
+                ? GetTiles(tile.GetLinkedTiles().First(t => !tiles.Contains(t)), tiles)
+                : tiles;
         }
 
-        public override string ToString()
-        {
-            return string.Join(", ", GetTiles().Reverse());
-        }
+        public override string ToString() =>
+            string.Join(", ", GetTiles().Reverse());
 
         public Type GetStateType()
         {

@@ -14,7 +14,13 @@ namespace Domain.Game
                     .MakeMove(tileId, train);
                 if (game.GetPlayedTile(tileId).IsDouble())
                 {
-                    game.state = new OpeningDoubleGameState(new Tuple<Guid, Guid>(trainId, playerId));
+                    game.openDoubles
+                        .Add(
+                            new Tuple<Guid, Guid, long>(
+                                trainId, 
+                                playerId, 
+                                tileId));
+                    game.state = new OpeningDoubleGameState();
                     return;
                 }
                 if (game.GetPlayer(playerId).Hand.Count == 0)

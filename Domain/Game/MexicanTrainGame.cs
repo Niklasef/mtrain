@@ -12,62 +12,20 @@ namespace Domain.Game
 {
     public partial class MexicanTrainGame
     {
-        private class OpeningDoubleGameState : GameStateBase
-        {
-            private readonly List<Tuple<Guid, Guid>> openTrains;
-
-            public OpeningDoubleGameState(Tuple<Guid, Guid> trainAndPlayerId)
-            {
-                openTrains = new[] { trainAndPlayerId }.ToList();
-            }
-
-            internal override void MakeMove(
-                MexicanTrainGame game,
-                Guid playerId,
-                long tileId,
-                Guid trainId)
-            {
-                var train = game.GetTrain(trainId);
-                game.GetPlayer(playerId)
-                    .ForceMove(tileId, train);//TODO: Possible to move this to shared security assembly?
-                if (game.GetPlayedTile(tileId).IsDouble())
-                {
-                    openTrains.Add(new Tuple<Guid, Guid>(trainId, playerId));
-                    return;
-                }
-                game.state = openTrains.Any()
-                    ? game.state = new OpenedDoubleGameState(openTrains)
-                    : new NoDoublesGameState();
-
-                PassTurn(game, playerId);
-            }
-
-            internal override void PassMove(MexicanTrainGame game, Guid playerId)
-            {
-                var tile = game
-                    .Boneyard
-                    .First();
-                game.Boneyard
-                    .Remove(tile);
-                game.GetPlayer(playerId)
-                    .PassMove(tile);
-                PassTurn(game, playerId);
-            }
-        }
-    }
-
-    public partial class MexicanTrainGame
-    {
         public Guid Id { get; private set; }
         public IEnumerable<PlayerEntity> Players { get; private set; }
         public ITrain MexicanTrain { get; private set; }
         public DominoTileEntity Engine { get; private set; }
         internal ICollection<DominoTileEntity> Boneyard { get; private set; }
         private GameStateBase state = new NoDoublesGameState();
-        public Type GetStateType()
-        {
-            return state.GetType();
-        }
+        private readonly List<Tuple<Guid, Guid, long>> openDoubles = new List<Tuple<Guid, Guid, long>>();//trainId, playerId, tileId
+        public IEnumerable<long> GetOpenDoubleTileIds() =>
+            openDoubles
+                .Select(od => od.Item3)
+                .ToArray();
+
+        public Type GetStateType() =>
+            state.GetType();
 
         protected internal MexicanTrainGame(
             Guid id,
@@ -95,7 +53,7 @@ namespace Domain.Game
                 var playerTiles = tiles
                     .Take(10)
                     .ToArray();
-                players.Add(new PlayerEntity(engineTile, playerName, new HashSet<DominoTileEntity>(playerTiles)));
+                players.Add(new PlayerEntity(engineTile, gameId, playerName, new HashSet<DominoTileEntity>(playerTiles)));
                 foreach (var tile in playerTiles)
                 {
                     tiles.Remove(tile);

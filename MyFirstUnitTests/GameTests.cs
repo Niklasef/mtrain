@@ -76,7 +76,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_DoublePlayedAndOherPlayerDoesntPlayOnDouble_IllegalTurn()
         {
-            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11) };
+            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(2, 1) };
             var secondPlayerTiles = new[] { new DominoTileEntity(11, 10), new DominoTileEntity(12, 10) };
             var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
@@ -86,7 +86,7 @@ namespace MyFirstUnitTests
                 sut.MexicanTrain.Id);
             sut.MakeMove(
                 sut.Players.First().Id,
-                firstPlayerTiles.Last().Id,
+                firstPlayerTiles.Skip(1).First().Id,
                 sut.Players.Last().Train.Id);
             Action illegalPlay = () => sut.MakeMove(
                 sut.Players.Last().Id,
@@ -134,7 +134,40 @@ namespace MyFirstUnitTests
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(2).First().Id,
                 sut.Players.First().Train.Id);
-            Console.WriteLine(sut.GetStateType().Name);
+
+            Assert.ThrowsAny<Exception>(makeMove);
+        }
+
+        [Fact]
+        public void MakeMove_DoubleIsSecondTileOnMexicanTrainMustBeClosed_Exception()
+        {
+            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(12, 1), new DominoTileEntity(12, 2), new DominoTileEntity(6, 7)};
+            var secondPlayerTiles = new[] { new DominoTileEntity(12, 10), new DominoTileEntity(12, 9) };
+            var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
+
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(1).First().Id,
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.Last().Id,
+                secondPlayerTiles.First().Id,
+                sut.Players.Last().Train.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.First().Id,
+                sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(2).First().Id,
+                sut.Players.Last().Train.Id);
+            sut.PassMove(
+                sut.Players.Last().Id);
+            Action makeMove = () => sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(3).First().Id,
+                sut.Players.First().Train.Id);
+
             Assert.ThrowsAny<Exception>(makeMove);
         }
 
@@ -286,8 +319,8 @@ namespace MyFirstUnitTests
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
             var engine = new DominoTileEntity(12, 12, true);
-            var firstPlayer = new PlayerEntity(engine, "playerOne", firstPlayedTiles.ToHashSet());
-            var secondPlayer = new PlayerEntity(engine, "playerTwo", secondPlayedTiles.ToHashSet());
+            var firstPlayer = new PlayerEntity(engine, gameId, "playerOne", firstPlayedTiles.ToHashSet());
+            var secondPlayer = new PlayerEntity(engine, gameId, "playerTwo", secondPlayedTiles.ToHashSet());
             firstPlayer.GiveTurn();
             var sut = new MexicanTrainGame(
                 gameId,
