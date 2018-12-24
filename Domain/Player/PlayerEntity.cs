@@ -21,7 +21,7 @@ namespace Domain.Player
         internal PlayerEntity(
             DominoTileEntity engineTile,
             Guid gameId,
-            string name, 
+            string name,
             HashSet<DominoTileEntity> hand)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -52,10 +52,9 @@ namespace Domain.Player
             stringBuilder.AppendLine($"State: {GetStateType().Name}");
             stringBuilder.AppendLine($"Hand:");
             stringBuilder.AppendLine(
-                string.Join(",", Hand));
+                string.Join(", ", Hand.Select((e, i) => $"{i + 1}:{e}")));
             stringBuilder.AppendLine($"Train:");
-            stringBuilder.AppendLine(
-                string.Join(",", Train));
+            stringBuilder.AppendLine(Train.ToString());
             return stringBuilder.ToString();
         }
 
@@ -76,6 +75,6 @@ namespace Domain.Player
 
         internal void PassMove(DominoTileEntity tile) =>
             state.PassMove(this, tile);
-            
+
     }
 }
