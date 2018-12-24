@@ -17,7 +17,7 @@ namespace Domain.Game
             }
 
             public override string ToString() =>
-                $"Winner is: '{Games.Get(gameId).GetPlayer(WinnerId)}'";
+                $"Winner is: '{Games.Get(gameId).GetPlayer(WinnerId).Name}'";
         }
     }
 }

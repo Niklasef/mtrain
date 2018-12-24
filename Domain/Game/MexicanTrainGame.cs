@@ -84,7 +84,8 @@ namespace Domain.Game
         public override string ToString()
         {
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Game State: {state}");
+            stringBuilder.AppendLine($"Game State: '{state}'");
+            stringBuilder.AppendLine($"Open tiles: '{string.Join(", ", GetOpenDoubleTileIds().Select(tId => GetPlayedTile(tId)))}'");
 
             Players
                 .ToList()

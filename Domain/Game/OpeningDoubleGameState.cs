@@ -22,6 +22,10 @@ namespace Domain.Game
                     game.openDoubles.Add(new Tuple<Guid, Guid, long>(trainId, playerId, tileId));
                     return;
                 }
+                if (game.GetPlayedTile(game.GetOpenDoubleTileIds().First()).GetLinkedTiles().Contains(game.GetPlayedTile(tileId)) )
+                {
+                    game.openDoubles.RemoveAt(0);
+                }
                 game.state = game.openDoubles.Any()
                     ? game.state = new OpenedDoubleGameState()
                     : new NoDoublesGameState();
@@ -38,6 +42,7 @@ namespace Domain.Game
                     .Remove(tile);
                 game.GetPlayer(playerId)
                     .PassMove(tile);
+                game.state = game.state = new OpenedDoubleGameState();
                 PassTurn(game, playerId);
             }
         }
