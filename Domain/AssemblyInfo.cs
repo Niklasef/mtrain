@@ -4,3 +4,4 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
 [assembly: InternalsVisibleTo("MyFirstUnitTests")]
+[assembly: InternalsVisibleTo("SingleScreenConsoleApp")]

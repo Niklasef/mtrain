@@ -1,13 +1,8 @@
 ﻿using System;
-using Xunit;
-using Domain;
-using Domain.Game;
-using Domain.Player;
-using Domain.DominoTile;
-using Domain.Train;
 using System.Linq;
+using Domain.Game;
 
-namespace mtrain
+namespace SingleScreenConsoleApp
 {
     public class Program
     {
