@@ -71,12 +71,12 @@ namespace Domain.Game
             return game;
         }
 
-        internal void MakeMove(Guid playerId, long tileId, Guid trainId)
+        public void MakeMove(Guid playerId, long tileId, Guid trainId)
         {
             state.MakeMove(this, playerId, tileId, trainId);
         }
 
-        internal void PassMove(Guid playerId)
+        public void PassMove(Guid playerId)
         {
             state.PassMove(this, playerId);
         }

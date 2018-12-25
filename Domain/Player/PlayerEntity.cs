@@ -11,7 +11,7 @@ namespace Domain.Player
     {
         private PlayerStateBase state = new WaitingForTurnPlayerState();
 
-        internal Type GetStateType() =>
+        public Type GetStateType() =>
             state.GetType();
 
         public Guid Id { get; private set; }
