@@ -10,7 +10,7 @@ using Domain.Player;
 
 namespace Domain.Game
 {
-    public partial class MexicanTrainGame
+    public partial class GameEntity
     {
         public Guid Id { get; private set; }
         public IEnumerable<PlayerEntity> Players { get; private set; }
@@ -27,7 +27,7 @@ namespace Domain.Game
         public Type GetStateType() =>
             state.GetType();
 
-        protected internal MexicanTrainGame(
+        protected internal GameEntity(
             Guid id,
             IEnumerable<PlayerEntity> players,
             ITrain mexicanTrain,
@@ -41,7 +41,7 @@ namespace Domain.Game
             Boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
         }
 
-        public static MexicanTrainGame Create(HashSet<string> playerNames)
+        public static GameEntity Create(HashSet<string> playerNames)
         {
             var gameId = Guid.NewGuid();
             var tiles = new ShuffledTileSetFactory().Create(12);
@@ -61,7 +61,7 @@ namespace Domain.Game
             }
             players.First().GiveTurn();
 
-            var game = new MexicanTrainGame(
+            var game = new GameEntity(
                 gameId,
                 players,
                 new MexicanTrain(),

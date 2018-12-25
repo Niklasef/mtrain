@@ -5,9 +5,9 @@ namespace Domain.Game
 {
     public static class Games
     {
-        private static readonly IDictionary<Guid, MexicanTrainGame> innerList = new Dictionary<Guid, MexicanTrainGame>();
+        private static readonly IDictionary<Guid, GameEntity> innerList = new Dictionary<Guid, GameEntity>();
 
-        public static MexicanTrainGame Get(Guid key)
+        public static GameEntity Get(Guid key)
         {
             if (!innerList.ContainsKey(key))
             {
@@ -16,7 +16,7 @@ namespace Domain.Game
             return innerList[key];
         }
 
-        public static void Add(Guid key, MexicanTrainGame value)
+        public static void Add(Guid key, GameEntity value)
         {
             innerList.Add(key, value);
         }

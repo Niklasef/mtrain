@@ -3,7 +3,7 @@ using System;
 namespace Domain.Game
 {
 
-    public partial class MexicanTrainGame
+    public partial class GameEntity
     {
         private class WonGameState : GameStateBase
         {

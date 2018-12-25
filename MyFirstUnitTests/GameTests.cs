@@ -311,7 +311,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()
         {
-            var sut = MexicanTrainGame.Create(new[] { "1", "2" }.ToHashSet());
+            var sut = GameEntity.Create(new[] { "1", "2" }.ToHashSet());
             var boneyard = sut.Boneyard;
             Assert.Equal(
                 70,
@@ -321,7 +321,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_10TilesEach()
         {
-            var sut = MexicanTrainGame.Create(new[] { "1", "2" }.ToHashSet());
+            var sut = GameEntity.Create(new[] { "1", "2" }.ToHashSet());
             Assert.Equal(
                 10,
                 sut.Players.First().Hand.Count());
@@ -329,15 +329,15 @@ namespace MyFirstUnitTests
                 10,
                 sut.Players.Last().Hand.Count());
         }
-        private static MexicanTrainGame CreateGame(DominoTileEntity firstPlayedTile)
+        private static GameEntity CreateGame(DominoTileEntity firstPlayedTile)
         {
             return CreateGame(firstPlayedTile, new DominoTileEntity(5, 7));
         }
-        private static MexicanTrainGame CreateGame(DominoTileEntity firstPlayedTile, DominoTileEntity secondPlayedTile)
+        private static GameEntity CreateGame(DominoTileEntity firstPlayedTile, DominoTileEntity secondPlayedTile)
         {
             return CreateGame(new[] { firstPlayedTile }, new[] { secondPlayedTile });
         }
-        private static MexicanTrainGame CreateGame(IEnumerable<DominoTileEntity> firstPlayedTiles, IEnumerable<DominoTileEntity> secondPlayedTiles)
+        private static GameEntity CreateGame(IEnumerable<DominoTileEntity> firstPlayedTiles, IEnumerable<DominoTileEntity> secondPlayedTiles)
         {
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
@@ -345,7 +345,7 @@ namespace MyFirstUnitTests
             var firstPlayer = new PlayerEntity(engine, gameId, "playerOne", firstPlayedTiles.ToHashSet());
             var secondPlayer = new PlayerEntity(engine, gameId, "playerTwo", secondPlayedTiles.ToHashSet());
             firstPlayer.GiveTurn();
-            var sut = new MexicanTrainGame(
+            var sut = new GameEntity(
                 gameId,
                 new[] { firstPlayer, secondPlayer },
                 mexicanTrain,

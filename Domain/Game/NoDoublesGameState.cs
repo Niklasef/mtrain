@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace Domain.Game
 {
-    public partial class MexicanTrainGame
+    public partial class GameEntity
     {
         private class NoDoublesGameState : GameStateBase
         {
-            internal override void MakeMove(MexicanTrainGame game, Guid playerId, long tileId, Guid trainId)
+            internal override void MakeMove(GameEntity game, Guid playerId, long tileId, Guid trainId)
             {
                 var train = game.GetTrain(trainId);
                 game.GetPlayer(playerId)
@@ -30,7 +30,7 @@ namespace Domain.Game
                 PassTurn(game, playerId);
             }
 
-            override internal void PassMove(MexicanTrainGame game, Guid playerId)
+            override internal void PassMove(GameEntity game, Guid playerId)
             {
                 var tile = game
                     .Boneyard

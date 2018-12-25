@@ -13,7 +13,7 @@ namespace mtrain
     {
         static void Main(string[] args)
         {
-            var game = MexicanTrainGame
+            var game = GameEntity
                 .Create(new[] { "Johannes", "Niklas" }.ToHashSet());
             string input = null;
 
