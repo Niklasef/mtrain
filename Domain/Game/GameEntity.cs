@@ -45,7 +45,10 @@ namespace Domain.Game
         {
             var gameId = Guid.NewGuid();
             var tiles = new ShuffledTileSetFactory().Create(12);
-            var engineTile = tiles.First(tile => tile.FirstValue == 12 && tile.SecondValue == 12);
+            var engineTile = tiles
+                .First(tile =>
+                    tile.FirstValue == 12 &&
+                    tile.SecondValue == 12);
             tiles.Remove(engineTile);
             var players = new List<PlayerEntity>();
             foreach (var playerName in playerNames)
@@ -59,7 +62,9 @@ namespace Domain.Game
                     tiles.Remove(tile);
                 }
             }
-            players.First().GiveTurn();
+            players
+                .First()
+                .GiveTurn();
 
             var game = new GameEntity(
                 gameId,
@@ -71,15 +76,11 @@ namespace Domain.Game
             return game;
         }
 
-        public void MakeMove(Guid playerId, long tileId, Guid trainId)
-        {
+        public void MakeMove(Guid playerId, long tileId, Guid trainId) =>
             state.MakeMove(this, playerId, tileId, trainId);
-        }
 
-        public void PassMove(Guid playerId)
-        {
+        public void PassMove(Guid playerId) =>
             state.PassMove(this, playerId);
-        }
 
         public override string ToString()
         {
@@ -110,6 +111,13 @@ namespace Domain.Game
                 : Players
                     .First(p => p.Train.Id == trainId)
                     .Train;
+
+        internal IEnumerable<ITrain> GetTrains() =>
+            new[] { MexicanTrain }
+                .Union(
+                    Players
+                        .Select(p => p
+                            .Train));
 
         internal DominoTileEntity GetPlayedTile(long tileId) =>
             Players
