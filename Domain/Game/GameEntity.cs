@@ -101,6 +101,21 @@ namespace Domain.Game
             return stringBuilder.ToString();
         }
 
+        public GameBoard GetBoard(
+            Guid playerId)
+        {
+            return new GameBoard(
+                GetTrains(),
+                GetPlayer(playerId)
+                    .Hand,
+                Players
+                    .First(p => p
+                        .GetStateType()
+                        .Name
+                        .Equals("HasTurnPlayerState", StringComparison.Ordinal))
+                    .Id);
+        }
+
         internal PlayerEntity GetPlayer(Guid playerId) =>
             Players
                 .First(p => p.Id == playerId);

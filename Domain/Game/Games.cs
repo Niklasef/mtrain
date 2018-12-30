@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Domain.Game
 {
-
     public static class Games
     {
         private static readonly IDictionary<Guid, GameEntity> innerList = new Dictionary<Guid, GameEntity>();
@@ -19,23 +18,6 @@ namespace Domain.Game
                 throw new ApplicationException($"Game with id {key} doesn't exist.");
             }
             return innerList[key];
-        }
-
-        public static GameBoard GetBoard(
-            Guid gameId, 
-            Guid playerId)
-        {
-            var game = Get(gameId);
-            return new GameBoard(
-                game.GetTrains(),
-                game.GetPlayer(playerId)
-                    .Hand,
-                game.Players
-                    .First(p => p
-                        .GetStateType()
-                        .Name
-                        .Equals("HasTurnPlayerState", StringComparison.Ordinal))
-                    .Id);
         }
 
         public static void Add(Guid key, GameEntity value)
