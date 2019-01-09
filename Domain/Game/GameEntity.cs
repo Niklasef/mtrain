@@ -18,7 +18,7 @@ namespace Domain.Game
         public DominoTileEntity Engine { get; private set; }
         internal protected Stack<DominoTileEntity> boneyard;
         private List<PlayerEntity> players;
-        private GameStateBase state = new NoDoublesGameState();
+        private GameStateBase state;
         private readonly List<Tuple<Guid, Guid, long>> openDoubles = new List<Tuple<Guid, Guid, long>>();//trainId, playerId, tileId
 
 
@@ -42,6 +42,7 @@ namespace Domain.Game
             MexicanTrain = mexicanTrain ?? throw new ArgumentNullException(nameof(mexicanTrain));
             Engine = engine ?? throw new ArgumentNullException(nameof(engine));
             this.boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
+            state = new CraetedGameState();
         }
 
         public static GameEntity Create(Guid gameId)
@@ -52,21 +53,6 @@ namespace Domain.Game
                     tile.FirstValue == 12 &&
                     tile.SecondValue == 12);
             tiles.Remove(engineTile);
-            // var players = new List<PlayerEntity>();
-            // foreach (var playerName in playerNames)
-            // {
-            //     var playerTiles = tiles
-            //         .Take(10)
-            //         .ToArray();
-            //     players.Add(new PlayerEntity(engineTile, gameId, playerName, new HashSet<DominoTileEntity>(playerTiles)));
-            //     foreach (var tile in playerTiles)
-            //     {
-            //         tiles.Remove(tile);
-            //     }
-            // }
-            // players
-            //     .First()
-            //     .GiveTurn();
 
             var game = new GameEntity(
                 gameId,

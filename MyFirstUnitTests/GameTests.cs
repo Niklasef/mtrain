@@ -99,8 +99,8 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_DoublePlayedAndOherPlayerPlaysOnCorrectTrainButWrongTile_IllegalTurn()
         {
-            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(2, 1) };
-            var secondPlayerTiles = new[] { new DominoTileEntity(11, 10), new DominoTileEntity(12, 10) };
+            var firstPlayerTiles = new[] { new DominoTileEntity(11, 10), new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(2, 1) };
+            var secondPlayerTiles = new[] { new DominoTileEntity(12, 1), new DominoTileEntity(12, 10) };
             var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
             sut.MakeMove(
@@ -108,9 +108,17 @@ namespace MyFirstUnitTests
                 firstPlayerTiles.First().Id,
                 sut.MexicanTrain.Id);
             sut.MakeMove(
+                sut.Players.Last().Id,
+                secondPlayerTiles.First().Id,
+                sut.Players.Last().Train.Id);
+            sut.MakeMove(
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(1).First().Id,
                 sut.MexicanTrain.Id);
+            sut.MakeMove(
+                sut.Players.First().Id,
+                firstPlayerTiles.Skip(2).First().Id,
+                sut.Players.First().Train.Id);
             Action illegalPlay = () => sut.MakeMove(
                 sut.Players.Last().Id,
                 secondPlayerTiles.Last().Id,
@@ -312,6 +320,8 @@ namespace MyFirstUnitTests
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()
         {
             var sut = GameEntity.Create(Guid.NewGuid());
+            sut.AddPlayer(Guid.NewGuid(), "firstPlayer");
+            sut.AddPlayer(Guid.NewGuid(), "secondPlayer");
             var boneyard = sut.boneyard;
             Assert.Equal(
                 70,
@@ -322,6 +332,8 @@ namespace MyFirstUnitTests
         public void CreatingGame_TwoPlayers_10TilesEach()
         {
             var sut = GameEntity.Create(Guid.NewGuid());
+            sut.AddPlayer(Guid.NewGuid(), "firstPlayer");
+            sut.AddPlayer(Guid.NewGuid(), "secondPlayer");
             Assert.Equal(
                 10,
                 sut.Players.First().Hand.Count());
@@ -352,6 +364,7 @@ namespace MyFirstUnitTests
                 engine,
                 new Stack<DominoTileEntity>(new[] { new DominoTileEntity(9, 8), new DominoTileEntity(9, 9) }));
             Games.Add(sut.Id, sut);
+            sut.Start();
             return sut;
         }
     }
