@@ -8,8 +8,10 @@ namespace SingleScreenConsoleApp
     {
         static void Main(string[] args)
         {
-            var game = GameEntity
-                .Create(new[] { "Johannes", "Niklas" }.ToHashSet());
+            var game = GameEntity.Create(Guid.NewGuid());
+            game.AddPlayer(Guid.NewGuid(), "Johannes");
+            game.AddPlayer(Guid.NewGuid(), "Niklas");
+            game.Start();
             string input = null;
 
             while (true)

@@ -6,6 +6,7 @@ using Domain.Game;
 using Domain.Train;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 
 namespace MyFirstUnitTests
 {
@@ -21,7 +22,7 @@ namespace MyFirstUnitTests
                 Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engine,
-                Enumerable.Empty<DominoTileEntity>().ToArray());
+                new Stack<DominoTileEntity>());
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();
@@ -51,7 +52,7 @@ namespace MyFirstUnitTests
                 Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engine,
-                Enumerable.Empty<DominoTileEntity>().ToArray());
+                new Stack<DominoTileEntity>());
             Games.Add(game.Id, game);
 
             var playerId = Guid.NewGuid();

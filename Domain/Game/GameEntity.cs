@@ -13,12 +13,15 @@ namespace Domain.Game
     public partial class GameEntity
     {
         public Guid Id { get; private set; }
-        public IEnumerable<PlayerEntity> Players { get; private set; }
+        public IEnumerable<PlayerEntity> Players => players;
         public ITrain MexicanTrain { get; private set; }
         public DominoTileEntity Engine { get; private set; }
-        internal ICollection<DominoTileEntity> Boneyard { get; private set; }
+        internal protected Stack<DominoTileEntity> boneyard;
+        private List<PlayerEntity> players;
         private GameStateBase state = new NoDoublesGameState();
         private readonly List<Tuple<Guid, Guid, long>> openDoubles = new List<Tuple<Guid, Guid, long>>();//trainId, playerId, tileId
+
+
         public IEnumerable<long> GetOpenDoubleTileIds() =>
             openDoubles
                 .Select(od => od.Item3)
@@ -32,46 +35,45 @@ namespace Domain.Game
             IEnumerable<PlayerEntity> players,
             ITrain mexicanTrain,
             DominoTileEntity engine,
-            ICollection<DominoTileEntity> boneyard)
+            Stack<DominoTileEntity> boneyard)
         {
             Id = id;
-            Players = players ?? throw new ArgumentNullException(nameof(players));
+            this.players = players?.ToList() ?? throw new ArgumentNullException(nameof(players));
             MexicanTrain = mexicanTrain ?? throw new ArgumentNullException(nameof(mexicanTrain));
             Engine = engine ?? throw new ArgumentNullException(nameof(engine));
-            Boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
+            this.boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
         }
 
-        public static GameEntity Create(HashSet<string> playerNames)
+        public static GameEntity Create(Guid gameId)
         {
-            var gameId = Guid.NewGuid();
             var tiles = new ShuffledTileSetFactory().Create(12);
             var engineTile = tiles
                 .First(tile =>
                     tile.FirstValue == 12 &&
                     tile.SecondValue == 12);
             tiles.Remove(engineTile);
-            var players = new List<PlayerEntity>();
-            foreach (var playerName in playerNames)
-            {
-                var playerTiles = tiles
-                    .Take(10)
-                    .ToArray();
-                players.Add(new PlayerEntity(engineTile, gameId, playerName, new HashSet<DominoTileEntity>(playerTiles)));
-                foreach (var tile in playerTiles)
-                {
-                    tiles.Remove(tile);
-                }
-            }
-            players
-                .First()
-                .GiveTurn();
+            // var players = new List<PlayerEntity>();
+            // foreach (var playerName in playerNames)
+            // {
+            //     var playerTiles = tiles
+            //         .Take(10)
+            //         .ToArray();
+            //     players.Add(new PlayerEntity(engineTile, gameId, playerName, new HashSet<DominoTileEntity>(playerTiles)));
+            //     foreach (var tile in playerTiles)
+            //     {
+            //         tiles.Remove(tile);
+            //     }
+            // }
+            // players
+            //     .First()
+            //     .GiveTurn();
 
             var game = new GameEntity(
                 gameId,
-                players,
+                Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engineTile,
-                tiles);
+                new Stack<DominoTileEntity>(tiles));
             Games.Add(game.Id, game);
             return game;
         }
@@ -81,6 +83,12 @@ namespace Domain.Game
 
         public void PassMove(Guid playerId) =>
             state.PassMove(this, playerId);
+
+        public void AddPlayer(Guid playerId, string playerName) =>
+            state.AddPlayer(this, playerId, playerName);
+
+        public void Start() =>
+            state.Start(this);
 
         public override string ToString()
         {
@@ -101,10 +109,12 @@ namespace Domain.Game
             return stringBuilder.ToString();
         }
 
-        public GameBoard GetBoard(
-            Guid playerId)
-        {
-            return new GameBoard(
+        public GameBoard GetBoard(Guid playerId) =>
+            new GameBoard(
+                Players
+                    .ToDictionary(p => p.Id, p => p.Name),
+                GetStateType(),
+                Id,
                 GetTrains(),
                 GetPlayer(playerId)
                     .Hand,
@@ -114,7 +124,21 @@ namespace Domain.Game
                         .Name
                         .Equals("HasTurnPlayerState", StringComparison.Ordinal))
                     .Id);
-        }
+
+        public GameBoard GetBoard() =>
+            new GameBoard(
+                Players
+                    .ToDictionary(p => p.Id, p => p.Name),
+                GetStateType(),
+                Id,
+                GetTrains(),
+                Enumerable.Empty<DominoTileEntity>(),
+                Players
+                    .First(p => p
+                        .GetStateType()
+                        .Name
+                        .Equals("HasTurnPlayerState", StringComparison.Ordinal))
+                    .Id);
 
         internal PlayerEntity GetPlayer(Guid playerId) =>
             Players

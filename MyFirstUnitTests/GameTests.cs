@@ -96,7 +96,7 @@ namespace MyFirstUnitTests
             Assert.ThrowsAny<ApplicationException>(illegalPlay);
         }
 
-                [Fact]
+        [Fact]
         public void MakeMove_DoublePlayedAndOherPlayerPlaysOnCorrectTrainButWrongTile_IllegalTurn()
         {
             var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(2, 1) };
@@ -164,7 +164,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_DoubleIsSecondTileOnMexicanTrainMustBeClosed_Exception()
         {
-            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(12, 1), new DominoTileEntity(12, 2), new DominoTileEntity(6, 7)};
+            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(12, 1), new DominoTileEntity(12, 2), new DominoTileEntity(6, 7) };
             var secondPlayerTiles = new[] { new DominoTileEntity(12, 10), new DominoTileEntity(12, 9) };
             var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
@@ -311,8 +311,8 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_70TilesInBoneyard()
         {
-            var sut = GameEntity.Create(new[] { "1", "2" }.ToHashSet());
-            var boneyard = sut.Boneyard;
+            var sut = GameEntity.Create(Guid.NewGuid());
+            var boneyard = sut.boneyard;
             Assert.Equal(
                 70,
                 boneyard.Count());
@@ -321,7 +321,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void CreatingGame_TwoPlayers_10TilesEach()
         {
-            var sut = GameEntity.Create(new[] { "1", "2" }.ToHashSet());
+            var sut = GameEntity.Create(Guid.NewGuid());
             Assert.Equal(
                 10,
                 sut.Players.First().Hand.Count());
@@ -342,15 +342,15 @@ namespace MyFirstUnitTests
             var gameId = Guid.NewGuid();
             var mexicanTrain = new MexicanTrain();
             var engine = new DominoTileEntity(12, 12, true);
-            var firstPlayer = new PlayerEntity(engine, gameId, "playerOne", firstPlayedTiles.ToHashSet());
-            var secondPlayer = new PlayerEntity(engine, gameId, "playerTwo", secondPlayedTiles.ToHashSet());
+            var firstPlayer = PlayerEntity.Create(gameId, Guid.NewGuid(), engine, firstPlayedTiles.ToHashSet(), "playerOne");
+            var secondPlayer = PlayerEntity.Create(gameId, Guid.NewGuid(), engine, secondPlayedTiles.ToHashSet(), "playerTwo");
             firstPlayer.GiveTurn();
             var sut = new GameEntity(
                 gameId,
                 new[] { firstPlayer, secondPlayer },
                 mexicanTrain,
                 engine,
-                new[] { new DominoTileEntity(9, 8), new DominoTileEntity(9, 9) }.ToList());
+                new Stack<DominoTileEntity>(new[] { new DominoTileEntity(9, 8), new DominoTileEntity(9, 9) }));
             Games.Add(sut.Id, sut);
             return sut;
         }

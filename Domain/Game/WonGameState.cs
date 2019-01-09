@@ -1,8 +1,9 @@
 using System;
+using System.Linq;
+using Domain.Train;
 
 namespace Domain.Game
 {
-
     public partial class GameEntity
     {
         private class WonGameState : GameStateBase

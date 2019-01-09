@@ -55,5 +55,20 @@ namespace Domain.Player
                 player.InnerGetTrain().Open();
             }
         }
+
+        internal static PlayerEntity Create(
+            Guid gameId, 
+            Guid playerId,
+            DominoTileEntity engine,
+            HashSet<DominoTileEntity> hand,
+            string playerName
+        ) =>
+            new PlayerEntity(
+                playerId,
+                new PlayerTrain(engine, playerId),
+                gameId,
+                playerName,
+                hand
+            );
     }
 }

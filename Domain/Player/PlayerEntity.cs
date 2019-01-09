@@ -19,7 +19,8 @@ namespace Domain.Player
         protected internal HashSet<DominoTileEntity> Hand { get; private set; }
 
         internal PlayerEntity(
-            DominoTileEntity engineTile,
+            Guid id,
+            PlayerTrain train,
             Guid gameId,
             string name,
             HashSet<DominoTileEntity> hand)
@@ -28,9 +29,10 @@ namespace Domain.Player
             {
                 throw new ArgumentException("Must be a real name of a player.", nameof(name));
             }
-            Id = Guid.NewGuid();
+            Id = id;
             this.Hand = hand ?? throw new ArgumentNullException(nameof(hand));
-            train = new PlayerTrain(engineTile, Id);
+            // train = new PlayerTrain(engineTile, Id);
+            this.train = train;
             this.gameId = gameId;
             Name = name;
         }

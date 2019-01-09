@@ -35,10 +35,8 @@ namespace Domain.Game
             internal override void PassMove(GameEntity game, Guid playerId)
             {
                 var tile = game
-                    .Boneyard
-                    .First();
-                game.Boneyard
-                    .Remove(tile);
+                    .boneyard
+                    .Pop();
                 game.GetPlayer(playerId)
                     .PassMove(tile);
                 PassTurn(game, playerId);

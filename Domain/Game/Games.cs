@@ -11,6 +11,9 @@ namespace Domain.Game
     {
         private static readonly IDictionary<Guid, GameEntity> innerList = new Dictionary<Guid, GameEntity>();
 
+        public static IEnumerable<GameEntity> GetAll() =>
+            innerList.Values;
+
         public static GameEntity Get(Guid key)
         {
             if (!innerList.ContainsKey(key))
