@@ -1,7 +1,9 @@
+using System;
+
 namespace Server
 {
-    public interface IQuery<TResult>
+    public interface IQuery
     {
-        TResult Execute();
+        object Execute();
     }
 }

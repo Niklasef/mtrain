@@ -16,6 +16,7 @@ namespace Server
             Games
                 .Add(
                     GameId,
-                    GameEntity.Create(GameId));
+                    GameEntity
+                        .Create(GameId));
     }
 }

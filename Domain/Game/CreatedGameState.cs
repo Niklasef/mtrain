@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Player;
@@ -7,7 +7,7 @@ namespace Domain.Game
 {
     public partial class GameEntity
     {
-        private class CraetedGameState : GameStateBase
+        private class CreatedGameState : GameStateBase
         {
             internal override void AddPlayer(
                 GameEntity game,

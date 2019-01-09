@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Game;
 
 namespace Server
 {
-    public class GetGameBoardsQuery : IQuery<IEnumerable<GameBoard>>
+    public class GetGameBoardsQuery : IQuery
     {
-        public IEnumerable<GameBoard> Execute() =>
+        public object Execute() =>
             Games
                 .GetAll()
                 .Select(g => 
-                    g.GetBoard());
+                    g.GetBoard())
+                .ToArray();
     }
 }

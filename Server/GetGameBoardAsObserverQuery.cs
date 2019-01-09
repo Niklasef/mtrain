@@ -3,7 +3,7 @@ using Domain.Game;
 
 namespace Server
 {
-    public class GetGameBoardAsObserverQuery : IQuery<GameBoard>
+    public class GetGameBoardAsObserverQuery : IQuery
     {
         public GetGameBoardAsObserverQuery(Guid gameId)
         {
@@ -12,7 +12,7 @@ namespace Server
 
         public Guid GameId { get; }
 
-        public GameBoard Execute() =>
+        public object Execute() =>
             Games
                 .Get(GameId)
                 .GetBoard();

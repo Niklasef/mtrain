@@ -42,7 +42,7 @@ namespace Domain.Game
             MexicanTrain = mexicanTrain ?? throw new ArgumentNullException(nameof(mexicanTrain));
             Engine = engine ?? throw new ArgumentNullException(nameof(engine));
             this.boneyard = boneyard ?? throw new ArgumentNullException(nameof(boneyard));
-            state = new CraetedGameState();
+            state = new CreatedGameState();
         }
 
         public static GameEntity Create(Guid gameId)
@@ -54,14 +54,12 @@ namespace Domain.Game
                     tile.SecondValue == 12);
             tiles.Remove(engineTile);
 
-            var game = new GameEntity(
+            return new GameEntity(
                 gameId,
                 Enumerable.Empty<PlayerEntity>(),
                 new MexicanTrain(),
                 engineTile,
                 new Stack<DominoTileEntity>(tiles));
-            Games.Add(game.Id, game);
-            return game;
         }
 
         public void MakeMove(Guid playerId, long tileId, Guid trainId) =>
@@ -120,11 +118,11 @@ namespace Domain.Game
                 GetTrains(),
                 Enumerable.Empty<DominoTileEntity>(),
                 Players
-                    .First(p => p
+                    .FirstOrDefault(p => p
                         .GetStateType()
                         .Name
                         .Equals("HasTurnPlayerState", StringComparison.Ordinal))
-                    .Id);
+                    ?.Id ?? Guid.Empty);
 
         internal PlayerEntity GetPlayer(Guid playerId) =>
             Players

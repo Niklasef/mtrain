@@ -3,7 +3,7 @@ using Domain.Game;
 
 namespace Server
 {
-    public class GetGameBoardQuery : IQuery<GameBoard>
+    public class GetGameBoardQuery : IQuery
     {
         public GetGameBoardQuery(
             Guid gameId,
@@ -16,7 +16,7 @@ namespace Server
         public Guid GameId { get; }
         public Guid PlayerId { get; }
 
-        public GameBoard Execute() =>
+        public object Execute() =>
             Games
                 .Get(GameId)
                 .GetBoard(PlayerId);

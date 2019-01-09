@@ -4,7 +4,7 @@ namespace Server
 {
     public class GameServer
     {
-        public TResult ExecuteQuery<TResult>(IQuery<TResult> query)
+        public object ExecuteQuery(IQuery query)
         {
             if (query == null)
             {
