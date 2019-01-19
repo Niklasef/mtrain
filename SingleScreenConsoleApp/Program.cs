@@ -9,6 +9,7 @@ namespace SingleScreenConsoleApp
         static void Main(string[] args)
         {
             var game = GameEntity.Create(Guid.NewGuid());
+            Games.Add(game.Id, game);
             game.AddPlayer(Guid.NewGuid(), "Johannes");
             game.AddPlayer(Guid.NewGuid(), "Niklas");
             game.Start();
@@ -76,6 +77,7 @@ namespace SingleScreenConsoleApp
                 catch (ApplicationException exception)
                 {
                     Console.WriteLine($"Illegal move: '{exception.Message}'. Press any key to continue.");
+                    // Console.WriteLine(exception);
                     Console.ReadKey();
                 }
             }
