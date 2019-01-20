@@ -12,9 +12,10 @@ namespace HttpClient
     public class GameHttpClient
     {
         private readonly System.Net.Http.HttpClient httpClient;
-        private static readonly Uri CommandApiUri = new Uri("");
+        private static readonly Uri CommandApiUri = new Uri("http://localhost:5000/api/command/");
+        private static readonly Uri QueryApiUri = new Uri("http://localhost:5000/api/query/");
 
-        internal GameHttpClient(System.Net.Http.HttpClient httpClient)
+        public GameHttpClient(System.Net.Http.HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
@@ -107,7 +108,7 @@ namespace HttpClient
             var response = httpClient.SendAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
-                    CommandApiUri)
+                    QueryApiUri)
                 {
                     Content = new StringContent(
                         JsonConvert.SerializeObject(

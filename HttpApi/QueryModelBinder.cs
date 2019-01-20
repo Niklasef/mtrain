@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace HttpApi
 {
-    public class CommandModelBinder : IModelBinder
+    public class QueryModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
@@ -15,7 +15,7 @@ namespace HttpApi
                 body = reader.ReadToEnd();
             }
 
-            var model = JsonConvert.DeserializeObject<Server.ICommand>(
+            var model = JsonConvert.DeserializeObject<Server.IQuery>(
                 body,
                 new JsonSerializerSettings
                 {

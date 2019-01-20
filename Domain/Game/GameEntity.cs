@@ -21,7 +21,6 @@ namespace Domain.Game
         private GameStateBase state;
         private readonly List<Tuple<Guid, Guid, long>> openDoubles = new List<Tuple<Guid, Guid, long>>();//trainId, playerId, tileId
 
-
         public IEnumerable<long> GetOpenDoubleTileIds() =>
             openDoubles
                 .Select(od => od.Item3)
@@ -99,15 +98,23 @@ namespace Domain.Game
                     .ToDictionary(p => p.Id, p => p.Name),
                 GetStateType(),
                 Id,
-                GetTrains(),
+                Players
+                    .ToDictionary(
+                        p => p.Id,
+                        p => new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(p
+                            .Train.Id, 
+                            p.Train.GetTiles())),
+                new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
+                    MexicanTrain.Id, 
+                    MexicanTrain.GetTiles()),
                 GetPlayer(playerId)
                     .Hand,
                 Players
-                    .First(p => p
+                    .FirstOrDefault(p => p
                         .GetStateType()
                         .Name
                         .Equals("HasTurnPlayerState", StringComparison.Ordinal))
-                    .Id);
+                    ?.Id ?? Guid.Empty);
 
         public GameBoard GetBoard() =>
             new GameBoard(
@@ -115,7 +122,15 @@ namespace Domain.Game
                     .ToDictionary(p => p.Id, p => p.Name),
                 GetStateType(),
                 Id,
-                GetTrains(),
+                Players
+                    .ToDictionary(
+                        p => p.Id,
+                        p => new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(p
+                            .Train.Id, 
+                            p.Train.GetTiles())),
+                new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
+                    MexicanTrain.Id, 
+                    MexicanTrain.GetTiles()),
                 Enumerable.Empty<DominoTileEntity>(),
                 Players
                     .FirstOrDefault(p => p
@@ -140,7 +155,8 @@ namespace Domain.Game
                 .Union(
                     Players
                         .Select(p => p
-                            .Train));
+                            .Train))
+                .ToArray();
 
         internal DominoTileEntity GetPlayedTile(long tileId) =>
             Players

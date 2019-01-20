@@ -15,7 +15,11 @@ namespace Domain.Player
                 player.state = new WaitingForTurnPlayerState();
                 
             internal override void GiveTurn(PlayerEntity player) { }
-            internal override void MakeMove(PlayerEntity player, long tileId, ITrain train)
+
+            internal override void MakeMove(
+                PlayerEntity player, 
+                long tileId, 
+                ITrain train)
             {
                 var tile = player
                     .Hand
@@ -26,7 +30,10 @@ namespace Domain.Player
                     .GetOpenDoubleTileIds()
                     .ToArray();
                 if(openDoubleIds.Any() && 
-                    !Games.Get(player.gameId).GetPlayedTile(openDoubleIds.First()).IsMatch(tile))
+                    !Games
+                        .Get(player.gameId)
+                        .GetPlayedTile(openDoubleIds.First())
+                        .IsMatch(tile))
                 {
                     throw new ApplicationException($"Illegal move. Must play on first present open double which is '{Games.Get(player.gameId).GetPlayedTile(openDoubleIds.First())}'. The played tile '{tile}' is not a match.");
                 }
