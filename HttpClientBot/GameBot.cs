@@ -52,31 +52,21 @@ namespace HttpClientBot
 
         public void Start()
         {
-            var periodTimeSpan = TimeSpan.FromSeconds(1);
-
             new Timer((e) =>
             {
                 RefreshGameBoard();
-            }, null, TimeSpan.Zero, periodTimeSpan);
-
-            new Timer((e) =>
-            {
-                DoMove();
-            }, null, TimeSpan.Zero, periodTimeSpan);
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
-        private void DoMove()
+        private void TryDoMove()
         {
-            lock (padLock)
+            if (gameBoard?.PlayerIdWithTurn == playerId)
             {
-                if (gameBoard?.PlayerIdWithTurn == playerId)
-                {
-                    moveStrategy
-                        .Execute(
-                            playerId,
-                            gameId,
-                            gameBoard);
-                }
+                moveStrategy
+                    .Execute(
+                        playerId,
+                        gameId,
+                        gameBoard);
             }
         }
 
@@ -86,6 +76,7 @@ namespace HttpClientBot
             {
                 gameBoard = gameClient
                     .GetGameBoard(gameId, playerId);
+                TryDoMove();
             }
         }
     }
@@ -110,13 +101,14 @@ namespace HttpClientBot
             Guid gameId,
             GameBoard gameBoard)
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 1000; i++)
             {
+                Thread.Sleep(50);
                 try
                 {
                     var trainIds = gameBoard
                         .PlayerTrains
-                        .Keys
+                        .Select(keyValuePair => keyValuePair.Value.Key)
                         .Union(new[]{gameBoard
                             .MexicanTrain
                             .Key});
@@ -132,11 +124,14 @@ namespace HttpClientBot
                         .First()
                         .Id;
 
+                    Console.WriteLine($"traingId: {trainIdToPlay}, tileId: {tileIdToPlay}");
                     gameHttpClient.MakeMove(
                         gameId,
                         playerId,
                         trainIdToPlay,
                         tileIdToPlay);
+                    Console.WriteLine($"Move succeeded");
+                    return;
                 }
                 catch
                 {
