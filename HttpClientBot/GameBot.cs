@@ -8,11 +8,12 @@ using System.Net.Http;
 
 namespace HttpClientBot
 {
-    public class GameBot
+    public class GameBot : IDisposable
     {
         private readonly Guid gameId;
         private readonly Guid playerId;
         private readonly IMoveStrategy moveStrategy;
+        private Timer timer;
         private readonly GameHttpClient gameClient;
         private GameBoard gameBoard;
 
@@ -39,7 +40,7 @@ namespace HttpClientBot
             var gameBoards = gameClient.GetGameBoards();
             if (!gameBoards.Any(gb => gb.GameId == gameId))
             {
-                gameClient.CreateGame(gameId);
+                //gameClient.CreateGame(gameId);
             }
             var playerId = Guid.NewGuid();
             gameClient.JoinGame(
@@ -55,7 +56,7 @@ namespace HttpClientBot
 
         public void Start()
         {
-            new Timer((e) =>
+            timer = new Timer((e) =>
             {
                 try
                 {
@@ -63,10 +64,9 @@ namespace HttpClientBot
                 }
                 catch (Exception exception)
                 {
-                    FireOnException(exception);
-                    throw;
+                    Console.Write(exception);
                 }
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
         private void TryDoMove()
@@ -98,9 +98,16 @@ namespace HttpClientBot
             {
                 return;
             }
+            Console.WriteLine($"Refreshing board");
             gameBoard = gameClient
                 .GetGameBoard(gameId, playerId);
+            Console.WriteLine(gameBoard.ToString());
             TryDoMove();
+        }
+
+        public void Dispose()
+        {
+            timer.Dispose();
         }
     }
 

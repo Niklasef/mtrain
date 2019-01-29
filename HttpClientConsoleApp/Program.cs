@@ -10,26 +10,47 @@ namespace HttpClientConsoleApp
     {
         private static GameBoard gameBoard;
         private static HttpClient.GameHttpClient gameClient;
-        private static Guid gameId = Guid.NewGuid();
+        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e21");
         private static Guid playerId = Guid.NewGuid();
 
         static void Main(string[] args)
         {
+            var botOnly = args.FirstOrDefault() == "bot";
             gameClient = new HttpClient.GameHttpClient(new System.Net.Http.HttpClient());
-            gameClient.CreateGame(gameId);
-            if (args.FirstOrDefault() != "botonly")
+            if (!botOnly)
             {
+                var gameBoards = gameClient.GetGameBoards();
+                if (!gameBoards.Any(gb => gb.GameId == gameId))
+                {
+                    gameClient.CreateGame(gameId);
+                }
                 gameClient.JoinGame(gameId, playerId, "Niklas");
+                Thread.Sleep(10000);
+                gameClient.StartGame(gameId);
             }
-            var bot = GameBot.Create(gameId);
-            bot.Start();
+            else
+            {
+                var bot = GameBot.Create(gameId);
+                bot.OnException += (e) => throw e;
+                bot.Start();
+            }
 
-            Thread.Sleep(2000);
-            gameClient.StartGame(gameId);
-            bot.Start();
-            bot.OnException += (e) => throw e;
+            if (!botOnly)
+            {
+                RunHumanPlayer();
+            }
+            else
+            {
+                while (true)
+                {
+                    Thread.Sleep(5000);
+                }
+            }
+        }
+
+        private static void RunHumanPlayer()
+        {
             string input = null;
-
             gameBoard = gameClient.GetGameBoard(gameId, playerId);
             Console.Clear();
             Console.Write(gameBoard.ToString());
@@ -88,7 +109,13 @@ namespace HttpClientConsoleApp
                         .PlayerTrains
                         .Skip(trainIndex)
                         .First()
+                        .Value
                         .Key;
+
+                Console.WriteLine($"tileIndex {tileIndex}");
+                Console.WriteLine($"tileId {tileId}");
+                Console.WriteLine($"trainIndex {trainIndex}");
+                Console.WriteLine($"trainId {trainId}");
                 try
                 {
                     gameClient.MakeMove(
@@ -101,8 +128,7 @@ namespace HttpClientConsoleApp
                 }
                 catch (Exception exception)
                 {
-                    Console.WriteLine($"Illegal move: '{exception.Message}'. Press any key to continue.");
-                    // Console.WriteLine(exception);
+                    Console.WriteLine($"Exception when making move.");
                     Console.ReadKey();
                 }
             }

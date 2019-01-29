@@ -123,7 +123,7 @@ namespace HttpClient
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new WebException(response.Content?.ReadAsStringAsync()?.Result ?? string.Empty);
+                throw new WebException();
             }
 
             return (T)JsonConvert
