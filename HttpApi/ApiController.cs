@@ -10,29 +10,36 @@ namespace HttpApi
     [ApiController]
     public class ApiController : ControllerBase
     {
+        private static object padLock = new object();
         [HttpPost]
         public IActionResult Command([ModelBinder(typeof(CommandModelBinder))]Server.ICommand command)
         {
-            command.Execute();
-            return Ok();
+            lock (padLock)
+            {
+                command.Execute();
+                return Ok();
+            }
         }
 
         [HttpPost]
         public IActionResult Query([ModelBinder(typeof(QueryModelBinder))]Server.IQuery query)
         {
-            var result = query.Execute();
-            var json = JsonConvert.SerializeObject(
-                result,
-                new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                });
-            return new ContentResult()
+            lock (padLock)
             {
-                Content = json,
-                ContentType = "application/json",
-                StatusCode = 200
-            };
+                var result = query.Execute();
+                var json = JsonConvert.SerializeObject(
+                    result,
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    });
+                return new ContentResult()
+                {
+                    Content = json,
+                    ContentType = "application/json",
+                    StatusCode = 200
+                };
+            }
         }
     }
 }
