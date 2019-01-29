@@ -11,15 +11,18 @@ namespace Domain.Train
         private DominoTileEntity head;
         private DominoTileEntity tail;
 
-        internal MexicanTrain()
+        internal MexicanTrain(Guid id)
         {
-            Id = Guid.NewGuid();
+            Id = id;
         }
 
-        public void AddTile(DominoTileEntity tile, Guid playerId)
+        internal static MexicanTrain Create()
         {
-            ForceAddTile(tile);
+            return new MexicanTrain(Guid.NewGuid());
         }
+
+        public void AddTile(DominoTileEntity tile, Guid playerId) =>
+            ForceAddTile(tile);
 
         public void ForceAddTile(DominoTileEntity tile)
         {

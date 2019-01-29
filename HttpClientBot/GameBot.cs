@@ -14,8 +14,11 @@ namespace HttpClientBot
         private readonly Guid playerId;
         private readonly IMoveStrategy moveStrategy;
         private readonly GameHttpClient gameClient;
-        private readonly object padLock = new object();
         private GameBoard gameBoard;
+
+        public event OnExceptionHandler OnException;
+        public delegate void OnExceptionHandler(Exception exception);
+        private void FireOnException(Exception exception) => OnException?.Invoke(exception);
 
         public GameBot(
             Guid gameId,
@@ -54,30 +57,50 @@ namespace HttpClientBot
         {
             new Timer((e) =>
             {
-                RefreshGameBoard();
-            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                try
+                {
+                    RefreshGameBoard();
+                }
+                catch (Exception exception)
+                {
+                    FireOnException(exception);
+                    throw;
+                }
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
         }
 
         private void TryDoMove()
         {
             if (gameBoard?.PlayerIdWithTurn == playerId)
             {
-                moveStrategy
-                    .Execute(
-                        playerId,
-                        gameId,
-                        gameBoard);
+                doingMove = true;
+                Console.WriteLine("Trying to do move");
+                try
+                {
+                    moveStrategy
+                        .Execute(
+                            playerId,
+                            gameId,
+                            gameBoard);
+                }
+                finally
+                {
+                    doingMove = false;
+                }
             }
         }
 
+        private bool doingMove = false;
+
         private void RefreshGameBoard()
         {
-            lock (padLock)
+            if (doingMove)
             {
-                gameBoard = gameClient
-                    .GetGameBoard(gameId, playerId);
-                TryDoMove();
+                return;
             }
+            gameBoard = gameClient
+                .GetGameBoard(gameId, playerId);
+            TryDoMove();
         }
     }
 
@@ -101,46 +124,54 @@ namespace HttpClientBot
             Guid gameId,
             GameBoard gameBoard)
         {
-            for (var i = 0; i < 1000; i++)
+            var moveSucceeded = false;
+            for (int i = 0; i < 20; i++)
             {
                 Thread.Sleep(50);
-                try
-                {
-                    var trainIds = gameBoard
-                        .PlayerTrains
-                        .Select(keyValuePair => keyValuePair.Value.Key)
-                        .Union(new[]{gameBoard
+                var trainIds = gameBoard
+                    .PlayerTrains
+                    .Select(keyValuePair => keyValuePair.Value.Key)
+                    .Union(new[]{gameBoard
                             .MexicanTrain
                             .Key});
-                    var trainCount = trainIds.Count();
-                    var trainIdToPlay = trainIds
-                        .Skip(random.Next(0, trainCount--))
-                        .First();
+                var trainCount = trainIds.Count();
+                var trainIdToPlay = trainIds
+                    .Skip(random.Next(0, trainCount--))
+                    .First();
 
-                    var tileCount = gameBoard.Hand.Count();
-                    var tileIdToPlay = gameBoard
-                        .Hand
-                        .Skip(random.Next(0, tileCount--))
-                        .First()
-                        .Id;
+                var tileCount = gameBoard.Hand.Count();
+                var tileIdToPlay = gameBoard
+                    .Hand
+                    .Skip(random.Next(0, tileCount--))
+                    .First()
+                    .Id;
 
-                    Console.WriteLine($"traingId: {trainIdToPlay}, tileId: {tileIdToPlay}");
+                Console.WriteLine($"trying with traingId: {trainIdToPlay}, tileId: {tileIdToPlay}");
+                try
+                {
                     gameHttpClient.MakeMove(
                         gameId,
                         playerId,
                         trainIdToPlay,
                         tileIdToPlay);
-                    Console.WriteLine($"Move succeeded");
-                    return;
+                    i = 100;
+                    moveSucceeded = true;
                 }
                 catch
                 {
 
                 }
+                Console.WriteLine($"Move succeeded");
             }
-            gameHttpClient.PassMove(
-                gameId,
-                playerId);
+            if (!moveSucceeded)
+            {
+                gameHttpClient.PassMove(
+                    gameId,
+                    playerId);
+            }
+            Thread.Sleep(100);
+            gameBoard = gameHttpClient
+                .GetGameBoard(gameId, playerId);
         }
     }
 

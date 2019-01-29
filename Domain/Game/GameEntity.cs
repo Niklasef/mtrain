@@ -56,7 +56,7 @@ namespace Domain.Game
             return new GameEntity(
                 gameId,
                 Enumerable.Empty<PlayerEntity>(),
-                new MexicanTrain(),
+                Domain.Train.MexicanTrain.Create(),
                 engineTile,
                 new Stack<DominoTileEntity>(tiles));
         }

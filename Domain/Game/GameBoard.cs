@@ -41,24 +41,23 @@ namespace Domain.Game
             stringBuilder.AppendLine($"Game State: '{GameState}'");
             stringBuilder.AppendLine($"Player with turn: '{Players.First(p => p.Key == PlayerIdWithTurn).Value}'");
 
-            stringBuilder.AppendLine("");
-            stringBuilder.AppendLine($"Mexican train");
-
-            MexicanTrain
-                .Value
-                    .ToList()
-                    .ForEach(t => stringBuilder.AppendLine(string.Join(",", t)));
-
-
             PlayerTrains
                 .ToList()
                 .ForEach(pt =>
                 {
                     stringBuilder.AppendLine("");
                     stringBuilder.AppendLine($"Player: '{Players.First(p => p.Key == pt.Key).Value}'");
-                    stringBuilder.AppendLine($"{string.Join(",", pt.Value.Value)}");
+                    stringBuilder.AppendLine($"{string.Join(",", pt.Value.Value.Reverse())}");
                 });
 
+            stringBuilder.AppendLine("");
+            stringBuilder.AppendLine($"Mexican train");
+            var mexicanTrain = new Domain.Train.MexicanTrain(MexicanTrain.Key);
+            MexicanTrain
+                .Value
+                    .ToList()
+                    .ForEach(t => mexicanTrain.ForceAddTile(t));
+            stringBuilder.AppendLine(mexicanTrain.ToString());
 
             stringBuilder.AppendLine("");
             stringBuilder.AppendLine("Hand");
