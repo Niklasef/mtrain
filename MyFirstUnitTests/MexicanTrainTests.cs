@@ -12,7 +12,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_FirstTileInTrain_CorrectTileExists()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile = new DominoTileEntity(1, 2);
 
             sut.AddTile(tile, Guid.NewGuid());
@@ -23,7 +23,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_ThreeHeadMatchingTiles_CorrectTilesExists()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(1, 2);
             var tile2 = new DominoTileEntity(2, 3);
             var tile3 = new DominoTileEntity(3, 4);
@@ -41,7 +41,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_TilesMatchingBothHeadAndTail_CorrectTilesExists()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(1, 2);
             var tile2 = new DominoTileEntity(2, 3);
             var tile3 = new DominoTileEntity(1, 5);
@@ -59,7 +59,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_MissmatchingTile_ThrowsException()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(1, 2);
             var tile2 = new DominoTileEntity(4, 5);
 
@@ -72,7 +72,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void AddTile_OpeningAndClosingDouble_CorrectTilesOnTrain()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(11, 0);
             var tile2 = new DominoTileEntity(0, 0);
             var tile3 = new DominoTileEntity(0, 4);
@@ -85,7 +85,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void ToString_MatchesOnRightButUnaligned_AlignedAsMatchingTiles()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(2, 1);
             var tile2 = new DominoTileEntity(3, 1);
 
@@ -98,7 +98,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void ToString_MatchesOnLeftButUnaligned_AlignedAsMatchingTiles()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(2, 1);
             var tile2 = new DominoTileEntity(2, 10);
 
@@ -111,7 +111,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void ToString_ThreeMatchingNonAlignedTiles_AlignedAsMatchingTiles()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(2, 1);
             var tile2 = new DominoTileEntity(3, 2);
             var tile3 = new DominoTileEntity(3, 4);
@@ -126,7 +126,7 @@ namespace MyFirstUnitTests
         [Fact]
         public void ToString_ThreeMatchingNonAlignedTilesFromBothSides_AlignedAsMatchingTiles()
         {
-            var sut = new MexicanTrain();
+            var sut = MexicanTrain.Create();
             var tile1 = new DominoTileEntity(1, 2);
             var tile2 = new DominoTileEntity(2, 3);
             var tile3 = new DominoTileEntity(1, 11);

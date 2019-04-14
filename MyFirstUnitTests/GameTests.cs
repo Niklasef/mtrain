@@ -352,7 +352,7 @@ namespace MyFirstUnitTests
         private static GameEntity CreateGame(IEnumerable<DominoTileEntity> firstPlayedTiles, IEnumerable<DominoTileEntity> secondPlayedTiles)
         {
             var gameId = Guid.NewGuid();
-            var mexicanTrain = new MexicanTrain();
+            var mexicanTrain = MexicanTrain.Create();
             var engine = new DominoTileEntity(12, 12, true);
             var firstPlayer = PlayerEntity.Create(gameId, Guid.NewGuid(), engine, firstPlayedTiles.ToHashSet(), "playerOne");
             var secondPlayer = PlayerEntity.Create(gameId, Guid.NewGuid(), engine, secondPlayedTiles.ToHashSet(), "playerTwo");

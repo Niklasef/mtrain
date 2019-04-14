@@ -20,7 +20,7 @@ namespace MyFirstUnitTests
             var game = new GameEntity(
                 Guid.NewGuid(), 
                 Enumerable.Empty<PlayerEntity>(),
-                new MexicanTrain(),
+                MexicanTrain.Create(),
                 engine,
                 new Stack<DominoTileEntity>());
             Games.Add(game.Id, game);
@@ -50,7 +50,7 @@ namespace MyFirstUnitTests
             var game = new GameEntity(
                 Guid.NewGuid(), 
                 Enumerable.Empty<PlayerEntity>(),
-                new MexicanTrain(),
+                MexicanTrain.Create(),
                 engine,
                 new Stack<DominoTileEntity>());
             Games.Add(game.Id, game);
