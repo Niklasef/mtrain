@@ -8,7 +8,6 @@ namespace Domain.DominoTile
     {
         private class HalfLinkedState : TileStateBase
         {
-            //TODO almost same impl as unlinked... refactor
             internal override void Link(DominoTileEntity tile, DominoTileEntity otherTile)
             {
                 if (tile == null)

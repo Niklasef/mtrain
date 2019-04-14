@@ -63,7 +63,7 @@ namespace Domain.DominoTile
         public override string ToString() =>
             $"[{FirstValue}|{SecondValue}]";
 
-        public void Flip()
+        internal void Flip()
         {
             var tempValue = FirstValue;
             FirstValue = SecondValue;

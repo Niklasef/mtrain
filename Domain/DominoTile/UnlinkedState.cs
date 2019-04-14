@@ -24,11 +24,21 @@ namespace Domain.DominoTile
                 }
                 tile.linkedTiles.Add(otherTile);
                 tile.state = new HalfLinkedState();
+                if(!AreLinkedValuesAligned(tile, otherTile))
+                {
+                    tile.Flip();
+                }
                 if (!otherTile.IsLinked(tile))
                 {
                     otherTile.Link(tile);
                 }
             }
+
+            private bool AreLinkedValuesAligned(DominoTileEntity tile, DominoTileEntity otherTile) =>
+                otherTile.state is EngineState
+                    ? otherTile.SecondValue == tile.FirstValue
+                    : tile.SecondValue == otherTile.FirstValue ||
+                    otherTile.SecondValue == tile.FirstValue;
         }
     }
 }

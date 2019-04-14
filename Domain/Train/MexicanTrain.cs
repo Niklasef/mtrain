@@ -33,40 +33,18 @@ namespace Domain.Train
             }
             if (head == tail && tile.GetUnlinkedValues().Any(x => x == head.FirstValue))
             {
-                if (tile.SecondValue != head.FirstValue && tile.SecondValue != head.SecondValue)
-                {
-                    tile.Flip();
-                }
                 tile.Link(head);
                 tail = tile;
                 return;
             }
-            if (head == tail && tile.GetUnlinkedValues().Any(x => x == head.SecondValue))
-            {
-                if (tile.FirstValue != head.FirstValue && tile.FirstValue != head.SecondValue)
-                {
-                    tile.Flip();
-                }
-                tile.Link(head);
-                head = tile;
-                return;
-            }
             if (head.MatchesUnlinkedValue(tile))
             {
-                if (tile.FirstValue != head.FirstValue && tile.FirstValue != head.SecondValue)
-                {
-                    tile.Flip();
-                }
                 tile.Link(head);
                 head = tile;
                 return;
             }
             if (tail.MatchesUnlinkedValue(tile))
             {
-                if (tile.SecondValue != tail.FirstValue && tile.SecondValue != tail.SecondValue)
-                {
-                    tile.Flip();
-                }
                 tail.Link(tile);
                 tail = tile;
                 return;

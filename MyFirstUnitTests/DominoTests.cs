@@ -138,14 +138,17 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
-        public void Link_WhenHalfLinkedToUnorderedTile_NoException()
+        public void Link_WhenHalfLinkedToUnorderedTile_TilesAreFlippedSoValuesAlign()
         {
-            var tileOne = new DominoTileEntity(7, 7);
-            var tileTwo = new DominoTileEntity(7, 2);
-            var tileThree = new DominoTileEntity(12, 2);
+            var engine = new DominoTileEntity(7, 7, isEngine: true);
+            var tileTwo = new DominoTileEntity(2, 7);
+            var tileThree = new DominoTileEntity(9, 2);
 
-            tileOne.Link(tileTwo);
-            tileTwo.Link(tileThree);
+            tileTwo.Link(engine);
+            tileThree.Link(tileTwo);
+
+            Assert.Equal(7, tileTwo.FirstValue);
+            Assert.Equal(2, tileThree.FirstValue);
         }
 
         [Fact]

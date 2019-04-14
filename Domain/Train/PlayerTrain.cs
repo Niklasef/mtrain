@@ -35,23 +35,8 @@ namespace Domain.Train
         public void ForceAddTile(DominoTileEntity tile) =>
             state.ForceAddTile(this, tile);
 
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Train state: {state.GetType().Name}");
-            stringBuilder.AppendLine(
-                string.Join(", ", GetTiles()
-                    .Select(t =>
-                    {
-                        if (t != engineTile && t.FirstValue != t.GetLinkedTiles().First().SecondValue)//TODO: fix hardcoded choise
-                        {
-                            t.Flip();
-                        }
-                        return t;
-                    })
-                    .Reverse()));
-            return stringBuilder.ToString();
-        }
+        public override string ToString() =>
+            string.Join(", ", GetTiles().Reverse());
 
         public IEnumerable<DominoTileEntity> GetTiles() =>
             GetTiles(new List<DominoTileEntity>(), head);
