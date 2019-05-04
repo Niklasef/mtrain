@@ -95,49 +95,60 @@ namespace Domain.Game
         public GameBoard GetBoard(Guid playerId) =>
             new GameBoard(
                 Players
-                    .ToDictionary(p => p.Id, p => p.Name),
-                GetStateType(),
-                Id,
-                Players
                     .ToDictionary(
-                        p => p.Id,
-                        p => new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(p
-                            .Train.Id, 
-                            p.Train.GetTiles())),
+                        p => p.Id, 
+                        p => p.Name),
+                Players
+                    .Select(p => p.Train)
+                    .ToDictionary(
+                        t => t.Id,
+                        t => t.GetTiles()),
                 new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
                     MexicanTrain.Id, 
                     MexicanTrain.GetTiles()),
                 GetPlayer(playerId)
                     .Hand,
                 Players
+                    .ToDictionary(
+                        p => p.Id, 
+                        p => p.Train.Id),             
+                Players
                     .FirstOrDefault(p => p
                         .GetStateType()
                         .Name
                         .Equals("HasTurnPlayerState", StringComparison.Ordinal))
-                    ?.Id ?? Guid.Empty);
+                    ?.Id ?? Guid.Empty,
+                GetStateType(),
+                Id);
 
         public GameBoard GetBoard() =>
             new GameBoard(
                 Players
-                    .ToDictionary(p => p.Id, p => p.Name),
-                GetStateType(),
-                Id,
-                Players
                     .ToDictionary(
-                        p => p.Id,
-                        p => new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(p
-                            .Train.Id, 
-                            p.Train.GetTiles())),
+                        p => p.Id, 
+                        p => p.Name),
+                Players
+                    .Select(p => p.Train)
+                    .ToDictionary(
+                        t => t.Id,
+                        t => t.GetTiles()),
                 new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
                     MexicanTrain.Id, 
                     MexicanTrain.GetTiles()),
                 Enumerable.Empty<DominoTileEntity>(),
                 Players
+                    .ToDictionary(
+                        p => p.Id, 
+                        p => p.Train.Id),             
+                Players
                     .FirstOrDefault(p => p
                         .GetStateType()
                         .Name
                         .Equals("HasTurnPlayerState", StringComparison.Ordinal))
-                    ?.Id ?? Guid.Empty);
+                    ?.Id ?? Guid.Empty,
+                GetStateType(),
+                Id);
+                  
 
         internal PlayerEntity GetPlayer(Guid playerId) =>
             Players
