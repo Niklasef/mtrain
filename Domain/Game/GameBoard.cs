@@ -17,7 +17,7 @@ namespace Domain.Game
             Dictionary<Guid, Guid> playerTrains,
             Guid playerIdWithTurn,
             Type gameState,
-            chanGuid gameId)
+            Guid gameId)
         {
             Players = players;
             Trains = trains;
@@ -47,12 +47,12 @@ namespace Domain.Game
             var trainIndex = 1;
             PlayerTrains
                 .ToList()
-                .ForEach((i, pt) =>
+                .ForEach(pt =>
                 {
                     stringBuilder.AppendLine("");
                     stringBuilder.AppendLine($"Player: '{Players.First(p => p.Key == pt.Key).Value}'");
-                    stringBuilder.AppendLine($"train Idx: '{trainIndex}' train id: '{pt.Value.Key}'");
-                    stringBuilder.AppendLine($"{string.Join(",", pt.Value.Value.Reverse())}");
+                    stringBuilder.AppendLine($"train Idx: '{trainIndex}' train id: '{pt.Value}'");
+                    stringBuilder.AppendLine($"{string.Join(",", Trains.First(t => t.Key == pt.Value).Value.Reverse())}");
                     trainIndex++;
                 });
 
