@@ -28,7 +28,6 @@ namespace Server
                 .MakeMove(
                     PlayerId,
                     TileId,
-                    TrainId
-                );
+                    TrainId);
     }
 }
