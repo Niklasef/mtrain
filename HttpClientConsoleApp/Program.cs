@@ -109,8 +109,7 @@ namespace HttpClientConsoleApp
                         .PlayerTrains
                         .Skip(trainIndex)
                         .First()
-                        .Value
-                        .Key;
+                        .Value;
 
                 Console.WriteLine($"tileIndex {tileIndex}");
                 Console.WriteLine($"tileId {tileId}");

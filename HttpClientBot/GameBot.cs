@@ -137,7 +137,7 @@ namespace HttpClientBot
                 Thread.Sleep(50);
                 var trainIds = gameBoard
                     .PlayerTrains
-                    .Select(keyValuePair => keyValuePair.Value.Key)
+                    .Select(pt => pt.Value)
                     .Union(new[]{gameBoard
                             .MexicanTrain
                             .Key});
