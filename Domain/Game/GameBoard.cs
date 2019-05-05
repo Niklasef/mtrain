@@ -52,19 +52,14 @@ namespace Domain.Game
                     stringBuilder.AppendLine("");
                     stringBuilder.AppendLine($"Player: '{Players.First(p => p.Key == pt.Key).Value}'");
                     stringBuilder.AppendLine($"train Idx: '{trainIndex}' train id: '{pt.Value}'");
-                    stringBuilder.AppendLine($"{string.Join(",", Trains.First(t => t.Key == pt.Value).Value.Reverse())}");
+                    stringBuilder.AppendLine(string.Join(",", Trains.First(t => t.Key == pt.Value).Value.Reverse()));
                     trainIndex++;
                 });
 
             stringBuilder.AppendLine("");
             stringBuilder.AppendLine($"Mexican train");
-            var mexicanTrain = new Domain.Train.MexicanTrain(MexicanTrain.Key);
-            MexicanTrain
-                .Value
-                    .ToList()
-                    .ForEach(t => mexicanTrain.ForceAddTile(t));
-            stringBuilder.AppendLine($"Idx: '{trainIndex}'  id: '{mexicanTrain.Id}'");
-            stringBuilder.AppendLine($"{mexicanTrain.ToString()}");
+            stringBuilder.AppendLine($"Idx: '{trainIndex}'  id: '{MexicanTrain.Key}'");
+            stringBuilder.AppendLine(string.Join(",", MexicanTrain.Value.Reverse()));
 
             stringBuilder.AppendLine("");
             stringBuilder.AppendLine("Hand");

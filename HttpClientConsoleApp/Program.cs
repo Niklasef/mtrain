@@ -10,7 +10,7 @@ namespace HttpClientConsoleApp
     {
         private static GameBoard gameBoard;
         private static HttpClient.GameHttpClient gameClient;
-        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e21");
+        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e26");
         private static Guid playerId = Guid.NewGuid();
 
         static void Main(string[] args)
@@ -19,13 +19,17 @@ namespace HttpClientConsoleApp
             gameClient = new HttpClient.GameHttpClient(new System.Net.Http.HttpClient());
             if (!botOnly)
             {
+                Console.WriteLine("Human player mode");
                 var gameBoards = gameClient.GetGameBoards();
                 if (!gameBoards.Any(gb => gb.GameId == gameId))
                 {
+                    Console.WriteLine("Creating game");
                     gameClient.CreateGame(gameId);
                 }
                 gameClient.JoinGame(gameId, playerId, "Niklas");
+                Console.WriteLine("Waiting for bot...");
                 Thread.Sleep(10000);
+                Console.WriteLine("Starting game");
                 gameClient.StartGame(gameId);
             }
             else
@@ -52,7 +56,6 @@ namespace HttpClientConsoleApp
         {
             string input = null;
             gameBoard = gameClient.GetGameBoard(gameId, playerId);
-            Console.Clear();
             Console.Write(gameBoard.ToString());
 
             while (true)
@@ -64,7 +67,7 @@ namespace HttpClientConsoleApp
 
                 if (!TryReadLine(out input, out var tileIndex, out var trainIndex))
                 {
-                    Console.WriteLine($"Couldn't interpret input: '{input}'. Press any key to continue.");
+                    Console.WriteLine($"Couldn't interpret input: '{input}'. Press any key to continue. (legal: p, q, r [ix ix])");
                     Console.ReadKey();
                     continue;
                 }
@@ -80,7 +83,6 @@ namespace HttpClientConsoleApp
                 if (input?.Equals("r", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
                     gameBoard = gameClient.GetGameBoard(gameId, playerId);
-                    Console.Clear();
                     Console.Write(gameBoard.ToString());
                     continue;
                 }
@@ -142,7 +144,6 @@ namespace HttpClientConsoleApp
                 return;
             }
             firstRender = false;
-            Console.Clear();
             Console.Write(gameBoard.ToString());
         }
 
