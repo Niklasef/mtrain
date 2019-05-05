@@ -10,7 +10,7 @@ namespace HttpClientConsoleApp
     {
         private static GameBoard gameBoard;
         private static HttpClient.GameHttpClient gameClient;
-        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e26");
+        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e27");
         private static Guid playerId = Guid.NewGuid();
 
         static void Main(string[] args)
@@ -60,11 +60,6 @@ namespace HttpClientConsoleApp
 
             while (true)
             {
-                new Timer((e) =>
-                {
-                    RefreshGameBoard();
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
-
                 if (!TryReadLine(out input, out var tileIndex, out var trainIndex))
                 {
                     Console.WriteLine($"Couldn't interpret input: '{input}'. Press any key to continue. (legal: p, q, r [ix ix])");
@@ -125,7 +120,6 @@ namespace HttpClientConsoleApp
                         trainId,
                         tileId
                     );
-                    firstRender = true;
                 }
                 catch (Exception exception)
                 {
@@ -133,18 +127,6 @@ namespace HttpClientConsoleApp
                     Console.ReadKey();
                 }
             }
-        }
-
-        private static bool firstRender = true;
-        private static void RefreshGameBoard()
-        {
-            gameBoard = gameClient.GetGameBoard(gameId, playerId);
-            if (gameBoard?.PlayerIdWithTurn == playerId && !firstRender)
-            {
-                return;
-            }
-            firstRender = false;
-            Console.Write(gameBoard.ToString());
         }
 
         private static bool TryReadLine(out string input, out int tileIndex, out int trainIndex)

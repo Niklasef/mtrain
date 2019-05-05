@@ -102,7 +102,7 @@ namespace Domain.Game
                     .Select(p => p.Train)
                     .ToDictionary(
                         t => t.Id,
-                        t => t.GetTiles()),
+                        t => new Tuple<Type, IEnumerable<DominoTileEntity>>(t.GetStateType(), t.GetTiles())),
                 new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
                     MexicanTrain.Id, 
                     MexicanTrain.GetTiles()),
@@ -131,7 +131,7 @@ namespace Domain.Game
                     .Select(p => p.Train)
                     .ToDictionary(
                         t => t.Id,
-                        t => t.GetTiles()),
+                        t => new Tuple<Type, IEnumerable<DominoTileEntity>>(t.GetStateType(), t.GetTiles())),
                 new KeyValuePair<Guid, IEnumerable<DominoTileEntity>>(
                     MexicanTrain.Id, 
                     MexicanTrain.GetTiles()),

@@ -11,7 +11,7 @@ namespace Domain.Game
     {
         public GameBoard(
             Dictionary<Guid, string> players,
-            Dictionary<Guid, IEnumerable<DominoTileEntity>> trains,
+            Dictionary<Guid, Tuple<Type, IEnumerable<DominoTileEntity>>> trains,
             KeyValuePair<Guid, IEnumerable<DominoTileEntity>> mexicanTrain,
             IEnumerable<DominoTileEntity> hand,
             Dictionary<Guid, Guid> playerTrains,
@@ -30,7 +30,7 @@ namespace Domain.Game
         }
 
         public Dictionary<Guid, string> Players { get; }
-        public Dictionary<Guid, IEnumerable<DominoTileEntity>> Trains { get; }
+        public Dictionary<Guid, Tuple<Type, IEnumerable<DominoTileEntity>>> Trains { get; }
         public KeyValuePair<Guid, IEnumerable<DominoTileEntity>> MexicanTrain { get; }
         public IEnumerable<DominoTileEntity> Hand { get; }
         public Dictionary<Guid, Guid> PlayerTrains { get; }
@@ -49,10 +49,11 @@ namespace Domain.Game
                 .ToList()
                 .ForEach(pt =>
                 {
+                    var train = Trains.First(t => t.Key == pt.Value);
                     stringBuilder.AppendLine("");
                     stringBuilder.AppendLine($"Player: '{Players.First(p => p.Key == pt.Key).Value}'");
-                    stringBuilder.AppendLine($"train Idx: '{trainIndex}' train id: '{pt.Value}'");
-                    stringBuilder.AppendLine(string.Join(",", Trains.First(t => t.Key == pt.Value).Value.Reverse()));
+                    stringBuilder.AppendLine($"train Idx: '{trainIndex}', train id: '{pt.Value}', train state: '{train.Value.Item1}'");
+                    stringBuilder.AppendLine(string.Join(",", train.Value.Item2.Reverse()));
                     trainIndex++;
                 });
 
