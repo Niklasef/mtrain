@@ -15,7 +15,7 @@ namespace Domain.Game
             ) =>
                 throw new IllegalStateActionException(GetType());
 
-            internal virtual void PassMove(
+            internal virtual void DrawTile(
                 GameEntity game, 
                 Guid playerId
             ) =>

@@ -77,12 +77,12 @@ namespace HttpClient
                     trainId,
                     dominoId));
 
-        public void PassMove(
+        public void DrawTile(
             Guid gameId,
             Guid playerId
         ) =>
             Send(
-                new PassMoveCommand(
+                new DrawTileCommand(
                     gameId,
                     playerId));
 

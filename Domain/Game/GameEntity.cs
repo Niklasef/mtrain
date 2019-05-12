@@ -64,8 +64,8 @@ namespace Domain.Game
         public void MakeMove(Guid playerId, long tileId, Guid trainId) =>
             state.MakeMove(this, playerId, tileId, trainId);
 
-        public void PassMove(Guid playerId) =>
-            state.PassMove(this, playerId);
+        public void DrawTile(Guid playerId) =>
+            state.DrawTile(this, playerId);
 
         public void AddPlayer(Guid playerId, string playerName) =>
             state.AddPlayer(this, playerId, playerName);

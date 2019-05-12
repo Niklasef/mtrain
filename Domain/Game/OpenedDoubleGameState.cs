@@ -32,7 +32,7 @@ namespace Domain.Game
                 PassTurn(game, playerId);
             }
 
-            internal override void PassMove(GameEntity game, Guid playerId)
+            internal override void DrawTile(GameEntity game, Guid playerId)
             {
                 var tile = game
                     .boneyard

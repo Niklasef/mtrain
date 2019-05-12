@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Domain.Game;
 
 namespace Server
 {
-    public class PassMoveCommand : ICommand
+    public class DrawTileCommand : ICommand
     {
-        public PassMoveCommand(
+        public DrawTileCommand(
             Guid gameId,
             Guid playerId)
         {
@@ -19,6 +19,6 @@ namespace Server
         public void Execute() =>
             Games
                 .Get(GameId)
-                .PassMove(PlayerId);
+                .DrawTile(PlayerId);
     }
 }

@@ -32,7 +32,7 @@ namespace SingleScreenConsoleApp
                 }
                 if (input?.Equals("p", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
-                    game.PassMove(playerWithTurn.Id);
+                    game.DrawTile(playerWithTurn.Id);
                     continue;
                 }
                 if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) ?? false)

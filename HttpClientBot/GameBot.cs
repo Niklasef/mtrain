@@ -172,7 +172,7 @@ namespace HttpClientBot
             }
             if (!moveSucceeded)
             {
-                gameHttpClient.PassMove(
+                gameHttpClient.DrawTile(
                     gameId,
                     playerId);
             }

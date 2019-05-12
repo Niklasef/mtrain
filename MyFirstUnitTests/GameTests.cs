@@ -138,7 +138,7 @@ namespace MyFirstUnitTests
                 sut.Players.First().Id,
                 firstPlayerTiles.First().Id,
                 sut.MexicanTrain.Id);
-            sut.PassMove(
+            sut.DrawTile(
                 sut.Players.First().Id);
 
             Assert.Equal("HasTurnPlayerState", sut.Players.Last().GetStateType().Name);
@@ -159,7 +159,7 @@ namespace MyFirstUnitTests
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(1).First().Id,
                 sut.Players.First().Train.Id);
-            sut.PassMove(
+            sut.DrawTile(
                 sut.Players.Last().Id);
             Action makeMove = () => sut.MakeMove(
                 sut.Players.First().Id,
@@ -205,7 +205,7 @@ namespace MyFirstUnitTests
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(2).First().Id,
                 sut.Players.Last().Train.Id);
-            sut.PassMove(
+            sut.DrawTile(
                 sut.Players.Last().Id);
             Action makeMove = () => sut.MakeMove(
                 sut.Players.First().Id,
@@ -249,7 +249,7 @@ namespace MyFirstUnitTests
                 sut.Players.First().Id,
                 firstPlayerTiles.First().Id,
                 sut.Players.First().Train.Id);
-            sut.PassMove(
+            sut.DrawTile(
                 sut.Players.Last().Id);
             sut.MakeMove(
                 sut.Players.First().Id,
@@ -294,8 +294,8 @@ namespace MyFirstUnitTests
             var playedTile = new DominoTileEntity(11, 12);
             var sut = CreateGame(playedTile);
 
-            sut.PassMove(sut.Players.First().Id);
-            sut.PassMove(sut.Players.Skip(1).First().Id);
+            sut.DrawTile(sut.Players.First().Id);
+            sut.DrawTile(sut.Players.Skip(1).First().Id);
             sut.MakeMove(
                 sut.Players.First().Id,
                 playedTile.Id,
@@ -309,7 +309,7 @@ namespace MyFirstUnitTests
         {
             var sut = CreateGame(new DominoTileEntity(11, 12));
 
-            sut.PassMove(sut.Players.First().Id);
+            sut.DrawTile(sut.Players.First().Id);
 
             Assert.Equal(2, sut.Players.First().Hand.Count);
             Assert.Equal("OpenPlayerTrainState", ((PlayerTrain)sut.Players.First().Train).GetStateType().Name);
@@ -322,8 +322,8 @@ namespace MyFirstUnitTests
         {
             var sut = CreateGame(new DominoTileEntity(11, 12));
 
-            sut.PassMove(sut.Players.First().Id);
-            sut.PassMove(sut.Players.Skip(1).First().Id);
+            sut.DrawTile(sut.Players.First().Id);
+            sut.DrawTile(sut.Players.Skip(1).First().Id);
 
             Assert.Equal("WaitingForTurnPlayerState", sut.Players.Skip(1).First().GetStateType().Name);
             Assert.Equal("HasTurnPlayerState", sut.Players.First().GetStateType().Name);

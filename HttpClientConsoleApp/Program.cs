@@ -68,7 +68,7 @@ namespace HttpClientConsoleApp
                 }
                 if (input?.Equals("p", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
-                    gameClient.PassMove(gameId, playerId);
+                    gameClient.DrawTile(gameId, playerId);
                     continue;
                 }
                 if (input?.Equals("q", StringComparison.OrdinalIgnoreCase) ?? false)
