@@ -93,5 +93,30 @@ namespace MyFirstUnitTests
 
             Assert.Equal("[12|12], [12|11], [11|10]", result);
         }
+
+        [Fact]
+        public void AddTileNonMatchingTile_WhenOpen_ExceptionThrown()
+        {
+            var engine = new DominoTileEntity(12, 12, true);
+            var game = new GameEntity(
+                Guid.NewGuid(), 
+                Enumerable.Empty<PlayerEntity>(),
+                MexicanTrain.Create(),
+                engine,
+                new Stack<DominoTileEntity>());
+            Games.Add(game.Id, game);
+
+            var playerId = Guid.NewGuid();
+            var sut = new PlayerTrain(engine, playerId);
+            var tileOne = new DominoTileEntity(12, 11);
+            var tileTwo = new DominoTileEntity(11, 10);
+            var tileThree = new DominoTileEntity(11, 3);
+            sut.AddTile(tileOne, playerId);
+            sut.Open();
+            sut.AddTile(tileTwo, playerId);
+            Action addTile = () => sut.AddTile(tileThree, playerId);
+
+            Assert.ThrowsAny<Exception>(addTile);
+        }
     }
 }

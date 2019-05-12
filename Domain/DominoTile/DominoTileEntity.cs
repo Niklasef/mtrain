@@ -92,6 +92,13 @@ namespace Domain.DominoTile
                         .GetValues()
                         .Any(ov => v == ov));
 
+        internal bool HasMatchingUnlinkedValue(DominoTileEntity otherTile) =>
+            GetUnlinkedValues()
+                .Any(v => 
+                    otherTile
+                        .GetUnlinkedValues()
+                        .Any(ov => v == ov));
+
         internal bool IsDouble() =>
             FirstValue == SecondValue;
     }

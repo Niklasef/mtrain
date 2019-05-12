@@ -138,6 +138,24 @@ namespace MyFirstUnitTests
         }
 
         [Fact]
+        public void Link_OnAlreadyLinkedValue_ThrowsException()
+        {
+            var tileOne = new DominoTileEntity(1, 2);
+            var tileTwo = new DominoTileEntity(2, 3);
+            var tileThree = new DominoTileEntity(2, 4);
+
+            tileOne.Link(tileTwo);
+            Action linkThreeOnTwo = () => tileTwo.Link(tileThree);
+            Action linkTwoOnThree = () => tileThree.Link(tileTwo);
+
+            Assert.Equal(1, tileTwo.GetUnlinkedValues().Count());
+            Assert.Equal(3, tileTwo.GetUnlinkedValues().First());
+            Assert.Equal("HalfLinkedState", tileTwo.GetStateType().Name);
+            Assert.ThrowsAny<Exception>(linkThreeOnTwo);
+            Assert.ThrowsAny<Exception>(linkTwoOnThree);
+        }
+
+        [Fact]
         public void Link_WhenHalfLinkedToUnorderedTile_TilesAreFlippedSoValuesAlign()
         {
             var engine = new DominoTileEntity(7, 7, isEngine: true);

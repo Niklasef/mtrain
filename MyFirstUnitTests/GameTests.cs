@@ -172,22 +172,35 @@ namespace MyFirstUnitTests
         [Fact]
         public void MakeMove_DoubleIsSecondTileOnMexicanTrainMustBeClosed_Exception()
         {
-            var firstPlayerTiles = new[] { new DominoTileEntity(11, 11), new DominoTileEntity(12, 11), new DominoTileEntity(12, 1), new DominoTileEntity(12, 2), new DominoTileEntity(6, 7) };
-            var secondPlayerTiles = new[] { new DominoTileEntity(12, 10), new DominoTileEntity(12, 9) };
+            var firstPlayerTiles = new[] 
+            { 
+                new DominoTileEntity(11, 11), 
+                new DominoTileEntity(12, 11), 
+                new DominoTileEntity(10, 1), 
+                new DominoTileEntity(12, 2), 
+                new DominoTileEntity(6, 7) };
+            var secondPlayerTiles = new[] 
+            { 
+                new DominoTileEntity(12, 10), 
+                new DominoTileEntity(12, 9) };
             var sut = CreateGame(firstPlayerTiles, secondPlayerTiles);
 
+            //P1 plays 12, 11 on M
             sut.MakeMove(
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(1).First().Id,
                 sut.MexicanTrain.Id);
+            //P2 plays 12, 10 on P2
             sut.MakeMove(
                 sut.Players.Last().Id,
                 secondPlayerTiles.First().Id,
                 sut.Players.Last().Train.Id);
+            //P1 plays 11, 11 on M
             sut.MakeMove(
                 sut.Players.First().Id,
                 firstPlayerTiles.First().Id,
                 sut.MexicanTrain.Id);
+            //P1 plays 10, 1 on P2
             sut.MakeMove(
                 sut.Players.First().Id,
                 firstPlayerTiles.Skip(2).First().Id,

@@ -24,7 +24,7 @@ namespace Domain.Train
             internal override void ForceAddTile(
                 PlayerTrain playerTrain,
                 DominoTileEntity tile
-            ) => AddTile(playerTrain, tile);
+            ) => base.AddTile(playerTrain, tile);
         }
     }
 }

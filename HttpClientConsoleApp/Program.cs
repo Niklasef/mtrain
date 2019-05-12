@@ -10,7 +10,7 @@ namespace HttpClientConsoleApp
     {
         private static GameBoard gameBoard;
         private static HttpClient.GameHttpClient gameClient;
-        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e27");
+        private static Guid gameId = Guid.Parse("2ec86ee1-e181-4b1c-ab87-73a7a87c1e28");
         private static Guid playerId = Guid.NewGuid();
 
         static void Main(string[] args)
