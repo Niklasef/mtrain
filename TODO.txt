@@ -1,3 +1,12 @@
-x- winner game state
-x- playing doubles
-x- cmd play mode
+//TODO: move server, IQuery and ICommand to new server proj
+//rename Server proj to Client
+//extract base to abstract client from HttpClient and move into new Client proj
+//make HttpClientBot depend on abstract client and rename proj to Bot proj
+
+//Refactor HttpClientConsoleApp so only handles one human player
+//make new project: HttpClientBot, which start one both with parmams
+
+//create powershell script that can orchistrate human player apps and bot apps as background process (human player in visible window)
+//powershell script should be able to start games and such, list games?, kill games? kill bots ? and so on... everything but the actual playing
+//PS script should control everything, start server, start HttpApi
+//A html client should be able and have drag and drop functionality to easy order tiles on hand... and to make moves?
