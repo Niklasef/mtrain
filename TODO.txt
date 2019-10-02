@@ -3,6 +3,7 @@
 //extract base to abstract client from HttpClient and move into new Client proj
 //make HttpClientBot depend on abstract client and rename proj to Bot proj
 
+
 //Refactor HttpClientConsoleApp so only handles one human player
 //make new project: HttpClientBot, which start one both with parmams
 
